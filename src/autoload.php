@@ -1,14 +1,13 @@
 <?php
 declare(strict_types=1);
 /** ***********************************************************************************************
- * @package HNV\Psr\Http
+ * @package HNV\Psr\Http\Uri
  * @author  Hvorostenko
  *
  * Classes autoloader.
  *************************************************************************************************/
 spl_autoload_register(function(string $className): void {
-    $srcDirectoryPath       = __DIR__.DIRECTORY_SEPARATOR.'src';
-    $packageClassesPrefix   = 'HNV\Http\Uri';
+    $packageClassesPrefix   = 'HNV\\Http\\Uri\\';
     $classIsFromThisPackage = strpos($className, $packageClassesPrefix) === 0;
 
     if (!$classIsFromThisPackage) {
@@ -17,7 +16,7 @@ spl_autoload_register(function(string $className): void {
 
     $classNameCut       = substr($className, strlen($packageClassesPrefix));
     $classFilePathPart  = (string) str_replace('\\', DIRECTORY_SEPARATOR, $classNameCut);
-    $classFilePath      = $srcDirectoryPath.DIRECTORY_SEPARATOR.$classFilePathPart.'.php';
+    $classFilePath      = __DIR__.DIRECTORY_SEPARATOR.$classFilePathPart.'.php';
 
     if (file_exists($classFilePath)) {
         require_once $classFilePath;
