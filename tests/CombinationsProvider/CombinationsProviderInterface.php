@@ -1,22 +1,20 @@
 <?php
 declare(strict_types=1);
 
-namespace HNV\Http\Uri\Collection;
+namespace HNV\Http\UriTests\CombinationsProvider;
 /** ***********************************************************************************************
- * URI domain name allowed characters collection.
+ * URI different combinations provider interface.
  *
- * @package HNV\Psr\Http\Uri
+ * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
-class DomainAllowedCharacters implements CollectionInterface
+interface CombinationsProviderInterface
 {
     /** **********************************************************************
-     * @inheritDoc
+     * Get available combinations as set of data.
+     *
+     * @return  array[]                     Set of arrays,
+     *                                      where each array describes in example tag.
      ************************************************************************/
-    public static function get(): array
-    {
-        return [
-            '-',
-        ];
-    }
+    public static function get(): array;
 }

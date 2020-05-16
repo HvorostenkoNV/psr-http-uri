@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace HNV\Http\Uri\Normalizer\DomainName;
 
-use HNV\Http\Uri\Collection\DomainAllowedCharacters;
+use HNV\Http\Uri\Collection\DomainNameAllowedCharacters;
 use HNV\Http\Uri\Normalizer\{
     NormalizingException,
     NormalizerInterface
@@ -59,7 +59,7 @@ class SubLevelDomain implements NormalizerInterface
         if (!self::$mask) {
             $specialCharsMask = '';
 
-            foreach (DomainAllowedCharacters::get() as $char) {
+            foreach (DomainNameAllowedCharacters::get() as $char) {
                 $specialCharsMask .= "\\$char";
             }
 
