@@ -152,7 +152,7 @@ class Query implements ValuesProviderInterface
             "$digit$string",
 
             $letter,
-            $digit,
+            "$digit",
         ];
     }
     /** **********************************************************************

@@ -149,7 +149,7 @@ class Path implements ValuesProviderInterface
             "$digit$string",
 
             $letter,
-            $digit,
+            "$digit",
         ];
     }
     /** **********************************************************************

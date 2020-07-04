@@ -1,21 +1,21 @@
 <?php
 declare(strict_types=1);
 
-namespace HNV\Http\UriTests\ValuesProvider\UserInfo;
+namespace HNV\Http\UriTests\ValuesProvider;
 
-use HNV\Http\UriTests\ValuesProvider\ValuesProviderInterface;
 use HNV\Http\UriTests\Collection\SpecialCharacters;
 
 use function strtoupper;
 use function ucfirst;
+use function array_merge;
 use function rawurlencode;
 /** ***********************************************************************************************
- * URI user (login or password) info values provider.
+ * URI fragment normalized values set provider.
  *
  * @package HNV\Psr\Http\Tests
  * @author  Hvorostenko
  *************************************************************************************************/
-class Value implements ValuesProviderInterface
+class Fragment implements ValuesProviderInterface
 {
     /** **********************************************************************
      * @inheritDoc
@@ -50,19 +50,29 @@ class Value implements ValuesProviderInterface
         $letter = 'x';
         $digit  = 1;
         $string = 'value';
-
-        return [
+        $result = [
             $string,
             strtoupper($string),
             ucfirst($string),
 
-            "$digit",
-            $letter,
-
-            "$digit$string",
             "$string$digit",
             "$string$digit$string",
+            "$digit$string",
+
+            "$string ",
+            "$string $string",
+            " $string",
+            ' ',
+
+            $letter,
+            "$digit",
         ];
+
+        foreach (SpecialCharacters::get() as $char) {
+            $result[] = $char;
+        }
+
+        return $result;
     }
     /** **********************************************************************
      * Get valid values with their normalized representation set.
@@ -71,12 +81,11 @@ class Value implements ValuesProviderInterface
      ************************************************************************/
     private static function getValidNormalizedValues(): array
     {
-        $result = [];
+        $allChars   = SpecialCharacters::get();
+        $result     = [];
 
-        foreach (SpecialCharacters::get() as $char) {
-            $charEncoded            = rawurlencode($char);
-            $result[$char]          = $charEncoded;
-            $result[$charEncoded]   = $charEncoded;
+        foreach (array_merge($allChars, [' ']) as $char) {
+            $result[rawurlencode($char)] = $char;
         }
 
         return $result;
