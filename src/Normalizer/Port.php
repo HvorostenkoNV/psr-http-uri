@@ -12,7 +12,7 @@ use function is_numeric;
  *************************************************************************************************/
 class Port implements NormalizerInterface
 {
-    public const MIN_VALUE = 1;
+    public const MIN_VALUE = 0;
     public const MAX_VALUE = 65535;
     /** **********************************************************************
      * @inheritDoc
