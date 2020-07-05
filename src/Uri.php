@@ -31,14 +31,14 @@ use function ltrim;
  *************************************************************************************************/
 class Uri implements UriInterface
 {
-    private $scheme     = '';
-    private $host       = '';
-    private $port       = 0;
-    private $user       = '';
-    private $password   = '';
-    private $path       = '';
-    private $query      = '';
-    private $fragment   = '';
+    private string  $scheme     = '';
+    private string  $host       = '';
+    private int     $port       = 0;
+    private string  $user       = '';
+    private string  $password   = '';
+    private string  $path       = '';
+    private string  $query      = '';
+    private string  $fragment   = '';
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
@@ -164,22 +164,19 @@ class Uri implements UriInterface
         $host       = $this->getHost();
         $port       = $this->getPort();
 
-        if ($host !== '' && $userInfo !== '' && $port !== null) {
-            return
-                $userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
-                $host.
-                UriGeneralDelimiters::PORT_DELIMITER.$port;
-        }
-        if ($host !== '' && $userInfo !== '') {
-            return
-                $userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
-                $host;
-        }
-        if ($host !== '') {
-            return $host;
+        if ($host === '') {
+            return '';
         }
 
-        return '';
+        $result = $host;
+        if ($userInfo !== '') {
+            $result = $userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.$result;
+        }
+        if ($port !== null) {
+            $result = $result.UriGeneralDelimiters::PORT_DELIMITER.$port;
+        }
+
+        return $result;
     }
     /** **********************************************************************
      * @inheritDoc
