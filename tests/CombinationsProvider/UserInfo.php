@@ -19,6 +19,15 @@ use function array_merge;
  *************************************************************************************************/
 class UserInfo implements CombinationsProviderInterface
 {
+    private static array    $loginValidValues           = [];
+    private static array    $loginInvalidValues         = [];
+    private static array    $passwordValidValues        = [];
+    private static array    $passwordInvalidValues      = [];
+
+    private static string   $validLogin                 = '';
+    private static string   $validLoginNormalized       = '';
+    private static string   $validPassword              = '';
+    private static string   $validPasswordNormalized    = '';
     /** **********************************************************************
      * @inheritDoc
      *
@@ -31,49 +40,30 @@ class UserInfo implements CombinationsProviderInterface
      ************************************************************************/
     public static function get(): array
     {
-        $loginValidValues           = UserLoginValuesProvider::getValidValues();
-        $loginInvalidValues         = UserLoginValuesProvider::getInvalidValues();
-        $passwordValidValues        = UserPasswordValuesProvider::getValidValues();
-        $passwordInvalidValues      = UserPasswordValuesProvider::getInvalidValues();
-        $validLogin                 = (string)  key($loginValidValues);
-        $validLoginNormalized       = (string)  $loginValidValues[$validLogin];
-        $validPassword              = (string)  key($passwordValidValues);
-        $validPasswordNormalized    = (string)  $passwordValidValues[$validPassword];
+        self::$loginValidValues         = UserLoginValuesProvider::getValidValues();
+        self::$loginInvalidValues       = UserLoginValuesProvider::getInvalidValues();
+        self::$passwordValidValues      = UserPasswordValuesProvider::getValidValues();
+        self::$passwordInvalidValues    = UserPasswordValuesProvider::getInvalidValues();
+
+        self::$validLogin               = (string)  key(self::$loginValidValues);
+        self::$validLoginNormalized     = (string)  self::$loginValidValues[self::$validLogin];
+        self::$validPassword            = (string)  key(self::$passwordValidValues);
+        self::$validPasswordNormalized  = (string)  self::$passwordValidValues[self::$validPassword];
 
         return array_merge(
-            self::getLoginCombinations(
-                $loginValidValues,
-                $loginInvalidValues,
-                $validPassword,
-                $validPasswordNormalized
-            ),
-            self::getPasswordCombinations(
-                $passwordValidValues,
-                $passwordInvalidValues,
-                $validLogin,
-                $validLoginNormalized
-            )
+            self::getLoginCombinations(),
+            self::getPasswordCombinations(),
         );
     }
     /** **********************************************************************
      * Get combinations with login values.
      *
-     * @param   array   $loginValidValues           Login valid values set.
-     * @param   array   $loginInvalidValues         Login invalid values set.
-     * @param   string  $validPassword              Valid password.
-     * @param   string  $validPasswordNormalized    Valid normalized password.
-     *
      * @return  array                               Combinations data.
      ************************************************************************/
-    private static function getLoginCombinations(
-        array   $loginValidValues,
-        array   $loginInvalidValues,
-        string  $validPassword,
-        string  $validPasswordNormalized
-    ): array {
+    private static function getLoginCombinations(): array {
         $result = [];
 
-        foreach ($loginValidValues as $login => $loginNormalized) {
+        foreach (self::$loginValidValues as $login => $loginNormalized) {
             $result[]   = [
                 'login'     => (string) $login,
                 'password'  => '',
@@ -81,17 +71,17 @@ class UserInfo implements CombinationsProviderInterface
             ];
             $result[]   = [
                 'login'     => (string) $login,
-                'password'  => $validPassword,
+                'password'  => self::$validPassword,
                 'value'     =>
                     $loginNormalized.
                     UriSubDelimiters::USER_INFO_SEPARATOR.
-                    $validPasswordNormalized,
+                    self::$validPasswordNormalized,
             ];
         }
-        foreach ($loginInvalidValues as $invalidLogin) {
+        foreach (self::$loginInvalidValues as $invalidLogin) {
             $result[]   = [
                 'login'     => (string) $invalidLogin,
-                'password'  => $validPassword,
+                'password'  => self::$validPassword,
                 'value'     => '',
             ];
             $result[]   = [
@@ -106,27 +96,17 @@ class UserInfo implements CombinationsProviderInterface
     /** **********************************************************************
      * Get combinations with login values.
      *
-     * @param   array   $passwordValidValues        Password valid values set.
-     * @param   array   $passwordInvalidValues      Password invalid values set.
-     * @param   string  $validLogin                 Valid login.
-     * @param   string  $validLoginNormalized       Valid normalized login.
-     *
      * @return  array                               Combinations data.
      ************************************************************************/
-    private static function getPasswordCombinations(
-        array   $passwordValidValues,
-        array   $passwordInvalidValues,
-        string  $validLogin,
-        string  $validLoginNormalized
-    ): array {
+    private static function getPasswordCombinations(): array {
         $result = [];
 
-        foreach ($passwordValidValues as $password => $passwordNormalized) {
+        foreach (self::$passwordValidValues as $password => $passwordNormalized) {
             $result[]   = [
-                'login'     => $validLogin,
+                'login'     => self::$validLogin,
                 'password'  => (string) $password,
                 'value'     =>
-                    $validLoginNormalized.
+                    self::$validLoginNormalized.
                     UriSubDelimiters::USER_INFO_SEPARATOR.
                     $passwordNormalized,
             ];
@@ -136,9 +116,9 @@ class UserInfo implements CombinationsProviderInterface
                 'value'     => '',
             ];
         }
-        foreach ($passwordInvalidValues as $invalidPassword) {
+        foreach (self::$passwordInvalidValues as $invalidPassword) {
             $result[]   = [
-                'login'     => $validLogin,
+                'login'     => self::$validLogin,
                 'password'  => (string) $invalidPassword,
                 'value'     => '',
             ];

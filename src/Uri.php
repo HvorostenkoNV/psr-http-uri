@@ -23,6 +23,7 @@ use HNV\Http\Uri\Collection\{
 };
 
 use function ltrim;
+use function substr;
 /** ***********************************************************************************************
  * PSR-7 UriInterface implementation.
  *
@@ -281,7 +282,7 @@ class Uri implements UriInterface
         if ($path !== '') {
             $pathPrefix                 = UriSubDelimiters::PATH_PARTS_SEPARATOR;
             $pathHasPrefix              = $path[0] === $pathPrefix;
-            $pathHasMultiplePrefixes    = $path[0] === $pathPrefix && $path[1] === $pathPrefix;
+            $pathHasMultiplePrefixes    = substr($path, 0, 2) === $pathPrefix.$pathPrefix;
 
             if ($authority !== '' && !$pathHasPrefix) {
                 $result .= $pathPrefix.$path;
