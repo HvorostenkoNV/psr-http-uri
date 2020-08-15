@@ -8,7 +8,7 @@ services:
     image: jorge07/alpine-php:${PHP_VERSION}-dev
     container_name: php
     volumes:
-      - ..:/var/www/html
+      - .:/var/www/html
     ports:
       - "9000:9000"
       - "${SSH_PORT}:22"

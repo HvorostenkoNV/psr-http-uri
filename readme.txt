@@ -1,6 +1,7 @@
 requirements:
  - docker
  - docker compose
+ - PHPStorm
 
 actions plan:
  - drag all project dependencies (PHPUnit includes)
@@ -8,9 +9,8 @@ actions plan:
  - configure our IDE (PHPStorm) to use remote PHP server and run tests
  - run tests and be sure all tests path
 
-dragging dependencies (using docker composer):
- - open CLI
- - go into project root, for example /home/current_user/projects/psr-http-uri
+project composer installation with docker:
+ - go into project root
  - use docker composer container, running:
    $ docker run \
      --rm \
@@ -20,8 +20,7 @@ dragging dependencies (using docker composer):
      composer install
 
 getting remote PHP server:
- - open CLI
- - go into project docker directory, for example /home/current_user/projects/psr-http-uri/docker
+ - go into project root
  - edit .env, if it needs
  - up containers, running:
    $ docker-compose up -d

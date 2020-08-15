@@ -39,15 +39,17 @@ class UriSubDelimiters implements CollectionInterface
     public static function get(): array
     {
         if (count(self::$collection) === 0) {
-            $separators         = [
-                self::USER_INFO_SEPARATOR,
-                self::PATH_PARTS_SEPARATOR,
-                self::QUERY_FIELDS_SEPARATOR,
-                self::QUERY_FIELD_VALUE_SEPARATOR,
-            ];
+            $separators         = array_merge(
+                [
+                    self::USER_INFO_SEPARATOR,
+                    self::PATH_PARTS_SEPARATOR,
+                    self::QUERY_FIELDS_SEPARATOR,
+                    self::QUERY_FIELD_VALUE_SEPARATOR,
+                ],
+                self::OTHER_SUB_DELIMITERS
+            );
             $separatorsChars    = [];
             $generalDelimiters  = UriGeneralDelimiters::get();
-            $otherSubDelimiters = self::OTHER_SUB_DELIMITERS;
 
             foreach ($separators as $value) {
                 foreach (str_split($value) as $char) {
@@ -55,7 +57,7 @@ class UriSubDelimiters implements CollectionInterface
                 }
             }
 
-            $allSubDelimiters   = array_unique(array_merge($separators, $otherSubDelimiters));
+            $allSubDelimiters   = array_unique($separatorsChars);
             self::$collection   = array_diff($allSubDelimiters, $generalDelimiters);
         }
 
