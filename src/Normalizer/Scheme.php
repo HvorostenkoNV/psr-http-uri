@@ -15,7 +15,7 @@ use function preg_match;
  *************************************************************************************************/
 class Scheme implements NormalizerInterface
 {
-    private static $mask = null;
+    private static ?string $mask = null;
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/

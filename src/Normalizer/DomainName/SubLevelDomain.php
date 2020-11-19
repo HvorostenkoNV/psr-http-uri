@@ -22,7 +22,7 @@ class SubLevelDomain implements NormalizerInterface
 {
     public const MAX_LENGTH = 63;
 
-    private static $mask = null;
+    private static ?string $mask = null;
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/

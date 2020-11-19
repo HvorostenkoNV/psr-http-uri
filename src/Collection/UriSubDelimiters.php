@@ -32,7 +32,7 @@ class UriSubDelimiters implements CollectionInterface
         ';',
     ];
 
-    private static $collection = [];
+    private static array $collection = [];
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
@@ -48,8 +48,8 @@ class UriSubDelimiters implements CollectionInterface
                 ],
                 self::OTHER_SUB_DELIMITERS
             );
-            $separatorsChars    = [];
             $generalDelimiters  = UriGeneralDelimiters::get();
+            $separatorsChars    = [];
 
             foreach ($separators as $value) {
                 foreach (str_split($value) as $char) {

@@ -23,7 +23,7 @@ class UriGeneralDelimiters implements CollectionInterface
     public const QUERY_DELIMITER            = '?';
     public const FRAGMENT_DELIMITER         = '#';
 
-    private static $collection = [];
+    private static array $collection = [];
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/

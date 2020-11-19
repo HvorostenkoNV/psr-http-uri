@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace HNV\Http\Uri\Normalizer;
 
+use HNV\Http\Uri\Collection\UriGeneralDelimiters;
 use HNV\Http\Uri\Normalizer\{
     IpAddress\V4                        as IpAddressV4Normalizer,
     IpAddress\V6                        as IpAddressV6Normalizer,
@@ -30,10 +31,12 @@ class Host implements NormalizerInterface
         }
 
         try {
-            $valueTrim          = trim($valueString, '[]');
+            $leftBracer         = UriGeneralDelimiters::IP_ADDRESS_V6_LEFT_FRAME;
+            $rightBracer        = UriGeneralDelimiters::IP_ADDRESS_V6_RIGHT_FRAME;
+            $valueTrim          = trim($valueString, $leftBracer.$rightBracer);
             $valueNormalized    = IpAddressV6Normalizer::normalize($valueTrim);
 
-            return "[$valueNormalized]";
+            return $leftBracer.$valueNormalized.$rightBracer;
         } catch (NormalizingException $exception) {
 
         }
