@@ -10,6 +10,7 @@ use HNV\Http\Uri\Collection\{
 use HNV\Http\UriTests\CombinationsProvider\CombinationsProviderInterface;
 use HNV\Http\UriTests\CombinationsProvider\Authority as AuthorityCombinationsProvider;
 
+use function strlen;
 use function array_merge;
 /** ***********************************************************************************************
  * URI full string different authority combinations provider.
@@ -53,8 +54,8 @@ class AuthorityCombinations extends AbstractFullString implements CombinationsPr
     private static function initializeWorkableValues()
     {
         foreach (AuthorityCombinationsProvider::get() as $combination) {
-            $hasScheme              = $combination['scheme']    !== '';
-            $validValue             = $combination['value']     !== '';
+            $hasScheme              = strlen($combination['scheme'])    > 0;
+            $validValue             = strlen($combination['value'])     > 0;
             $combinationWithScheme  = array_merge($combination, [
                 'scheme'            => $hasScheme ? $combination['scheme'] : self::$scheme,
                 'schemeNormalized'  => $hasScheme ? $combination['scheme'] : self::$schemeNormalized,

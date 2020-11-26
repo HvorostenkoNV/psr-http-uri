@@ -8,6 +8,7 @@ use HNV\Http\Uri\Collection\{
     QueryAllowedCharacters
 };
 
+use function strlen;
 use function str_replace;
 use function explode;
 use function implode;
@@ -37,9 +38,9 @@ class Query implements NormalizerInterface
             $key            = $partExploded[0];
             $keyValue       = $partExploded[1] ?? '';
 
-            if ($key === '') {
+            if (strlen($key) === 0) {
                 continue;
-            } elseif ($keyValue === '') {
+            } elseif (strlen($keyValue) === 0) {
                 try {
                     $result[] = self::normalizeValue($key);
                 } catch (NormalizingException $exception) {

@@ -8,6 +8,7 @@ use HNV\Http\Uri\Collection\{
     PathAllowedCharacters
 };
 
+use function strlen;
 use function str_replace;
 use function implode;
 use function explode;
@@ -32,7 +33,7 @@ class Path implements NormalizerInterface
 
         foreach ($valueExploded as $part) {
             try {
-                $result[] = $part !== '' ? self::normalizePart($part) : '';
+                $result[] = strlen($part) > 0 ? self::normalizePart($part) : '';
             } catch (NormalizingException $exception) {
                 throw new NormalizingException(
                     "path part \"$part\" validation failed",

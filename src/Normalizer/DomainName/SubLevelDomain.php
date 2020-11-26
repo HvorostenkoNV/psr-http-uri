@@ -11,6 +11,7 @@ use HNV\Http\Uri\Normalizer\{
 
 use function strlen;
 use function strtolower;
+use function str_replace;
 use function preg_match;
 /** ***********************************************************************************************
  * Sub level domain normalizer.
@@ -21,6 +22,8 @@ use function preg_match;
 class SubLevelDomain implements NormalizerInterface
 {
     public const MAX_LENGTH = 63;
+
+    private const MASK_PATTERN = '/^([a-z0-9]{1}[a-z0-9#SPECIAL_CHARS#]{0,}[a-z0-9]{1})|([a-z0-9]{1})$/';
 
     private static ?string $mask = null;
     /** **********************************************************************
@@ -63,7 +66,7 @@ class SubLevelDomain implements NormalizerInterface
                 $specialCharsMask .= "\\$char";
             }
 
-            self::$mask = "/^([a-z0-9]{1}[a-z0-9$specialCharsMask]{0,}[a-z0-9]{1})|([a-z0-9]{1})$/";
+            self::$mask = str_replace('#SPECIAL_CHARS#', $specialCharsMask, self::MASK_PATTERN);
         }
 
         return self::$mask;

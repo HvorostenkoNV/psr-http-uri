@@ -33,6 +33,10 @@ class V6 implements NormalizerInterface
     public const PARTS_COUNT            = 8;
     public const PARTS_COUNT_WITHOUT_V4 = 6;
     public const DELIMITER              = ':';
+    public const SHORTEN                = '::';
+
+    private const SEGMENT_MASK          = '/^[0-9a-fA-F]{1,4}$/';
+    private const SEGMENT_MINIMAL_VALUE = 0;
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
@@ -41,21 +45,20 @@ class V6 implements NormalizerInterface
         $valueString    = (string) $value;
         $valueTrim      = trim($valueString);
         $delimiter      = self::DELIMITER;
-        $shorten        = $delimiter.$delimiter;
+        $shorten        = self::SHORTEN;
 
         try {
-            $valueExploded  = explode($delimiter, $valueTrim);
-            $lastPart       = array_pop($valueExploded);
-            $valueV4Part    = V4::normalize($lastPart);
-            $valueV6Part    = implode($delimiter, $valueExploded);
-            $valueV6Part    = substr($valueV6Part, strlen($delimiter) * -1) === $delimiter
-                ? $valueV6Part.$delimiter
-                : $valueV6Part;
-            $isDual         = true;
+            $valueExploded          = explode($delimiter, $valueTrim);
+            $lastPart               = array_pop($valueExploded);
+            $valueV4Part            = V4::normalize($lastPart);
+            $valueV6Part            = implode($delimiter, $valueExploded);
+            $hasDelimiterInTheEnd   = substr($valueV6Part, strlen($delimiter) * -1) === $delimiter;
+            $valueV6Part            = $hasDelimiterInTheEnd ? $valueV6Part.$delimiter : $valueV6Part;
+            $isDual                 = true;
         } catch (NormalizingException $exception) {
-            $valueV4Part    = '';
-            $valueV6Part    = $valueTrim;
-            $isDual         = false;
+            $valueV4Part            = '';
+            $valueV6Part            = $valueTrim;
+            $isDual                 = false;
         }
 
         try {
@@ -109,7 +112,7 @@ class V6 implements NormalizerInterface
             strlen($value) < 2  || (
                 $value[0] === $delimiter &&
                 $value[1] !== $delimiter
-            )                       || (
+            )                   || (
                 $value[strlen($value) - 1] === $delimiter &&
                 $value[strlen($value) - 2] !== $delimiter
             )
@@ -159,7 +162,7 @@ class V6 implements NormalizerInterface
     private static function convertToShortFormat(string $value): string
     {
         $delimiter      = self::DELIMITER;
-        $shorten        = $delimiter.$delimiter;
+        $shorten        = self::SHORTEN;
         $longestValue   = '';
 
         preg_match_all("/([$delimiter]?0[$delimiter]?)+/", $value, $matches);
@@ -186,8 +189,9 @@ class V6 implements NormalizerInterface
      ************************************************************************/
     private static function normalizeSegment(string $value): string
     {
-        $mask       = '/^[0-9a-fA-F]{1,4}$/';
-        $matches    = [];
+        $mask           = self::SEGMENT_MASK;
+        $minimalValue   = (string) self::SEGMENT_MINIMAL_VALUE;
+        $matches        = [];
 
         preg_match($mask, $value, $matches);
 
@@ -195,10 +199,8 @@ class V6 implements NormalizerInterface
             throw new NormalizingException("value \"$value\" does not matched the pattern $mask");
         }
 
-        $valueTrim = ltrim($value, '0');
+        $valueTrim = ltrim($value, $minimalValue);
 
-        return strlen($valueTrim) === 0
-            ? '0'
-            : $valueTrim;
+        return strlen($valueTrim) === 0 ? $minimalValue : $valueTrim;
     }
 }

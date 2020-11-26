@@ -10,6 +10,7 @@ use HNV\Http\Uri\Collection\{
 use HNV\Http\UriTests\CombinationsProvider\CombinationsProviderInterface;
 use HNV\Http\UriTests\ValuesProvider\Fragment as FragmentValuesProvider;
 
+use function strlen;
 use function array_merge;
 /** ***********************************************************************************************
  * URI full string different fragment combinations provider.
@@ -51,7 +52,7 @@ class FragmentCombinations extends AbstractFullString implements CombinationsPro
     private static function initializeWorkableValues()
     {
         foreach (FragmentValuesProvider::getValidValues() as $fragment => $fragmentNormalized) {
-            self::$fragmentValidCombinations[$fragment] = $fragmentNormalized !== ''
+            self::$fragmentValidCombinations[$fragment] = strlen($fragmentNormalized) > 0
                 ? UriGeneralDelimiters::FRAGMENT_DELIMITER.$fragmentNormalized
                 : '';
         }

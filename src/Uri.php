@@ -22,8 +22,10 @@ use HNV\Http\Uri\Collection\{
     SchemeStandardPorts
 };
 
-use function ltrim;
+use function is_null;
+use function strlen;
 use function substr;
+use function ltrim;
 /** ***********************************************************************************************
  * PSR-7 UriInterface implementation.
  *
@@ -47,7 +49,7 @@ class Uri implements UriInterface
     {
         try {
             $newInstance = clone $this;
-            $newInstance->scheme = $scheme !== ''
+            $newInstance->scheme = strlen($scheme) > 0
                 ? SchemeNormalizer::normalize($scheme)
                 : '';
 
@@ -75,10 +77,10 @@ class Uri implements UriInterface
         $newInstance = clone $this;
 
         try {
-            $newInstance->user      = $user !== ''
+            $newInstance->user      = strlen($user) > 0
                 ? UserLoginNormalizer::normalize($user)
                 : '';
-            $newInstance->password  = $password !== '' && $user !== ''
+            $newInstance->password  = strlen($password) > 0 && strlen($user) > 0
                 ? UserPasswordNormalizer::normalize($password)
                 : '';
         } catch (NormalizingException $exception) {
@@ -93,7 +95,7 @@ class Uri implements UriInterface
      ************************************************************************/
     public function getUserInfo(): string
     {
-        return $this->user !== '' && $this->password !== ''
+        return strlen($this->user) > 0 && strlen($this->password) > 0
             ? $this->user.UriSubDelimiters::USER_INFO_SEPARATOR.$this->password
             : $this->user;
     }
@@ -104,7 +106,7 @@ class Uri implements UriInterface
     {
         try {
             $newInstance = clone $this;
-            $newInstance->host = $host !== ''
+            $newInstance->host = strlen($host) > 0
                 ? HostNormalizer::normalize($host)
                 : '';
 
@@ -165,15 +167,15 @@ class Uri implements UriInterface
         $host       = $this->getHost();
         $port       = $this->getPort();
 
-        if ($host === '') {
+        if (strlen($host) === 0) {
             return '';
         }
 
         $result = $host;
-        if ($userInfo !== '') {
+        if (strlen($userInfo) > 0) {
             $result = $userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.$result;
         }
-        if ($port !== null) {
+        if (!is_null($port)) {
             $result = $result.UriGeneralDelimiters::PORT_DELIMITER.$port;
         }
 
@@ -186,7 +188,7 @@ class Uri implements UriInterface
     {
         try {
             $newInstance = clone $this;
-            $newInstance->path = $path !== ''
+            $newInstance->path = strlen($path) > 0
                 ? PathNormalizer::normalize($path)
                 : '';
 
@@ -213,7 +215,7 @@ class Uri implements UriInterface
     {
         try {
             $newInstance = clone $this;
-            $newInstance->query = $query !== ''
+            $newInstance->query = strlen($query) > 0
                 ? QueryNormalizer::normalize($query)
                 : '';
 
@@ -241,7 +243,7 @@ class Uri implements UriInterface
         $newInstance = clone $this;
 
         try {
-            $newInstance->fragment = $fragment !== ''
+            $newInstance->fragment = strlen($fragment) > 0
                 ? FragmentNormalizer::normalize($fragment)
                 : '';
         } catch (NormalizingException $exception) {
@@ -269,33 +271,33 @@ class Uri implements UriInterface
         $fragment   = $this->getFragment();
         $result     = '';
 
-        if ($authority === '' && $path === '') {
+        if (strlen($authority) === 0 && strlen($path) === 0) {
             return '';
         }
 
-        if ($scheme !== '') {
+        if (strlen($scheme) > 0) {
             $result .= $scheme.UriGeneralDelimiters::SCHEME_DELIMITER;
         }
-        if ($authority !== '') {
+        if (strlen($authority) > 0) {
             $result .= UriGeneralDelimiters::AUTHORITY_DELIMITER.$authority;
         }
-        if ($path !== '') {
+        if (strlen($path) > 0) {
             $pathPrefix                 = UriSubDelimiters::PATH_PARTS_SEPARATOR;
             $pathHasPrefix              = $path[0] === $pathPrefix;
             $pathHasMultiplePrefixes    = substr($path, 0, 2) === $pathPrefix.$pathPrefix;
 
-            if ($authority !== '' && !$pathHasPrefix) {
+            if (strlen($authority) > 0 && !$pathHasPrefix) {
                 $result .= $pathPrefix.$path;
-            } elseif ($authority === '' && $pathHasMultiplePrefixes) {
+            } elseif (strlen($authority) === 0 && $pathHasMultiplePrefixes) {
                 $result .= $pathPrefix.ltrim($path, $pathPrefix);
             } else {
                 $result .= $path;
             }
         }
-        if ($query !== '') {
+        if (strlen($query) > 0) {
             $result .= UriGeneralDelimiters::QUERY_DELIMITER.$query;
         }
-        if ($fragment !== '') {
+        if (strlen($fragment) > 0) {
             $result .= UriGeneralDelimiters::FRAGMENT_DELIMITER.$fragment;
         }
 

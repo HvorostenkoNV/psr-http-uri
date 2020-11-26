@@ -11,6 +11,8 @@ use HNV\Http\UriTests\ValuesProvider\{
     Query       as QueryValuesProvider,
     Fragment    as FragmentValuesProvider
 };
+
+use function strlen;
 /** ***********************************************************************************************
  * URI full string different combinations abstract provider.
  *
@@ -40,7 +42,7 @@ abstract class AbstractFullString
     protected static function initializeDefaultValues()
     {
         foreach (SchemeValuesProvider::getValidValues() as $scheme => $schemeNormalized) {
-            if ($scheme !== '') {
+            if (strlen($scheme) > 0) {
                 self::$scheme               = (string) $scheme;
                 self::$schemeNormalized     = $schemeNormalized;
                 break;
@@ -48,7 +50,7 @@ abstract class AbstractFullString
         }
 
         foreach (AuthorityCombinationsProvider::get() as $combination) {
-            if ($combination['value'] !== '') {
+            if (strlen($combination['value']) > 0) {
                 self::$login                = $combination['login'];
                 self::$password             = $combination['password'];
                 self::$host                 = $combination['host'];
@@ -59,21 +61,21 @@ abstract class AbstractFullString
         }
 
         foreach (PathValuesProvider::getValidValues() as $path => $pathNormalized) {
-            if ($pathNormalized !== '' && $path[0] !== UriSubDelimiters::PATH_PARTS_SEPARATOR) {
+            if (strlen($pathNormalized) > 0 && $path[0] !== UriSubDelimiters::PATH_PARTS_SEPARATOR) {
                 self::$path                 = $path;
                 self::$pathNormalized       = $pathNormalized;
                 break;
             }
         }
         foreach (QueryValuesProvider::getValidValues() as $query => $queryNormalized) {
-            if ($query !== '') {
+            if (strlen($query) > 0) {
                 self::$query                = $query;
                 self::$queryNormalized      = $queryNormalized;
                 break;
             }
         }
         foreach (FragmentValuesProvider::getValidValues() as $fragment => $fragmentNormalized) {
-            if ($fragmentNormalized !== '') {
+            if (strlen($fragmentNormalized) > 0) {
                 self::$fragment             = $fragment;
                 self::$fragmentNormalized   = $fragmentNormalized;
                 break;

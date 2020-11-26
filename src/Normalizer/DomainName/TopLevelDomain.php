@@ -21,6 +21,8 @@ class TopLevelDomain implements NormalizerInterface
 {
     public const MIN_LENGTH = 2;
     public const MAX_LENGTH = 6;
+
+    private const MASK = '/^[a-z]{1,}$/';
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
@@ -30,7 +32,7 @@ class TopLevelDomain implements NormalizerInterface
         $valueLowercase = strtolower($valueString);
         $minLength      = self::MIN_LENGTH;
         $maxLength      = self::MAX_LENGTH;
-        $mask           = "/^[a-z]{1,}$/";
+        $mask           = self::MASK;
         $matches        = [];
 
         if (strlen($valueLowercase) < $minLength) {

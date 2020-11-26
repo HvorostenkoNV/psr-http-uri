@@ -49,7 +49,7 @@ class V4 implements NormalizerInterface
             $lastPart = array_pop($valueParts);
 
             while (count($valueParts) < $needPartsCount - 1) {
-                $valueParts[] = '0';
+                $valueParts[] = (string) self::PART_MIN_VALUE;
             }
 
             $valueParts[] = $lastPart;

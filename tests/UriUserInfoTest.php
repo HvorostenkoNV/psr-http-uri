@@ -205,7 +205,7 @@ class UriUserInfoTest extends TestCase
             $password   = $dataSet[1];
             $userInfo   = $dataSet[2];
 
-            if ($userInfo === '') {
+            if (strlen($userInfo) === 0) {
                 $result[] = [$validLogin, $login, $password];
             }
         }

@@ -42,9 +42,9 @@ class UriFactory implements UriFactoryInterface
         $host           = $authorityCopy;
 
         if (
-            !($scheme !== '' && $authority !== '' && $path !== '')  &&
-            !($scheme !== '' && $path !== '')                       &&
-            !($path !== '')
+            !(strlen($scheme) > 0 && strlen($authority) > 0 && strlen($path) > 0)   &&
+            !(strlen($scheme) > 0 && strlen($path) > 0)                             &&
+            !(strlen($path) > 0)
         ) {
             throw new InvalidArgumentException("uri \"$uri\" has not enough parts");
         }

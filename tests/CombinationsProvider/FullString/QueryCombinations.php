@@ -10,6 +10,7 @@ use HNV\Http\Uri\Collection\{
 use HNV\Http\UriTests\CombinationsProvider\CombinationsProviderInterface;
 use HNV\Http\UriTests\ValuesProvider\Query as QueryValuesProvider;
 
+use function strlen;
 use function array_merge;
 /** ***********************************************************************************************
  * URI full string different query combinations provider.
@@ -51,7 +52,7 @@ class QueryCombinations extends AbstractFullString implements CombinationsProvid
     private static function initializeWorkableValues()
     {
         foreach (QueryValuesProvider::getValidValues() as $query => $queryNormalized) {
-            self::$queryValidCombinations[$query] = $queryNormalized !== ''
+            self::$queryValidCombinations[$query] = strlen($queryNormalized) > 0
                 ? UriGeneralDelimiters::QUERY_DELIMITER.$queryNormalized
                 : '';
         }

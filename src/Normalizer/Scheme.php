@@ -5,6 +5,7 @@ namespace HNV\Http\Uri\Normalizer;
 
 use HNV\Http\Uri\Collection\SchemeAllowedCharacters;
 
+use function str_replace;
 use function strtolower;
 use function preg_match;
 /** ***********************************************************************************************
@@ -15,6 +16,8 @@ use function preg_match;
  *************************************************************************************************/
 class Scheme implements NormalizerInterface
 {
+    private const MASK_PATTERN = '/^[a-z]{1}[a-z0-9#SPECIAL_CHARS#]{1,}$/';
+
     private static ?string $mask = null;
     /** **********************************************************************
      * @inheritDoc
@@ -49,7 +52,7 @@ class Scheme implements NormalizerInterface
                 $specialCharsMask .= "\\$char";
             }
 
-            self::$mask = "/^[a-z]{1}[a-z0-9$specialCharsMask]{1,}$/";
+            self::$mask = str_replace('#SPECIAL_CHARS#', $specialCharsMask, self::MASK_PATTERN);
         }
 
         return self::$mask;

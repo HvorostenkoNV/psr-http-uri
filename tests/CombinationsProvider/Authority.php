@@ -13,6 +13,7 @@ use HNV\Http\UriTests\ValuesProvider\{
     Port    as PortValuesProvider
 };
 
+use function strlen;
 use function key;
 use function array_merge;
 /** ***********************************************************************************************
@@ -55,9 +56,9 @@ class Authority implements CombinationsProviderInterface
 
         foreach (UserInfoCombinationsProvider::get() as $combination) {
             if (
-                $combination['login'] !== ''    &&
-                $combination['password'] !== '' &&
-                $combination['value'] !== ''
+                strlen($combination['login'])       > 0 &&
+                strlen($combination['password'])    > 0 &&
+                strlen($combination['value'])
             ) {
                 self::$login    = $combination['login'];
                 self::$password = $combination['password'];
@@ -89,7 +90,7 @@ class Authority implements CombinationsProviderInterface
         $result = [];
 
         foreach (UserInfoCombinationsProvider::get() as $combination) {
-            if ($combination['value'] !== '') {
+            if (strlen($combination['value']) > 0) {
                 $result[]   = [
                     'scheme'    => '',
                     'login'     => $combination['login'],
