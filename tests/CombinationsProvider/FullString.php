@@ -30,7 +30,11 @@ class FullString implements CombinationsProviderInterface
      *          password    => password,
      *          host        => site.com,
      *          port        => 10,
-     *          value       => login:password@site.com:10,
+     *          path        => /page/sub-page,
+     *          query       => key=value&key2,
+     *          fragment    => fragment,
+     *          value       => http://login:password@site.com:10/page/sub-page?key=value&key2#fragment
+     *                         (full URI string),
      *         ]
      ************************************************************************/
     public static function get(): array

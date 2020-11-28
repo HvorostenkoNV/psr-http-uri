@@ -141,7 +141,7 @@ class UriFactory implements UriFactoryInterface
 
         return [
             '',
-            ''
+            '',
         ];
     }
     /** **********************************************************************

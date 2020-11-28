@@ -41,7 +41,7 @@ class Authority implements CombinationsProviderInterface
      *          password    => password,
      *          host        => site.com,
      *          port        => 10,
-     *          value       => login:password@site.com:10,
+     *          value       => login:password@site.com:10 (full authority string),
      *         ]
      ************************************************************************/
     public static function get(): array
@@ -58,7 +58,7 @@ class Authority implements CombinationsProviderInterface
             if (
                 strlen($combination['login'])       > 0 &&
                 strlen($combination['password'])    > 0 &&
-                strlen($combination['value'])
+                strlen($combination['value'])       > 0
             ) {
                 self::$login    = $combination['login'];
                 self::$password = $combination['password'];

@@ -35,7 +35,7 @@ class UserInfo implements CombinationsProviderInterface
      *         [
      *          login       => login,
      *          password    => password,
-     *          value       => login:password,
+     *          value       => login:password (full user info string),
      *         ]
      ************************************************************************/
     public static function get(): array
