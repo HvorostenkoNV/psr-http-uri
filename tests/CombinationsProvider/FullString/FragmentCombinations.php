@@ -7,7 +7,10 @@ use HNV\Http\Uri\Collection\{
     UriGeneralDelimiters,
     UriSubDelimiters
 };
-use HNV\Http\UriTests\CombinationsProvider\CombinationsProviderInterface;
+use HNV\Http\UriTests\CombinationsProvider\{
+    CombinationsProviderInterface,
+    FullStringDefaultValuesTrait
+};
 use HNV\Http\UriTests\ValuesProvider\Fragment as FragmentValuesProvider;
 
 use function strlen;
@@ -18,8 +21,10 @@ use function array_merge;
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
-class FragmentCombinations extends AbstractFullString implements CombinationsProviderInterface
+class FragmentCombinations implements CombinationsProviderInterface
 {
+    use FullStringDefaultValuesTrait;
+
     private static array $fragmentValidCombinations     = [];
     private static array $fragmentInvalidCombinations   = [];
     /** **********************************************************************

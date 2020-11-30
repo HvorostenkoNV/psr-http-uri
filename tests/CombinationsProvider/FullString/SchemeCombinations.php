@@ -7,7 +7,10 @@ use HNV\Http\Uri\Collection\{
     UriGeneralDelimiters,
     UriSubDelimiters
 };
-use HNV\Http\UriTests\CombinationsProvider\CombinationsProviderInterface;
+use HNV\Http\UriTests\CombinationsProvider\{
+    CombinationsProviderInterface,
+    FullStringDefaultValuesTrait
+};
 use HNV\Http\UriTests\ValuesProvider\Scheme as SchemeValuesProvider;
 
 use function array_merge;
@@ -17,8 +20,9 @@ use function array_merge;
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
-class SchemeCombinations extends AbstractFullString implements CombinationsProviderInterface
+class SchemeCombinations implements CombinationsProviderInterface
 {
+    use FullStringDefaultValuesTrait;
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/

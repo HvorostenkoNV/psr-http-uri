@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace HNV\Http\UriTests\CombinationsProvider\FullString;
+namespace HNV\Http\UriTests\CombinationsProvider;
 
 use HNV\Http\Uri\Collection\UriSubDelimiters;
 use HNV\Http\UriTests\CombinationsProvider\Authority as AuthorityCombinationsProvider;
@@ -19,7 +19,7 @@ use function strlen;
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
-abstract class AbstractFullString
+trait FullStringDefaultValuesTrait
 {
     protected static string $scheme             = '';
     protected static string $schemeNormalized   = '';

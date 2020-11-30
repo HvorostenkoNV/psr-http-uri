@@ -7,7 +7,10 @@ use HNV\Http\Uri\Collection\{
     UriGeneralDelimiters,
     UriSubDelimiters
 };
-use HNV\Http\UriTests\CombinationsProvider\CombinationsProviderInterface;
+use HNV\Http\UriTests\CombinationsProvider\{
+    CombinationsProviderInterface,
+    FullStringDefaultValuesTrait
+};
 use HNV\Http\UriTests\CombinationsProvider\Authority as AuthorityCombinationsProvider;
 
 use function strlen;
@@ -18,8 +21,10 @@ use function array_merge;
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
-class AuthorityCombinations extends AbstractFullString implements CombinationsProviderInterface
+class AuthorityCombinations implements CombinationsProviderInterface
 {
+    use FullStringDefaultValuesTrait;
+
     private static array $authorityValidCombinations                = [];
     private static array $authorityInvalidCombinations              = [];
     private static array $authorityValidCombinationsWithoutScheme   = [];

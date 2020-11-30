@@ -7,7 +7,10 @@ use HNV\Http\Uri\Collection\{
     UriGeneralDelimiters,
     UriSubDelimiters
 };
-use HNV\Http\UriTests\CombinationsProvider\CombinationsProviderInterface;
+use HNV\Http\UriTests\CombinationsProvider\{
+    CombinationsProviderInterface,
+    FullStringDefaultValuesTrait
+};
 use HNV\Http\UriTests\ValuesProvider\Path as PathValuesProvider;
 
 use function ltrim;
@@ -18,8 +21,10 @@ use function array_merge;
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
-class PathCombinations extends AbstractFullString implements CombinationsProviderInterface
+class PathCombinations implements CombinationsProviderInterface
 {
+    use FullStringDefaultValuesTrait;
+
     private static array $pathValidCombinations                 = [];
     private static array $pathInvalidCombinations               = [];
     private static array $pathValidCombinationsWithoutAuthority = [];
