@@ -1,20 +1,23 @@
 <?php
 declare(strict_types=1);
 
-namespace HNV\Http\UriTests\CombinationsProvider;
+namespace HNV\Http\UriTests\CombinationsProvider\Authority;
 
 use HNV\Http\Uri\Collection\{
     UriGeneralDelimiters,
     SchemeStandardPorts
 };
-use HNV\Http\UriTests\CombinationsProvider\UserInfo as UserInfoCombinationsProvider;
+use HNV\Http\UriTests\CombinationsProvider\{
+    CombinationsProviderInterface,
+    ValidValuesTrait
+};
+use HNV\Http\UriTests\CombinationsProvider\UserInfo\CombinedValue as UserInfoCombinationsProvider;
 use HNV\Http\UriTests\ValuesProvider\{
     Host    as HostValuesProvider,
     Port    as PortValuesProvider
 };
 
 use function strlen;
-use function key;
 use function array_merge;
 /** ***********************************************************************************************
  * URI authority different combinations provider.
@@ -22,15 +25,9 @@ use function array_merge;
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
-class Authority implements CombinationsProviderInterface
+class CombinedValue implements CombinationsProviderInterface
 {
-    private static string   $host           = '';
-    private static string   $hostNormalized = '';
-    private static int      $port           = 0;
-    private static int      $portNormalized = 0;
-    private static string   $login          = '';
-    private static string   $password       = '';
-    private static string   $userInfo       = '';
+    use ValidValuesTrait;
     /** **********************************************************************
      * @inheritDoc
      *
@@ -46,28 +43,9 @@ class Authority implements CombinationsProviderInterface
      ************************************************************************/
     public static function get(): array
     {
-        $hostValidValues        = HostValuesProvider::getValidValues();
-        self::$host             = (string) key($hostValidValues);
-        self::$hostNormalized   = $hostValidValues[self::$host];
-
-        $portValidValues        = PortValuesProvider::getValidValues();
-        self::$port             = (int) key($portValidValues);
-        self::$portNormalized   = $portValidValues[self::$port];
-
-        foreach (UserInfoCombinationsProvider::get() as $combination) {
-            if (
-                strlen($combination['login'])       > 0 &&
-                strlen($combination['password'])    > 0 &&
-                strlen($combination['value'])       > 0
-            ) {
-                self::$login    = $combination['login'];
-                self::$password = $combination['password'];
-                self::$userInfo = $combination['value'];
-                break;
-            }
-        }
-
         $result = [];
+
+        self::initializeDefaultValues();
 
         foreach ([
             self::getUserInfoCombinations(),
@@ -185,7 +163,7 @@ class Authority implements CombinationsProviderInterface
                 'host'      => $host,
                 'port'      => self::$port,
                 'value'     =>
-                    self::$userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
+                    self::$userInfoNormalized.UriGeneralDelimiters::USER_INFO_DELIMITER.
                     $hostNormalized.
                     UriGeneralDelimiters::PORT_DELIMITER.self::$portNormalized,
             ];
@@ -206,7 +184,7 @@ class Authority implements CombinationsProviderInterface
                 'host'      => $host,
                 'port'      => 0,
                 'value'     =>
-                    self::$userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
+                    self::$userInfoNormalized.UriGeneralDelimiters::USER_INFO_DELIMITER.
                     $hostNormalized,
             ];
             $result[]   = [
@@ -272,7 +250,7 @@ class Authority implements CombinationsProviderInterface
                 'host'      => self::$host,
                 'port'      => $port,
                 'value'     =>
-                    self::$userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
+                    self::$userInfoNormalized.UriGeneralDelimiters::USER_INFO_DELIMITER.
                     self::$hostNormalized.
                     UriGeneralDelimiters::PORT_DELIMITER.$portNormalized,
             ];
@@ -311,7 +289,7 @@ class Authority implements CombinationsProviderInterface
                 'host'      => self::$host,
                 'port'      => $invalidPort,
                 'value'     =>
-                    self::$userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
+                    self::$userInfoNormalized.UriGeneralDelimiters::USER_INFO_DELIMITER.
                     self::$hostNormalized,
             ];
             $result[]   = [
@@ -359,7 +337,7 @@ class Authority implements CombinationsProviderInterface
                 'host'      => self::$host,
                 'port'      => $port,
                 'value'     =>
-                    self::$userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
+                    self::$userInfoNormalized.UriGeneralDelimiters::USER_INFO_DELIMITER.
                     self::$hostNormalized,
             ];
             $result[]   = [

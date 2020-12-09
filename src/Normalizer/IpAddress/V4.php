@@ -29,7 +29,7 @@ class V4 implements NormalizerInterface
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    public static function normalize($value)
+    public static function normalize($value): string
     {
         $valueString        = (string) $value;
         $valueTrim          = trim($valueString, self::PARTS_DELIMITER);

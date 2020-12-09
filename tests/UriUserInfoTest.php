@@ -5,7 +5,7 @@ namespace HNV\Http\UriTests;
 
 use Throwable;
 use PHPUnit\Framework\TestCase;
-use HNV\Http\UriTests\CombinationsProvider\UserInfo as UserInfoCombinationsProvider;
+use HNV\Http\UriTests\CombinationsProvider\UserInfo\CombinedValue as UserInfoCombinationsProvider;
 use HNV\Http\Uri\Uri;
 
 use function strlen;

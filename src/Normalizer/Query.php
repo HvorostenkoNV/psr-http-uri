@@ -25,7 +25,7 @@ class Query implements NormalizerInterface
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    public static function normalize($value)
+    public static function normalize($value): string
     {
         $valueString            = (string) $value;
         $fieldsSeparator        = UriSubDelimiters::QUERY_FIELDS_SEPARATOR;
@@ -69,6 +69,10 @@ class Query implements NormalizerInterface
      ************************************************************************/
     private static function normalizeValue(string $value): string
     {
+        if (strlen($value) === 0) {
+            throw new NormalizingException('value is empty string');
+        }
+
         $result = rawurlencode(rawurldecode($value));
 
         foreach (QueryAllowedCharacters::get() as $char) {

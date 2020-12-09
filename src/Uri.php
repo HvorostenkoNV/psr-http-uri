@@ -45,7 +45,7 @@ class Uri implements UriInterface
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    public function withScheme(string $scheme): UriInterface
+    public function withScheme(string $scheme): static
     {
         try {
             $newInstance = clone $this;
@@ -72,7 +72,7 @@ class Uri implements UriInterface
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    public function withUserInfo(string $user, string $password = ''): UriInterface
+    public function withUserInfo(string $user, string $password = ''): static
     {
         $newInstance = clone $this;
 
@@ -83,7 +83,7 @@ class Uri implements UriInterface
             $newInstance->password  = strlen($password) > 0 && strlen($user) > 0
                 ? UserPasswordNormalizer::normalize($password)
                 : '';
-        } catch (NormalizingException $exception) {
+        } catch (NormalizingException) {
             $newInstance->user      = '';
             $newInstance->password  = '';
         }
@@ -102,7 +102,7 @@ class Uri implements UriInterface
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    public function withHost(string $host): UriInterface
+    public function withHost(string $host): static
     {
         try {
             $newInstance = clone $this;
@@ -129,7 +129,7 @@ class Uri implements UriInterface
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    public function withPort(int $port = 0): UriInterface
+    public function withPort(int $port = 0): static
     {
         try {
             $newInstance = clone $this;
@@ -184,7 +184,7 @@ class Uri implements UriInterface
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    public function withPath(string $path): UriInterface
+    public function withPath(string $path): static
     {
         try {
             $newInstance = clone $this;
@@ -211,7 +211,7 @@ class Uri implements UriInterface
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    public function withQuery(string $query): UriInterface
+    public function withQuery(string $query): static
     {
         try {
             $newInstance = clone $this;
@@ -238,7 +238,7 @@ class Uri implements UriInterface
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    public function withFragment(string $fragment): UriInterface
+    public function withFragment(string $fragment): static
     {
         $newInstance = clone $this;
 
@@ -246,7 +246,7 @@ class Uri implements UriInterface
             $newInstance->fragment = strlen($fragment) > 0
                 ? FragmentNormalizer::normalize($fragment)
                 : '';
-        } catch (NormalizingException $exception) {
+        } catch (NormalizingException) {
             $newInstance->fragment = '';
         }
 

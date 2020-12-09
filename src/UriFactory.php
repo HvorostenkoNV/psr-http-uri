@@ -103,10 +103,10 @@ class UriFactory implements UriFactoryInterface
      ************************************************************************/
     private function parseAuthorityFromPath(string &$path): string
     {
-        if (strpos($path, UriGeneralDelimiters::AUTHORITY_DELIMITER) === 0) {
+        if (str_starts_with($path, UriGeneralDelimiters::AUTHORITY_DELIMITER)) {
             $path = substr($path, strlen(UriGeneralDelimiters::AUTHORITY_DELIMITER));
 
-            if (strpos($path, UriSubDelimiters::PATH_PARTS_SEPARATOR) !== false) {
+            if (str_contains($path, UriSubDelimiters::PATH_PARTS_SEPARATOR)) {
                 $pathExploded   = explode(UriSubDelimiters::PATH_PARTS_SEPARATOR, $path, 2);
                 $path           = UriSubDelimiters::PATH_PARTS_SEPARATOR.($pathExploded[1] ?? '');
 
@@ -131,12 +131,16 @@ class UriFactory implements UriFactoryInterface
      ************************************************************************/
     private function parseUserDataFromAuthority(string &$authority): array
     {
-        if (strpos($authority, UriGeneralDelimiters::USER_INFO_DELIMITER) !== false) {
+        if (str_contains($authority, UriGeneralDelimiters::USER_INFO_DELIMITER)) {
             $authorityExploded  = explode(UriGeneralDelimiters::USER_INFO_DELIMITER, $authority, 2);
             $authority          = $authorityExploded[1] ?? '';
             $userDataString     = $authorityExploded[0];
+            $userDataExploded   = explode(UriSubDelimiters::USER_INFO_SEPARATOR, $userDataString, 2);
 
-            return explode(UriSubDelimiters::USER_INFO_SEPARATOR, $userDataString, 2);
+            return [
+                $userDataExploded[0],
+                $userDataExploded[1] ?? '',
+            ];
         }
 
         return [
@@ -181,7 +185,7 @@ class UriFactory implements UriFactoryInterface
      ************************************************************************/
     private function parseQueryFromUri(string &$uri): string
     {
-        if (strpos($uri, UriGeneralDelimiters::QUERY_DELIMITER) !== false) {
+        if (str_contains($uri, UriGeneralDelimiters::QUERY_DELIMITER)) {
             $uriExploded    = explode(UriGeneralDelimiters::QUERY_DELIMITER, $uri, 2);
             $uri            = $uriExploded[0];
 
@@ -200,7 +204,7 @@ class UriFactory implements UriFactoryInterface
      ************************************************************************/
     private function parseFragmentFromUri(string &$uri): string
     {
-        if (strpos($uri, UriGeneralDelimiters::FRAGMENT_DELIMITER) !== false) {
+        if (str_contains($uri, UriGeneralDelimiters::FRAGMENT_DELIMITER)) {
             $uriExploded    = explode(UriGeneralDelimiters::FRAGMENT_DELIMITER, $uri, 2);
             $uri            = $uriExploded[0];
 

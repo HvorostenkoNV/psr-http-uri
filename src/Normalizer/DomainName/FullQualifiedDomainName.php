@@ -24,7 +24,7 @@ class FullQualifiedDomainName implements NormalizerInterface
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    public static function normalize($value)
+    public static function normalize($value): string
     {
         $valueString    = (string) $value;
         $valueExploded  = explode(self::PARTS_DELIMITER, $valueString);

@@ -25,7 +25,7 @@ class Path implements NormalizerInterface
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    public static function normalize($value)
+    public static function normalize($value): string
     {
         $valueString    = (string) $value;
         $valueExploded  = explode(UriSubDelimiters::PATH_PARTS_SEPARATOR, $valueString);
@@ -55,6 +55,10 @@ class Path implements NormalizerInterface
      ************************************************************************/
     private static function normalizePart(string $value): string
     {
+        if (strlen($value) === 0) {
+            throw new NormalizingException('value is empty string');
+        }
+
         $result = rawurlencode(rawurldecode($value));
 
         foreach (PathAllowedCharacters::get() as $char) {

@@ -40,7 +40,7 @@ class V6 implements NormalizerInterface
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    public static function normalize($value)
+    public static function normalize($value): string
     {
         $valueString    = (string) $value;
         $valueTrim      = trim($valueString);
@@ -55,7 +55,7 @@ class V6 implements NormalizerInterface
             $hasDelimiterInTheEnd   = substr($valueV6Part, strlen($delimiter) * -1) === $delimiter;
             $valueV6Part            = $hasDelimiterInTheEnd ? $valueV6Part.$delimiter : $valueV6Part;
             $isDual                 = true;
-        } catch (NormalizingException $exception) {
+        } catch (NormalizingException) {
             $valueV4Part            = '';
             $valueV6Part            = $valueTrim;
             $isDual                 = false;

@@ -18,5 +18,5 @@ interface NormalizerInterface
      * @return  mixed                       Normalized value.
      * @throws  NormalizingException        Normalizing error.
      ************************************************************************/
-    public static function normalize($value);
+    public static function normalize(mixed $value): mixed;
 }

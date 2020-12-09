@@ -20,13 +20,13 @@ class Host implements NormalizerInterface
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    public static function normalize($value)
+    public static function normalize($value): string
     {
         $valueString = (string) $value;
 
         try {
             return IpAddressV4Normalizer::normalize($valueString);
-        } catch (NormalizingException $exception) {
+        } catch (NormalizingException) {
 
         }
 
@@ -37,13 +37,13 @@ class Host implements NormalizerInterface
             $valueNormalized    = IpAddressV6Normalizer::normalize($valueTrim);
 
             return $leftBracer.$valueNormalized.$rightBracer;
-        } catch (NormalizingException $exception) {
+        } catch (NormalizingException) {
 
         }
 
         try {
             return DomainNameNormalizer::normalize($valueString);
-        } catch (NormalizingException $exception) {
+        } catch (NormalizingException) {
 
         }
 

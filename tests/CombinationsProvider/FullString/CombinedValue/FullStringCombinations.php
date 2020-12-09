@@ -1,15 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace HNV\Http\UriTests\CombinationsProvider;
+namespace HNV\Http\UriTests\CombinationsProvider\FullString\CombinedValue;
 
-use HNV\Http\UriTests\CombinationsProvider\FullString\{
-    SchemeCombinations,
-    AuthorityCombinations,
-    PathCombinations,
-    QueryCombinations,
-    FragmentCombinations
-};
+use HNV\Http\UriTests\CombinationsProvider\CombinationsProviderInterface;
 
 use function array_merge;
 /** ***********************************************************************************************
@@ -18,7 +12,7 @@ use function array_merge;
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
-class FullString implements CombinationsProviderInterface
+class FullStringCombinations implements CombinationsProviderInterface
 {
     /** **********************************************************************
      * @inheritDoc

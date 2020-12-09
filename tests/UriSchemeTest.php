@@ -145,7 +145,7 @@ class UriSchemeTest extends TestCase
             "Action \"Uri->withScheme\" threw no expected exception.\n".
             "Action was called with parameters (value => $value).\n".
             "Expects \"InvalidArgumentException\" exception.\n".
-            "Caught no exception."
+            'Caught no exception.'
         );
     }
     /** **********************************************************************
@@ -170,7 +170,7 @@ class UriSchemeTest extends TestCase
 
         try {
             $uri->withScheme($invalidValue);
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException) {
 
         }
 

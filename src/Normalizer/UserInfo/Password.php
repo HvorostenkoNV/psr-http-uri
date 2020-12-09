@@ -15,7 +15,7 @@ class Password implements NormalizerInterface
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    public static function normalize($value)
+    public static function normalize($value): string
     {
         return Value::normalize($value);
     }

@@ -17,7 +17,7 @@ class Port implements NormalizerInterface
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    public static function normalize($value)
+    public static function normalize($value): int
     {
         if (!is_numeric($value)) {
             $valueString = (string) $value;

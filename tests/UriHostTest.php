@@ -145,7 +145,7 @@ class UriHostTest extends TestCase
             "Action \"Uri->withHost\" threw no expected exception.\n".
             "Action was called with parameters (value => $value).\n".
             "Expects \"InvalidArgumentException\" exception.\n".
-            "Caught no exception."
+            'Caught no exception.'
         );
     }
     /** **********************************************************************
@@ -170,7 +170,7 @@ class UriHostTest extends TestCase
 
         try {
             $uri->withHost($invalidValue);
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException) {
 
         }
 

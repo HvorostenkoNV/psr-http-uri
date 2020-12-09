@@ -6,7 +6,7 @@ namespace HNV\Http\UriTests;
 use Throwable;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use HNV\Http\UriTests\CombinationsProvider\Authority as AuthorityCombinationsProvider;
+use HNV\Http\UriTests\CombinationsProvider\Authority\CombinedValue as AuthorityCombinationsProvider;
 use HNV\Http\Uri\Uri;
 /** ***********************************************************************************************
  * PSR-7 UriInterface implementation test.
@@ -48,13 +48,13 @@ class UriAuthorityTest extends TestCase
 
         try {
             $uri = $uri->withHost($host);
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException) {
 
         }
 
         try {
             $uri = $uri->withPort($port);
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException) {
 
         }
 

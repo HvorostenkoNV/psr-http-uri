@@ -6,7 +6,9 @@ namespace HNV\Http\UriTests;
 use Throwable;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use HNV\Http\UriTests\CombinationsProvider\FullString as FullStringCombinationsProvider;
+use HNV\Http\UriTests\CombinationsProvider\FullString\CombinedValue\{
+    FullStringCombinations as FullStringCombinationsProvider
+};
 use HNV\Http\Uri\Uri;
 /** ***********************************************************************************************
  * PSR-7 UriInterface implementation test.
@@ -52,7 +54,7 @@ class UriToStringConvertingTest extends TestCase
 
         try {
             $uri = $uri->withScheme($scheme);
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException) {
 
         }
 
@@ -60,25 +62,25 @@ class UriToStringConvertingTest extends TestCase
 
         try {
             $uri = $uri->withHost($host);
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException) {
 
         }
 
         try {
             $uri = $uri->withPort($port);
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException) {
 
         }
 
         try {
             $uri = $uri->withPath($path);
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException) {
 
         }
 
         try {
             $uri = $uri->withQuery($query);
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException) {
 
         }
 

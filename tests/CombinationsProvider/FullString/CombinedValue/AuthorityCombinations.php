@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace HNV\Http\UriTests\CombinationsProvider\FullString;
+namespace HNV\Http\UriTests\CombinationsProvider\FullString\CombinedValue;
 
 use HNV\Http\Uri\Collection\{
     UriGeneralDelimiters,
@@ -9,9 +9,9 @@ use HNV\Http\Uri\Collection\{
 };
 use HNV\Http\UriTests\CombinationsProvider\{
     CombinationsProviderInterface,
-    FullStringDefaultValuesTrait
+    ValidValuesTrait
 };
-use HNV\Http\UriTests\CombinationsProvider\Authority as AuthorityCombinationsProvider;
+use HNV\Http\UriTests\CombinationsProvider\Authority\CombinedValue as AuthorityCombinationsProvider;
 
 use function strlen;
 use function array_merge;
@@ -23,7 +23,7 @@ use function array_merge;
  *************************************************************************************************/
 class AuthorityCombinations implements CombinationsProviderInterface
 {
-    use FullStringDefaultValuesTrait;
+    use ValidValuesTrait;
 
     private static array $authorityValidCombinations                = [];
     private static array $authorityInvalidCombinations              = [];

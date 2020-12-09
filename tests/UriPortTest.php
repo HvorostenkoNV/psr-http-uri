@@ -142,7 +142,7 @@ class UriPortTest extends TestCase
     {
         $valueCaught = (new Uri())
             ->withPort($value)
-            ->withPort(0)
+            ->withPort()
             ->getPort();
 
         self::assertEquals(
@@ -175,7 +175,7 @@ class UriPortTest extends TestCase
             "Action \"Uri->withPort\" threw no expected exception.\n".
             "Action was called with parameters (value => $value).\n".
             "Expects \"InvalidArgumentException\" exception.\n".
-            "Caught no exception."
+            'Caught no exception.'
         );
     }
     /** **********************************************************************
@@ -200,7 +200,7 @@ class UriPortTest extends TestCase
 
         try {
             $uri->withPort($invalidValue);
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException) {
 
         }
 
