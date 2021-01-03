@@ -15,7 +15,7 @@ use HNV\Http\UriTests\ValuesProvider\Scheme as SchemeValuesProvider;
 
 use function array_merge;
 /** ***********************************************************************************************
- * URI full string different scheme combinations provider.
+ * URI full string different combinations provider (scheme combinations).
  *
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko

@@ -13,10 +13,11 @@ use HNV\Http\UriTests\CombinationsProvider\{
 };
 use HNV\Http\UriTests\ValuesProvider\Path as PathValuesProvider;
 
+use function str_starts_with;
 use function ltrim;
 use function array_merge;
 /** ***********************************************************************************************
- * URI full string different path combinations provider.
+ * URI full string different combinations provider (path combinations).
  *
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
@@ -60,10 +61,12 @@ class PathCombinations implements CombinationsProviderInterface
         $pathSeparator = UriSubDelimiters::PATH_PARTS_SEPARATOR;
 
         foreach (PathValuesProvider::getValidValues() as $path => $pathNormalized) {
-            self::$pathValidCombinations[$path]                 = $pathNormalized[0] === $pathSeparator
+            $startsWithSeparator = str_starts_with($pathNormalized, $pathSeparator);
+
+            self::$pathValidCombinations[$path]                 = $startsWithSeparator
                 ? $pathNormalized
                 : $pathSeparator.$pathNormalized;
-            self::$pathValidCombinationsWithoutAuthority[$path] = $pathNormalized[0] === $pathSeparator
+            self::$pathValidCombinationsWithoutAuthority[$path] = $startsWithSeparator
                 ? $pathSeparator.ltrim($pathNormalized, $pathSeparator)
                 : $pathNormalized;
         }

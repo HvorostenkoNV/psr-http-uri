@@ -16,7 +16,7 @@ use HNV\Http\UriTests\CombinationsProvider\Authority\CombinedValue as AuthorityC
 use function strlen;
 use function array_merge;
 /** ***********************************************************************************************
- * URI full string different authority combinations provider.
+ * URI full string different combinations provider (authority combinations).
  *
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
@@ -25,10 +25,10 @@ class AuthorityCombinations implements CombinationsProviderInterface
 {
     use ValidValuesTrait;
 
-    private static array $authorityValidCombinations                = [];
-    private static array $authorityInvalidCombinations              = [];
-    private static array $authorityValidCombinationsWithoutScheme   = [];
-    private static array $authorityInvalidCombinationsWithoutScheme = [];
+    private static array $authorityWithSchemeValidCombinations      = [];
+    private static array $authorityWithSchemeInvalidCombinations    = [];
+    private static array $authorityWithoutSchemeValidCombinations   = [];
+    private static array $authorityWithoutSchemeInvalidCombinations = [];
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
@@ -67,16 +67,16 @@ class AuthorityCombinations implements CombinationsProviderInterface
             ]);
 
             if ($validValue) {
-                self::$authorityValidCombinations[]     = $combinationWithScheme;
+                self::$authorityWithSchemeValidCombinations[]     = $combinationWithScheme;
             } else {
-                self::$authorityInvalidCombinations[]   = $combinationWithScheme;
+                self::$authorityWithSchemeInvalidCombinations[]   = $combinationWithScheme;
             }
 
             if (!$hasScheme) {
                 if ($validValue) {
-                    self::$authorityValidCombinationsWithoutScheme[]    = $combination;
+                    self::$authorityWithoutSchemeValidCombinations[]    = $combination;
                 } else {
-                    self::$authorityInvalidCombinationsWithoutScheme[]  = $combination;
+                    self::$authorityWithoutSchemeInvalidCombinations[]  = $combination;
                 }
             }
         }
@@ -90,7 +90,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
     {
         $result = [];
 
-        foreach (self::$authorityValidCombinations as $combination) {
+        foreach (self::$authorityWithSchemeValidCombinations as $combination) {
             $result[] = [
                 'scheme'    => $combination['scheme'],
                 'login'     => $combination['login'],
@@ -108,7 +108,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                     UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
             ];
         }
-        foreach (self::$authorityInvalidCombinations as $combination) {
+        foreach (self::$authorityWithSchemeInvalidCombinations as $combination) {
             $result[] = [
                 'scheme'    => $combination['scheme'],
                 'login'     => $combination['login'],
@@ -137,7 +137,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
     {
         $result = [];
 
-        foreach (self::$authorityValidCombinationsWithoutScheme as $combination) {
+        foreach (self::$authorityWithoutSchemeValidCombinations as $combination) {
             $result[] = [
                 'scheme'    => '',
                 'login'     => $combination['login'],
@@ -147,11 +147,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'path'      => self::$path,
                 'query'     => self::$query,
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'].
-                    UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -162,10 +158,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'path'      => '',
                 'query'     => self::$query,
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'].
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -176,9 +169,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'path'      => '',
                 'query'     => '',
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'].
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -189,9 +180,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'path'      => '',
                 'query'     => self::$query,
                 'fragment'  => '',
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'].
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -202,7 +191,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'path'      => '',
                 'query'     => '',
                 'fragment'  => '',
-                'value'     => UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'],
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -213,10 +202,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'path'      => self::$path,
                 'query'     => '',
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'].
-                    UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -227,9 +213,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'path'      => self::$path,
                 'query'     => '',
                 'fragment'  => '',
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'].
-                    UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -240,13 +224,10 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'path'      => self::$path,
                 'query'     => self::$query,
                 'fragment'  => '',
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'].
-                    UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
+                'value'     => '',
             ];
         }
-        foreach (self::$authorityInvalidCombinationsWithoutScheme as $combination) {
+        foreach (self::$authorityWithoutSchemeInvalidCombinations as $combination) {
             $result[] = [
                 'scheme'    => '',
                 'login'     => $combination['login'],
@@ -355,7 +336,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
     {
         $result = [];
 
-        foreach (self::$authorityValidCombinations as $combination) {
+        foreach (self::$authorityWithSchemeValidCombinations as $combination) {
             $result[] = [
                 'scheme'    => $combination['scheme'],
                 'login'     => $combination['login'],
@@ -413,7 +394,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                     UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
             ];
         }
-        foreach (self::$authorityInvalidCombinations as $combination) {
+        foreach (self::$authorityWithSchemeInvalidCombinations as $combination) {
             $result[] = [
                 'scheme'    => $combination['scheme'],
                 'login'     => $combination['login'],
@@ -471,7 +452,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
     {
         $result = [];
 
-        foreach (self::$authorityValidCombinations as $combination) {
+        foreach (self::$authorityWithSchemeValidCombinations as $combination) {
             $result[] = [
                 'scheme'    => $combination['scheme'],
                 'login'     => $combination['login'],
@@ -502,7 +483,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                     UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized,
             ];
         }
-        foreach (self::$authorityInvalidCombinations as $combination) {
+        foreach (self::$authorityWithSchemeInvalidCombinations as $combination) {
             $result[] = [
                 'scheme'    => $combination['scheme'],
                 'login'     => $combination['login'],
@@ -543,7 +524,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
     {
         $result = [];
 
-        foreach (self::$authorityValidCombinations as $combination) {
+        foreach (self::$authorityWithSchemeValidCombinations as $combination) {
             $result[] = [
                 'scheme'    => $combination['scheme'],
                 'login'     => $combination['login'],
@@ -560,7 +541,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                     UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
             ];
         }
-        foreach (self::$authorityInvalidCombinations as $combination) {
+        foreach (self::$authorityWithSchemeInvalidCombinations as $combination) {
             $result[] = [
                 'scheme'    => $combination['scheme'],
                 'login'     => $combination['login'],

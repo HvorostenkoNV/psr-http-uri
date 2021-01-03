@@ -16,7 +16,7 @@ use HNV\Http\UriTests\ValuesProvider\Fragment as FragmentValuesProvider;
 use function strlen;
 use function array_merge;
 /** ***********************************************************************************************
- * URI full string different fragment combinations provider.
+ * URI full string different combinations provider (fragment combinations).
  *
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko

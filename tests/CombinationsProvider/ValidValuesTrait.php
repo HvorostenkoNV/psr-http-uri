@@ -19,6 +19,7 @@ use HNV\Http\UriTests\ValuesProvider\{
 };
 
 use function strlen;
+use function str_starts_with;
 /** ***********************************************************************************************
  * URI valid values provider.
  *
@@ -100,7 +101,7 @@ trait ValidValuesTrait
         }
 
         foreach (PathValuesProvider::getValidValues() as $path => $pathNormalized) {
-            if (strlen($pathNormalized) > 0 && $path[0] !== UriSubDelimiters::PATH_PARTS_SEPARATOR) {
+            if (strlen($pathNormalized) > 0 && !str_starts_with($path, UriSubDelimiters::PATH_PARTS_SEPARATOR)) {
                 self::$path                 = $path;
                 self::$pathNormalized       = $pathNormalized;
                 break;

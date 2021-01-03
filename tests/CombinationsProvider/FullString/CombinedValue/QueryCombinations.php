@@ -16,7 +16,7 @@ use HNV\Http\UriTests\ValuesProvider\Query as QueryValuesProvider;
 use function strlen;
 use function array_merge;
 /** ***********************************************************************************************
- * URI full string different query combinations provider.
+ * URI full string different combinations provider (query combinations).
  *
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
