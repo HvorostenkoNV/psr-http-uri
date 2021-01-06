@@ -60,23 +60,26 @@ class AuthorityCombinations implements CombinationsProviderInterface
     {
         foreach (AuthorityCombinationsProvider::get() as $combination) {
             $hasScheme              = strlen($combination['scheme'])    > 0;
-            $validValue             = strlen($combination['value'])     > 0;
-            $combinationWithScheme  = array_merge($combination, [
+            $valueIsValid           = strlen($combination['value'])     > 0;
+            $combinationModified    = array_merge($combination, [
+                'authority' => $combination['value'],
+            ]);
+            $combinationWithScheme  = array_merge($combinationModified, [
                 'scheme'            => $hasScheme ? $combination['scheme'] : self::$scheme,
                 'schemeNormalized'  => $hasScheme ? $combination['scheme'] : self::$schemeNormalized,
             ]);
 
-            if ($validValue) {
+            if ($valueIsValid) {
                 self::$authorityWithSchemeValidCombinations[]     = $combinationWithScheme;
             } else {
                 self::$authorityWithSchemeInvalidCombinations[]   = $combinationWithScheme;
             }
 
             if (!$hasScheme) {
-                if ($validValue) {
-                    self::$authorityWithoutSchemeValidCombinations[]    = $combination;
+                if ($valueIsValid) {
+                    self::$authorityWithoutSchemeValidCombinations[]    = $combinationModified;
                 } else {
-                    self::$authorityWithoutSchemeInvalidCombinations[]  = $combination;
+                    self::$authorityWithoutSchemeInvalidCombinations[]  = $combinationModified;
                 }
             }
         }
@@ -102,7 +105,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'fragment'  => self::$fragment,
                 'value'     =>
                     $combination['schemeNormalized'].UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'].
+                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['authority'].
                     UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized.
                     UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
                     UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
@@ -348,7 +351,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'fragment'  => self::$fragment,
                 'value'     =>
                     $combination['schemeNormalized'].UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'].
+                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['authority'].
                     UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
                     UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
             ];
@@ -363,7 +366,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'fragment'  => self::$fragment,
                 'value'     =>
                     $combination['schemeNormalized'].UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'].
+                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['authority'].
                     UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
             ];
             $result[] = [
@@ -377,7 +380,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'fragment'  => '',
                 'value'     =>
                     $combination['schemeNormalized'].UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'],
+                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['authority'],
             ];
             $result[] = [
                 'scheme'    => $combination['scheme'],
@@ -390,7 +393,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'fragment'  => '',
                 'value'     =>
                     $combination['schemeNormalized'].UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'].
+                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['authority'].
                     UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
             ];
         }
@@ -464,7 +467,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'fragment'  => self::$fragment,
                 'value'     =>
                     $combination['schemeNormalized'].UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'].
+                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['authority'].
                     UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized.
                     UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
             ];
@@ -479,7 +482,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'fragment'  => '',
                 'value'     =>
                     $combination['schemeNormalized'].UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'].
+                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['authority'].
                     UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized,
             ];
         }
@@ -536,7 +539,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'fragment'  => '',
                 'value'     =>
                     $combination['schemeNormalized'].UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['value'].
+                    UriGeneralDelimiters::AUTHORITY_DELIMITER.$combination['authority'].
                     UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized.
                     UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
             ];

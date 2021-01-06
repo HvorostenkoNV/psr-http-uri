@@ -101,10 +101,7 @@ class FragmentCombinations implements CombinationsProviderInterface
                 'path'      => self::$path,
                 'query'     => self::$query,
                 'fragment'  => $invalidFragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
+                'value'     => '',
             ];
         }
 
@@ -129,11 +126,7 @@ class FragmentCombinations implements CombinationsProviderInterface
                 'path'      => self::$path,
                 'query'     => self::$query,
                 'fragment'  => (string) $fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
-                    $fragmentNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -193,10 +186,7 @@ class FragmentCombinations implements CombinationsProviderInterface
                 'path'      => '',
                 'query'     => self::$query,
                 'fragment'  => (string) $fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
-                    $fragmentNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -207,9 +197,7 @@ class FragmentCombinations implements CombinationsProviderInterface
                 'path'      => '',
                 'query'     => '',
                 'fragment'  => (string) $fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    $fragmentNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -220,10 +208,7 @@ class FragmentCombinations implements CombinationsProviderInterface
                 'path'      => self::$path,
                 'query'     => '',
                 'fragment'  => (string) $fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized.
-                    $fragmentNormalized,
+                'value'     => '',
             ];
         }
         foreach (self::$fragmentInvalidCombinations as $invalidFragment) {
@@ -236,10 +221,7 @@ class FragmentCombinations implements CombinationsProviderInterface
                 'path'      => self::$path,
                 'query'     => self::$query,
                 'fragment'  => $invalidFragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -296,9 +278,7 @@ class FragmentCombinations implements CombinationsProviderInterface
                 'path'      => '',
                 'query'     => self::$query,
                 'fragment'  => $invalidFragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -309,7 +289,7 @@ class FragmentCombinations implements CombinationsProviderInterface
                 'path'      => '',
                 'query'     => '',
                 'fragment'  => $invalidFragment,
-                'value'     => UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -320,9 +300,7 @@ class FragmentCombinations implements CombinationsProviderInterface
                 'path'      => self::$path,
                 'query'     => '',
                 'fragment'  => $invalidFragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized,
+                'value'     => '',
             ];
         }
 

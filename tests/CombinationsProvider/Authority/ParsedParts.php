@@ -69,7 +69,7 @@ class ParsedParts implements CombinationsProviderInterface
 
         foreach (UserInfoCombinationsProvider::get() as $combination) {
             if ($combination['isValid']) {
-                $result[]   = [
+                $result[] = [
                     'value'             =>
                         $combination['value'].UriGeneralDelimiters::USER_INFO_DELIMITER.
                         self::$host.
@@ -84,7 +84,7 @@ class ParsedParts implements CombinationsProviderInterface
                         self::$hostNormalized.
                         UriGeneralDelimiters::PORT_DELIMITER.self::$portNormalized,
                 ];
-                $result[]   = [
+                $result[] = [
                     'value'             =>
                         $combination['value'].UriGeneralDelimiters::USER_INFO_DELIMITER.
                         UriGeneralDelimiters::PORT_DELIMITER.self::$port,
@@ -95,7 +95,7 @@ class ParsedParts implements CombinationsProviderInterface
                     'port'              => 0,
                     'valueNormalized'   => '',
                 ];
-                $result[]   = [
+                $result[] = [
                     'value'             =>
                         $combination['value'].UriGeneralDelimiters::USER_INFO_DELIMITER.
                         self::$host,
@@ -108,7 +108,7 @@ class ParsedParts implements CombinationsProviderInterface
                         $combination['valueNormalized'].UriGeneralDelimiters::USER_INFO_DELIMITER.
                         self::$hostNormalized,
                 ];
-                $result[]   = [
+                $result[] = [
                     'value'             =>
                         $combination['value'].UriGeneralDelimiters::USER_INFO_DELIMITER,
                     'isValid'           => false,
@@ -119,7 +119,7 @@ class ParsedParts implements CombinationsProviderInterface
                     'valueNormalized'   => '',
                 ];
             } else {
-                $result[]   = [
+                $result[] = [
                     'value'             =>
                         $combination['value'].UriGeneralDelimiters::USER_INFO_DELIMITER.
                         self::$host.
@@ -131,7 +131,7 @@ class ParsedParts implements CombinationsProviderInterface
                     'port'              => 0,
                     'valueNormalized'   => '',
                 ];
-                $result[]   = [
+                $result[] = [
                     'value'             =>
                         $combination['value'].UriGeneralDelimiters::USER_INFO_DELIMITER.
                         UriGeneralDelimiters::PORT_DELIMITER.self::$port,
@@ -142,7 +142,7 @@ class ParsedParts implements CombinationsProviderInterface
                     'port'              => 0,
                     'valueNormalized'   => '',
                 ];
-                $result[]   = [
+                $result[] = [
                     'value'             =>
                         $combination['value'].UriGeneralDelimiters::USER_INFO_DELIMITER.
                         self::$host,
@@ -153,7 +153,7 @@ class ParsedParts implements CombinationsProviderInterface
                     'port'              => 0,
                     'valueNormalized'   => '',
                 ];
-                $result[]   = [
+                $result[] = [
                     'value'             =>
                         $combination['value'].UriGeneralDelimiters::USER_INFO_DELIMITER,
                     'isValid'           => false,
@@ -178,7 +178,7 @@ class ParsedParts implements CombinationsProviderInterface
         $result = [];
 
         foreach (HostValuesProvider::getValidValues() as $host => $hostNormalized) {
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     self::$userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
                     $host.
@@ -193,7 +193,7 @@ class ParsedParts implements CombinationsProviderInterface
                     $hostNormalized.
                     UriGeneralDelimiters::PORT_DELIMITER.self::$portNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     $host.
                     UriGeneralDelimiters::PORT_DELIMITER.self::$port,
@@ -206,7 +206,7 @@ class ParsedParts implements CombinationsProviderInterface
                     $hostNormalized.
                     UriGeneralDelimiters::PORT_DELIMITER.self::$portNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     self::$userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
                     $host,
@@ -219,7 +219,7 @@ class ParsedParts implements CombinationsProviderInterface
                     self::$userInfoNormalized.UriGeneralDelimiters::USER_INFO_DELIMITER.
                     $hostNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             => $host,
                 'isValid'           => true,
                 'scheme'            => '',
@@ -230,7 +230,7 @@ class ParsedParts implements CombinationsProviderInterface
             ];
         }
         foreach (HostValuesProvider::getInvalidValues() as $invalidHost) {
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     self::$userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
                     $invalidHost.
@@ -242,7 +242,7 @@ class ParsedParts implements CombinationsProviderInterface
                 'port'              => 0,
                 'valueNormalized'   => '',
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     $invalidHost.
                     UriGeneralDelimiters::PORT_DELIMITER.self::$port,
@@ -253,7 +253,7 @@ class ParsedParts implements CombinationsProviderInterface
                 'port'              => 0,
                 'valueNormalized'   => '',
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     self::$userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
                     $invalidHost,
@@ -264,7 +264,7 @@ class ParsedParts implements CombinationsProviderInterface
                 'port'              => 0,
                 'valueNormalized'   => '',
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             => $invalidHost,
                 'isValid'           => false,
                 'scheme'            => '',
@@ -287,7 +287,7 @@ class ParsedParts implements CombinationsProviderInterface
         $result = [];
 
         foreach (PortValuesProvider::getValidValues() as $port => $portNormalized) {
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     self::$userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
                     self::$host.
@@ -302,7 +302,7 @@ class ParsedParts implements CombinationsProviderInterface
                     self::$hostNormalized.
                     UriGeneralDelimiters::PORT_DELIMITER.$portNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     self::$host.
                     UriGeneralDelimiters::PORT_DELIMITER.$port,
@@ -315,7 +315,7 @@ class ParsedParts implements CombinationsProviderInterface
                     self::$hostNormalized.
                     UriGeneralDelimiters::PORT_DELIMITER.$portNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     self::$userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
                     UriGeneralDelimiters::PORT_DELIMITER.$port,
@@ -326,7 +326,7 @@ class ParsedParts implements CombinationsProviderInterface
                 'port'              => 0,
                 'valueNormalized'   => '',
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             => UriGeneralDelimiters::PORT_DELIMITER.$port,
                 'isValid'           => false,
                 'scheme'            => '',
@@ -337,7 +337,7 @@ class ParsedParts implements CombinationsProviderInterface
             ];
         }
         foreach (PortValuesProvider::getInvalidValues() as $invalidPort) {
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     self::$userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
                     self::$host.
@@ -349,7 +349,7 @@ class ParsedParts implements CombinationsProviderInterface
                 'port'              => 0,
                 'valueNormalized'   => '',
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     self::$host.
                     UriGeneralDelimiters::PORT_DELIMITER.$invalidPort,
@@ -360,7 +360,7 @@ class ParsedParts implements CombinationsProviderInterface
                 'port'              => 0,
                 'valueNormalized'   => '',
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     self::$userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
                     UriGeneralDelimiters::PORT_DELIMITER.$invalidPort,
@@ -371,7 +371,7 @@ class ParsedParts implements CombinationsProviderInterface
                 'port'              => 0,
                 'valueNormalized'   => '',
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             => UriGeneralDelimiters::PORT_DELIMITER.$invalidPort,
                 'isValid'           => false,
                 'scheme'            => '',
@@ -394,7 +394,7 @@ class ParsedParts implements CombinationsProviderInterface
         $result = [];
 
         foreach (SchemeStandardPorts::get() as $port => $scheme) {
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     $scheme.UriGeneralDelimiters::AUTHORITY_DELIMITER.
                     self::$userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
@@ -410,7 +410,7 @@ class ParsedParts implements CombinationsProviderInterface
                     self::$userInfoNormalized.UriGeneralDelimiters::USER_INFO_DELIMITER.
                     self::$hostNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     $scheme.UriGeneralDelimiters::AUTHORITY_DELIMITER.
                     self::$host.
@@ -424,7 +424,7 @@ class ParsedParts implements CombinationsProviderInterface
                     $scheme.UriGeneralDelimiters::AUTHORITY_DELIMITER.
                     self::$hostNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     $scheme.UriGeneralDelimiters::AUTHORITY_DELIMITER.
                     self::$userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.
@@ -436,7 +436,7 @@ class ParsedParts implements CombinationsProviderInterface
                 'port'              => 0,
                 'valueNormalized'   => '',
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     $scheme.UriGeneralDelimiters::AUTHORITY_DELIMITER.
                     UriGeneralDelimiters::PORT_DELIMITER.$port,

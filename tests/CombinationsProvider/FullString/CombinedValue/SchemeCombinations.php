@@ -81,11 +81,7 @@ class SchemeCombinations implements CombinationsProviderInterface
                 'path'      => self::$path,
                 'query'     => self::$query,
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => '',
             ];
         }
 
@@ -379,10 +375,7 @@ class SchemeCombinations implements CombinationsProviderInterface
                 'path'      => '',
                 'query'     => self::$query,
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => $invalidScheme,
@@ -393,9 +386,7 @@ class SchemeCombinations implements CombinationsProviderInterface
                 'path'      => '',
                 'query'     => '',
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => $invalidScheme,
@@ -406,9 +397,7 @@ class SchemeCombinations implements CombinationsProviderInterface
                 'path'      => '',
                 'query'     => self::$query,
                 'fragment'  => '',
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => $invalidScheme,
@@ -419,7 +408,7 @@ class SchemeCombinations implements CombinationsProviderInterface
                 'path'      => '',
                 'query'     => '',
                 'fragment'  => '',
-                'value'     => UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized,
+                'value'     => '',
             ];
         }
 
@@ -475,10 +464,7 @@ class SchemeCombinations implements CombinationsProviderInterface
                 'path'      => self::$path,
                 'query'     => '',
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => $invalidScheme,
@@ -489,9 +475,7 @@ class SchemeCombinations implements CombinationsProviderInterface
                 'path'      => self::$path,
                 'query'     => '',
                 'fragment'  => '',
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized,
+                'value'     => '',
             ];
         }
 
@@ -533,10 +517,7 @@ class SchemeCombinations implements CombinationsProviderInterface
                 'path'      => self::$path,
                 'query'     => self::$query,
                 'fragment'  => '',
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
+                'value'     => '',
             ];
         }
 

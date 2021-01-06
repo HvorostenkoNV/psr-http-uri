@@ -51,12 +51,12 @@ class ParsedParts implements CombinationsProviderInterface
         $result = [];
 
         foreach (UserLoginValuesProvider::getValidValues() as $login => $loginNormalized) {
-            $result[]   = [
+            $result[] = [
                 'value'             => (string) $login,
                 'isValid'           => true,
                 'valueNormalized'   => $loginNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     $login.UriSubDelimiters::USER_INFO_SEPARATOR.
                     self::$password,
@@ -67,14 +67,14 @@ class ParsedParts implements CombinationsProviderInterface
             ];
         }
         foreach (UserLoginValuesProvider::getInvalidValues() as $invalidLogin) {
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     $invalidLogin.UriSubDelimiters::USER_INFO_SEPARATOR.
                     self::$password,
                 'isValid'           => false,
                 'valueNormalized'   => '',
             ];
-            $result[]   = [
+            $result[] = [
                 'value'             => (string) $invalidLogin,
                 'isValid'           => false,
                 'valueNormalized'   => '',
@@ -92,7 +92,7 @@ class ParsedParts implements CombinationsProviderInterface
         $result = [];
 
         foreach (UserPasswordValuesProvider::getValidValues() as $password => $passwordNormalized) {
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     self::$login.UriSubDelimiters::USER_INFO_SEPARATOR.
                     $password,
@@ -103,7 +103,7 @@ class ParsedParts implements CombinationsProviderInterface
             ];
         }
         foreach (UserPasswordValuesProvider::getInvalidValues() as $invalidPassword) {
-            $result[]   = [
+            $result[] = [
                 'value'             =>
                     self::$login.UriSubDelimiters::USER_INFO_SEPARATOR.
                     $invalidPassword,

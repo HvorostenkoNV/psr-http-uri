@@ -15,6 +15,7 @@ use HNV\Http\UriTests\ValuesProvider\Path as PathValuesProvider;
 
 use function str_starts_with;
 use function ltrim;
+use function array_keys;
 use function array_merge;
 /** ***********************************************************************************************
  * URI full string different combinations provider (path combinations).
@@ -129,8 +130,8 @@ class PathCombinations implements CombinationsProviderInterface
     {
         $result = [];
 
-        foreach (self::$pathValidCombinations as $path => $pathNormalized) {
-            $result[]   = [
+        foreach (array_keys(self::$pathValidCombinations) as $path) {
+            $result[] = [
                 'scheme'    => '',
                 'login'     => self::$login,
                 'password'  => self::$password,
@@ -139,13 +140,9 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $path,
                 'query'     => self::$query,
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    $pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => '',
             ];
-            $result[]   = [
+            $result[] = [
                 'scheme'    => '',
                 'login'     => self::$login,
                 'password'  => self::$password,
@@ -154,12 +151,9 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $path,
                 'query'     => '',
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    $pathNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => '',
             ];
-            $result[]   = [
+            $result[] = [
                 'scheme'    => '',
                 'login'     => self::$login,
                 'password'  => self::$password,
@@ -168,12 +162,9 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $path,
                 'query'     => self::$query,
                 'fragment'  => '',
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    $pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
+                'value'     => '',
             ];
-            $result[]   = [
+            $result[] = [
                 'scheme'    => '',
                 'login'     => self::$login,
                 'password'  => self::$password,
@@ -182,9 +173,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $path,
                 'query'     => '',
                 'fragment'  => '',
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    $pathNormalized,
+                'value'     => '',
             ];
         }
         foreach (self::$pathInvalidCombinations as $invalidPath) {
@@ -197,10 +186,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $invalidPath,
                 'query'     => self::$query,
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -211,9 +197,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $invalidPath,
                 'query'     => '',
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -224,9 +208,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $invalidPath,
                 'query'     => self::$query,
                 'fragment'  => '',
-                'value'     =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
+                'value'     => '',
             ];
             $result[] = [
                 'scheme'    => '',
@@ -237,7 +219,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $invalidPath,
                 'query'     => '',
                 'fragment'  => '',
-                'value'     => UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized,
+                'value'     => '',
             ];
         }
 
@@ -253,7 +235,7 @@ class PathCombinations implements CombinationsProviderInterface
         $result = [];
 
         foreach (self::$pathValidCombinationsWithoutAuthority as $path => $pathNormalized) {
-            $result[]   = [
+            $result[] = [
                 'scheme'    => self::$scheme,
                 'login'     => '',
                 'password'  => '',
@@ -268,7 +250,7 @@ class PathCombinations implements CombinationsProviderInterface
                     UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
                     UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'scheme'    => '',
                 'login'     => '',
                 'password'  => '',
@@ -282,7 +264,7 @@ class PathCombinations implements CombinationsProviderInterface
                     UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
                     UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'scheme'    => '',
                 'login'     => '',
                 'password'  => '',
@@ -295,7 +277,7 @@ class PathCombinations implements CombinationsProviderInterface
                     $pathNormalized.
                     UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'scheme'    => '',
                 'login'     => '',
                 'password'  => '',
@@ -308,7 +290,7 @@ class PathCombinations implements CombinationsProviderInterface
                     $pathNormalized.
                     UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'scheme'    => '',
                 'login'     => '',
                 'password'  => '',
@@ -319,7 +301,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'fragment'  => '',
                 'value'     => $pathNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'scheme'    => self::$scheme,
                 'login'     => '',
                 'password'  => '',
@@ -333,7 +315,7 @@ class PathCombinations implements CombinationsProviderInterface
                     $pathNormalized.
                     UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'scheme'    => self::$scheme,
                 'login'     => '',
                 'password'  => '',
@@ -347,7 +329,7 @@ class PathCombinations implements CombinationsProviderInterface
                     $pathNormalized.
                     UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'scheme'    => self::$scheme,
                 'login'     => '',
                 'password'  => '',
@@ -464,7 +446,7 @@ class PathCombinations implements CombinationsProviderInterface
         $result = [];
 
         foreach (self::$pathValidCombinations as $path => $pathNormalized) {
-            $result[]   = [
+            $result[] = [
                 'scheme'    => self::$scheme,
                 'login'     => self::$login,
                 'password'  => self::$password,
@@ -479,7 +461,7 @@ class PathCombinations implements CombinationsProviderInterface
                     $pathNormalized.
                     UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'scheme'    => self::$scheme,
                 'login'     => self::$login,
                 'password'  => self::$password,
@@ -536,7 +518,7 @@ class PathCombinations implements CombinationsProviderInterface
         $result = [];
 
         foreach (self::$pathValidCombinations as $path => $pathNormalized) {
-            $result[]   = [
+            $result[] = [
                 'scheme'    => self::$scheme,
                 'login'     => self::$login,
                 'password'  => self::$password,

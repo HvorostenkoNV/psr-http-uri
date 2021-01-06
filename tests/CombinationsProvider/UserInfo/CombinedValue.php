@@ -51,12 +51,12 @@ class CombinedValue implements CombinationsProviderInterface
         $result = [];
 
         foreach (UserLoginValuesProvider::getValidValues() as $login => $loginNormalized) {
-            $result[]   = [
+            $result[] = [
                 'login'     => (string) $login,
                 'password'  => '',
                 'value'     => (string) $loginNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'login'     => (string) $login,
                 'password'  => self::$password,
                 'value'     =>
@@ -66,12 +66,12 @@ class CombinedValue implements CombinationsProviderInterface
             ];
         }
         foreach (UserLoginValuesProvider::getInvalidValues() as $invalidLogin) {
-            $result[]   = [
+            $result[] = [
                 'login'     => (string) $invalidLogin,
                 'password'  => self::$password,
                 'value'     => '',
             ];
-            $result[]   = [
+            $result[] = [
                 'login'     => (string) $invalidLogin,
                 'password'  => '',
                 'value'     => '',
@@ -89,7 +89,7 @@ class CombinedValue implements CombinationsProviderInterface
         $result = [];
 
         foreach (UserPasswordValuesProvider::getValidValues() as $password => $passwordNormalized) {
-            $result[]   = [
+            $result[] = [
                 'login'     => self::$login,
                 'password'  => (string) $password,
                 'value'     =>
@@ -97,19 +97,19 @@ class CombinedValue implements CombinationsProviderInterface
                     UriSubDelimiters::USER_INFO_SEPARATOR.
                     $passwordNormalized,
             ];
-            $result[]   = [
+            $result[] = [
                 'login'     => '',
                 'password'  => (string) $password,
                 'value'     => '',
             ];
         }
         foreach (UserPasswordValuesProvider::getInvalidValues() as $invalidPassword) {
-            $result[]   = [
+            $result[] = [
                 'login'     => self::$login,
                 'password'  => (string) $invalidPassword,
                 'value'     => '',
             ];
-            $result[]   = [
+            $result[] = [
                 'login'     => '',
                 'password'  => (string) $invalidPassword,
                 'value'     => '',
