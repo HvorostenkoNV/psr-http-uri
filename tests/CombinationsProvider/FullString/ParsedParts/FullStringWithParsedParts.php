@@ -41,9 +41,9 @@ class FullStringWithParsedParts implements CombinationsProviderInterface
         $result = [];
 
         foreach ([
-            SchemeCombinations::get(),
-            AuthorityCombinations::get(),
-//            PathCombinations::get(),
+//            SchemeCombinations::get(),
+//            AuthorityCombinations::get(),
+            PathCombinations::get(),
 //            QueryCombinations::get(),
 //            FragmentCombinations::get(),
         ] as $dataSet) {

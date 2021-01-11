@@ -23,6 +23,9 @@ use function array_merge;
 class SchemeCombinations implements CombinationsProviderInterface
 {
     use ValidValuesTrait;
+
+    private static array $schemeValidCombinations   = [];
+    private static array $schemeInvalidCombinations = [];
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
@@ -31,6 +34,7 @@ class SchemeCombinations implements CombinationsProviderInterface
         $result = [];
 
         self::initializeDefaultValues();
+        self::initializeWorkableValues();
 
         foreach ([
             self::getFullValues(),
@@ -45,6 +49,16 @@ class SchemeCombinations implements CombinationsProviderInterface
         return $result;
     }
     /** **********************************************************************
+     * Initialize workable values.
+     *
+     * @return void
+     ************************************************************************/
+    private static function initializeWorkableValues()
+    {
+        self::$schemeValidCombinations      = SchemeValuesProvider::getValidValues();
+        self::$schemeInvalidCombinations    = SchemeValuesProvider::getInvalidValues();
+    }
+    /** **********************************************************************
      * Get full values data set.
      *
      * @return  array                       Data.
@@ -53,7 +67,7 @@ class SchemeCombinations implements CombinationsProviderInterface
     {
         $result = [];
 
-        foreach (SchemeValuesProvider::getValidValues() as $scheme => $schemeNormalized) {
+        foreach (self::$schemeValidCombinations as $scheme => $schemeNormalized) {
             $result[] = [
                 'scheme'    => $scheme,
                 'login'     => self::$login,
@@ -71,7 +85,7 @@ class SchemeCombinations implements CombinationsProviderInterface
                     UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
             ];
         }
-        foreach (SchemeValuesProvider::getInvalidValues() as $invalidScheme) {
+        foreach (self::$schemeInvalidCombinations as $invalidScheme) {
             $result[] = [
                 'scheme'    => $invalidScheme,
                 'login'     => self::$login,
@@ -96,7 +110,7 @@ class SchemeCombinations implements CombinationsProviderInterface
     {
         $result = [];
 
-        foreach (SchemeValuesProvider::getValidValues() as $scheme => $schemeNormalized) {
+        foreach (self::$schemeValidCombinations as $scheme => $schemeNormalized) {
             $result[] = [
                 'scheme'    => $scheme,
                 'login'     => '',
@@ -198,7 +212,7 @@ class SchemeCombinations implements CombinationsProviderInterface
                     UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
             ];
         }
-        foreach (SchemeValuesProvider::getInvalidValues() as $invalidScheme) {
+        foreach (self::$schemeInvalidCombinations as $invalidScheme) {
             $result[] = [
                 'scheme'    => $invalidScheme,
                 'login'     => '',
@@ -307,7 +321,7 @@ class SchemeCombinations implements CombinationsProviderInterface
     {
         $result = [];
 
-        foreach (SchemeValuesProvider::getValidValues() as $scheme => $schemeNormalized) {
+        foreach (self::$schemeValidCombinations as $scheme => $schemeNormalized) {
             $result[] = [
                 'scheme'    => $scheme,
                 'login'     => self::$login,
@@ -365,7 +379,7 @@ class SchemeCombinations implements CombinationsProviderInterface
                     UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized,
             ];
         }
-        foreach (SchemeValuesProvider::getInvalidValues() as $invalidScheme) {
+        foreach (self::$schemeInvalidCombinations as $invalidScheme) {
             $result[] = [
                 'scheme'    => $invalidScheme,
                 'login'     => self::$login,
@@ -423,7 +437,7 @@ class SchemeCombinations implements CombinationsProviderInterface
     {
         $result = [];
 
-        foreach (SchemeValuesProvider::getValidValues() as $scheme => $schemeNormalized) {
+        foreach (self::$schemeValidCombinations as $scheme => $schemeNormalized) {
             $result[] = [
                 'scheme'    => $scheme,
                 'login'     => self::$login,
@@ -454,7 +468,7 @@ class SchemeCombinations implements CombinationsProviderInterface
                     UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized,
             ];
         }
-        foreach (SchemeValuesProvider::getInvalidValues() as $invalidScheme) {
+        foreach (self::$schemeInvalidCombinations as $invalidScheme) {
             $result[] = [
                 'scheme'    => $invalidScheme,
                 'login'     => self::$login,
@@ -490,7 +504,7 @@ class SchemeCombinations implements CombinationsProviderInterface
     {
         $result = [];
 
-        foreach (SchemeValuesProvider::getValidValues() as $scheme => $schemeNormalized) {
+        foreach (self::$schemeValidCombinations as $scheme => $schemeNormalized) {
             $result[] = [
                 'scheme'    => $scheme,
                 'login'     => self::$login,
@@ -507,7 +521,7 @@ class SchemeCombinations implements CombinationsProviderInterface
                     UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
             ];
         }
-        foreach (SchemeValuesProvider::getInvalidValues() as $invalidScheme) {
+        foreach (self::$schemeInvalidCombinations as $invalidScheme) {
             $result[] = [
                 'scheme'    => $invalidScheme,
                 'login'     => self::$login,

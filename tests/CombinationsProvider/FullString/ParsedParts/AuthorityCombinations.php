@@ -61,18 +61,21 @@ class AuthorityCombinations implements CombinationsProviderInterface
         foreach (AuthorityCombinationsProvider::get() as $combination) {
             $hasScheme              = strlen($combination['scheme']) > 0;
             $validValue             = $combination['isValid'] === true;
-            $combinationWithScheme  = $hasScheme
-                ? $combination
-                : array_merge($combination, [
-                    'value'             =>
-                        self::$scheme.UriGeneralDelimiters::AUTHORITY_DELIMITER.
-                        $combination['value'],
-                    'scheme'            => self::$schemeNormalized,
-                    'authority'         => $combination['valueNormalized'],
-                    'valueNormalized'   =>
-                        self::$schemeNormalized.UriGeneralDelimiters::AUTHORITY_DELIMITER.
-                        $combination['valueNormalized'],
-                ]);
+            $schemePostfix          =
+                UriGeneralDelimiters::SCHEME_DELIMITER.
+                UriGeneralDelimiters::AUTHORITY_DELIMITER;
+            $combinationWithScheme  = array_merge($combination, [
+                'value'             => $hasScheme
+                    ? $combination['value']
+                    : self::$scheme.$schemePostfix.$combination['value'],
+                'scheme'            => $hasScheme
+                    ? $combination['scheme']
+                    : self::$schemeNormalized,
+                'authority'         => $combination['valueNormalized'],
+                'valueNormalized'   => $hasScheme
+                    ? $combination['value']
+                    : self::$schemeNormalized.$schemePostfix.$combination['valueNormalized'],
+            ]);
 
             if ($validValue) {
                 self::$authorityWithSchemeValidCombinations[]   = $combinationWithScheme;
@@ -667,19 +670,16 @@ class AuthorityCombinations implements CombinationsProviderInterface
                     $combination['value'].
                     UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$path.
                     UriGeneralDelimiters::QUERY_DELIMITER.self::$query,
-                'isValid'           => true,
-                'scheme'            => $combination['scheme'],
-                'userInfo'          => $combination['userInfo'],
-                'host'              => $combination['host'],
-                'port'              => $combination['port'],
-                'authority'         => $combination['authority'],
-                'path'              => self::$pathNormalized,
-                'query'             => self::$queryNormalized,
+                'isValid'           => false,
+                'scheme'            => '',
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
+                'path'              => '',
+                'query'             => '',
                 'fragment'          => '',
-                'valueNormalized'   =>
-                    $combination['valueNormalized'].
-                    UriSubDelimiters::PATH_PARTS_SEPARATOR.self::$pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
+                'valueNormalized'   => '',
             ];
         }
 

@@ -24,7 +24,7 @@ use HNV\Http\Uri\Collection\{
 
 use function is_null;
 use function strlen;
-use function substr;
+use function str_starts_with;
 use function ltrim;
 /** ***********************************************************************************************
  * PSR-7 UriInterface implementation.
@@ -271,9 +271,26 @@ class Uri implements UriInterface
         $fragment   = $this->getFragment();
         $result     = '';
 
-        if (strlen($authority) === 0 && strlen($path) === 0) {
+        //TODO replace to class
+        $uriValidConditions = [
+            strlen($scheme)  >  0   && strlen($authority)  >  0 && strlen($path)  >  0,
+            strlen($scheme)  >  0   && strlen($authority) === 0 && strlen($path)  >  0,
+            strlen($scheme)  >  0   && strlen($authority)  >  0 && strlen($path) === 0,
+            strlen($scheme) === 0   && strlen($authority) === 0 && strlen($path)  >  0,
+        ];
+        $uriIsValid         = false;
+
+        foreach ($uriValidConditions as $condition) {
+            if ($condition) {
+                $uriIsValid = true;
+                break;
+            }
+        }
+
+        if (!$uriIsValid) {
             return '';
         }
+        //TODO end
 
         if (strlen($scheme) > 0) {
             $result .= $scheme.UriGeneralDelimiters::SCHEME_DELIMITER;
@@ -283,8 +300,8 @@ class Uri implements UriInterface
         }
         if (strlen($path) > 0) {
             $pathPrefix                 = UriSubDelimiters::PATH_PARTS_SEPARATOR;
-            $pathHasPrefix              = $path[0] === $pathPrefix;
-            $pathHasMultiplePrefixes    = substr($path, 0, 2) === $pathPrefix.$pathPrefix;
+            $pathHasPrefix              = str_starts_with($path, $pathPrefix);
+            $pathHasMultiplePrefixes    = str_starts_with($path, $pathPrefix.$pathPrefix);
 
             if (strlen($authority) > 0 && !$pathHasPrefix) {
                 $result .= $pathPrefix.$path;
