@@ -52,16 +52,17 @@ class UriFactoryTest extends TestCase
         string  $fragment,
         string  $uriStringNormalized
     ): void {
-        $uri                = (new UriFactory())->createUri($uriString);
-        $schemeCaught       = $uri->getScheme();
-        $userInfoCaught     = $uri->getUserInfo();
-        $hostCaught         = $uri->getHost();
-        $portExpected       = $port !== 0 ? $port : null;
-        $portCaught         = $uri->getPort();
-        $authorityCaught    = $uri->getAuthority();
-        $pathCaught         = $uri->getPath();
-        $queryCaught        = $uri->getQuery();
-        $fragmentCaught     = $uri->getFragment();
+        $uri                    = (new UriFactory())->createUri($uriString);
+        $schemeCaught           = $uri->getScheme();
+        $userInfoCaught         = $uri->getUserInfo();
+        $hostCaught             = $uri->getHost();
+        $portExpected           = $port !== 0 ? $port : null;
+        $portCaught             = $uri->getPort();
+        $authorityCaught        = $uri->getAuthority();
+        $pathCaught             = $uri->getPath();
+        $queryCaught            = $uri->getQuery();
+        $fragmentCaught         = $uri->getFragment();
+        $uriToStringConverted   = (string) $uri;
 
         self::assertEquals(
             $scheme,
@@ -126,6 +127,15 @@ class UriFactoryTest extends TestCase
             "Action was called with parameters (uri => $uriString).\n".
             "Expected result is \"$fragment\".\n".
             "Caught result is \"$fragmentCaught\"."
+        );
+
+        self::assertEquals(
+            $uriStringNormalized,
+            $uriToStringConverted,
+            "Action \"UriFactory->createUri->toString\" returned unexpected result.\n".
+            "Action was called with parameters (uri => $uriString).\n".
+            "Expected result is \"$uriStringNormalized\".\n".
+            "Caught result is \"$uriToStringConverted\"."
         );
     }
     /** **********************************************************************

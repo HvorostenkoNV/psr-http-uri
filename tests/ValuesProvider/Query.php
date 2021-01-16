@@ -138,9 +138,9 @@ class Query implements ValuesProviderInterface
      ************************************************************************/
     private static function getValidSimpleParts(): array
     {
-        $letter = 'x';
+        $letter = 'q';
         $digit  = 1;
-        $string = 'value';
+        $string = 'query';
 
         return [
             $string,

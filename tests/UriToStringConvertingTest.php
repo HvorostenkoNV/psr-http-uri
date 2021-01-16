@@ -91,7 +91,7 @@ class UriToStringConvertingTest extends TestCase
             $uriExpected,
             $uriCaught,
             "Action \"Uri->withScheme->withUserInfo->withHost->withPort".
-            "->withPath->withQuery->withFragment\" returned unexpected result.\n".
+            "->withPath->withQuery->withFragment->toString\" returned unexpected result.\n".
             "Action was called with parameters (scheme => $scheme, login => $login,".
             " password => $password, host => $host, port => $port, path => $path,".
             " query => $query, fragment => $fragment).\n".

@@ -81,7 +81,9 @@ class SchemeCombinations implements CombinationsProviderInterface
                 'host'              => self::$hostNormalized,
                 'port'              => self::$portNormalized,
                 'authority'         => self::$authorityNormalized,
-                'path'              => self::$pathNormalized,
+                'path'              =>
+                    UriSubDelimiters::PATH_PARTS_SEPARATOR.
+                    self::$pathNormalized,
                 'query'             => self::$queryNormalized,
                 'fragment'          => self::$fragmentNormalized,
                 'valueNormalized'   =>
@@ -567,7 +569,9 @@ class SchemeCombinations implements CombinationsProviderInterface
                 'host'              => self::$hostNormalized,
                 'port'              => self::$portNormalized,
                 'authority'         => self::$authorityNormalized,
-                'path'              => self::$pathNormalized,
+                'path'              =>
+                    UriSubDelimiters::PATH_PARTS_SEPARATOR.
+                    self::$pathNormalized,
                 'query'             => '',
                 'fragment'          => self::$fragmentNormalized,
                 'valueNormalized'   =>
@@ -587,7 +591,9 @@ class SchemeCombinations implements CombinationsProviderInterface
                 'host'              => self::$hostNormalized,
                 'port'              => self::$portNormalized,
                 'authority'         => self::$authorityNormalized,
-                'path'              => self::$pathNormalized,
+                'path'              =>
+                    UriSubDelimiters::PATH_PARTS_SEPARATOR.
+                    self::$pathNormalized,
                 'query'             => '',
                 'fragment'          => '',
                 'valueNormalized'   =>
@@ -656,7 +662,9 @@ class SchemeCombinations implements CombinationsProviderInterface
                 'host'              => self::$hostNormalized,
                 'port'              => self::$portNormalized,
                 'authority'         => self::$authorityNormalized,
-                'path'              => self::$pathNormalized,
+                'path'              =>
+                    UriSubDelimiters::PATH_PARTS_SEPARATOR.
+                    self::$pathNormalized,
                 'query'             => self::$queryNormalized,
                 'fragment'          => '',
                 'valueNormalized'   =>

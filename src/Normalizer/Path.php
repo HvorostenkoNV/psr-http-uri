@@ -27,9 +27,18 @@ class Path implements NormalizerInterface
      ************************************************************************/
     public static function normalize($value): string
     {
-        $valueString    = (string) $value;
-        $valueExploded  = explode(UriSubDelimiters::PATH_PARTS_SEPARATOR, $valueString);
-        $result         = [];
+        $valueString        = (string) $value;
+        $valueExploded      = explode(UriSubDelimiters::PATH_PARTS_SEPARATOR, $valueString);
+        $invalidFirstChars  = PathAllowedCharacters::NON_FIRST_CHARS;
+        $result             = [];
+
+        foreach ($invalidFirstChars as $char) {
+            if ($valueString[0] === $char) {
+                throw new NormalizingException(
+                    "path \"$valueString\" can not begin with character \"$char\""
+                );
+            }
+        }
 
         foreach ($valueExploded as $part) {
             try {

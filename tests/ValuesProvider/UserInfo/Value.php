@@ -47,9 +47,9 @@ class Value implements ValuesProviderInterface
      ************************************************************************/
     private static function getValidSimpleValues(): array
     {
-        $letter = 'x';
+        $letter = 'u';
         $digit  = 1;
-        $string = 'value';
+        $string = 'user';
 
         return [
             $string,

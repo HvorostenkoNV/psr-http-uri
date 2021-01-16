@@ -47,9 +47,9 @@ class Fragment implements ValuesProviderInterface
      ************************************************************************/
     private static function getValidSimpleValues(): array
     {
-        $letter = 'x';
+        $letter = 'f';
         $digit  = 1;
-        $string = 'value';
+        $string = 'fragment';
         $result = [
             $string,
             strtoupper($string),

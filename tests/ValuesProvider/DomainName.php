@@ -112,9 +112,9 @@ class DomainName implements ValuesProviderInterface
      ************************************************************************/
     private static function getValidSubLevelDomainParts(): array
     {
-        $letter = 'x';
+        $letter = 'd';
         $digit  = 1;
-        $string = 'value';
+        $string = 'domain';
 
         $result = [
             $string,
@@ -146,8 +146,8 @@ class DomainName implements ValuesProviderInterface
      ************************************************************************/
     private static function getInvalidSubLevelDomainParts(): array
     {
-        $letter         = 'x';
-        $string         = 'value';
+        $letter         = 'd';
+        $string         = 'domain';
 
         $allowedChars   = DomainNameAllowedCharacters::get();
         $otherChars     = array_diff(
@@ -184,7 +184,7 @@ class DomainName implements ValuesProviderInterface
      ************************************************************************/
     private static function getValidTopLevelDomainParts(): array
     {
-        $letter     = 'x';
+        $letter     = 'd';
         $minLength  = TopLevelDomainNormalizer::MIN_LENGTH;
         $maxLength  = TopLevelDomainNormalizer::MAX_LENGTH;
         $result     = [];
@@ -205,9 +205,9 @@ class DomainName implements ValuesProviderInterface
      ************************************************************************/
     private static function getInvalidTopLevelDomainParts(): array
     {
-        $letter = 'x';
+        $letter = 'd';
         $digit  = 1;
-        $string = 'value';
+        $string = 'domain';
 
         $chars  = array_diff(
             SpecialCharacters::get(),

@@ -73,7 +73,7 @@ class AuthorityCombinations implements CombinationsProviderInterface
                     : self::$schemeNormalized,
                 'authority'         => $combination['valueNormalized'],
                 'valueNormalized'   => $hasScheme
-                    ? $combination['value']
+                    ? $combination['scheme'].$schemePostfix.$combination['valueNormalized']
                     : self::$schemeNormalized.$schemePostfix.$combination['valueNormalized'],
             ]);
 
@@ -114,7 +114,9 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'host'              => $combination['host'],
                 'port'              => $combination['port'],
                 'authority'         => $combination['authority'],
-                'path'              => self::$pathNormalized,
+                'path'              =>
+                    UriSubDelimiters::PATH_PARTS_SEPARATOR.
+                    self::$pathNormalized,
                 'query'             => self::$queryNormalized,
                 'fragment'          => self::$fragmentNormalized,
                 'valueNormalized'   =>
@@ -572,7 +574,9 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'host'              => $combination['host'],
                 'port'              => $combination['port'],
                 'authority'         => $combination['authority'],
-                'path'              => self::$pathNormalized,
+                'path'              =>
+                    UriSubDelimiters::PATH_PARTS_SEPARATOR.
+                    self::$pathNormalized,
                 'query'             => '',
                 'fragment'          => self::$fragmentNormalized,
                 'valueNormalized'   =>
@@ -590,7 +594,9 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'host'              => $combination['host'],
                 'port'              => $combination['port'],
                 'authority'         => $combination['authority'],
-                'path'              => self::$pathNormalized,
+                'path'              =>
+                    UriSubDelimiters::PATH_PARTS_SEPARATOR.
+                    self::$pathNormalized,
                 'query'             => '',
                 'fragment'          => '',
                 'valueNormalized'   =>
@@ -655,7 +661,9 @@ class AuthorityCombinations implements CombinationsProviderInterface
                 'host'              => $combination['host'],
                 'port'              => $combination['port'],
                 'authority'         => $combination['authority'],
-                'path'              => self::$pathNormalized,
+                'path'              =>
+                    UriSubDelimiters::PATH_PARTS_SEPARATOR.
+                    self::$pathNormalized,
                 'query'             => self::$queryNormalized,
                 'fragment'          => '',
                 'valueNormalized'   =>

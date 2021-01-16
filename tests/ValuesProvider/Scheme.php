@@ -26,9 +26,9 @@ class Scheme implements ValuesProviderInterface
      ************************************************************************/
     public static function getValidValues(): array
     {
-        $letter = 'x';
+        $letter = 's';
         $digit  = 1;
-        $string = 'value';
+        $string = 'scheme';
         $result = [];
 
         $data   = [
@@ -63,9 +63,9 @@ class Scheme implements ValuesProviderInterface
      ************************************************************************/
     public static function getInvalidValues(): array
     {
-        $letter         = 'x';
+        $letter         = 's';
         $digit          = 1;
-        $string         = 'value';
+        $string         = 'scheme';
 
         $allowedChars   = SchemeAllowedCharacters::get();
         $otherChars     = array_diff(

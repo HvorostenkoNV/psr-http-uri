@@ -47,14 +47,13 @@ class Path implements ValuesProviderInterface
      ************************************************************************/
     public static function getInvalidValues(): array
     {
-        $validPart      = self::getValidSimpleParts()[0];
-        $invalidParts   = self::getInvalidParts();
+        $validValues    = self::getValidValues();
         $result         = [];
 
-        foreach ($invalidParts as $invalidPart) {
-            $result[]   = $invalidPart;
-            $result[]   = $validPart.UriSubDelimiters::PATH_PARTS_SEPARATOR.$invalidPart;
-            $result[]   = $invalidPart.UriSubDelimiters::PATH_PARTS_SEPARATOR.$validPart;
+        foreach (PathAllowedCharacters::NON_FIRST_CHARS as $char) {
+            foreach ($validValues as $value) {
+                $result[] = "$char$value";
+            }
         }
 
         return $result;
@@ -135,9 +134,9 @@ class Path implements ValuesProviderInterface
      ************************************************************************/
     private static function getValidSimpleParts(): array
     {
-        $letter = 'x';
+        $letter = 'p';
         $digit  = 1;
-        $string = 'value';
+        $string = 'path';
 
         return [
             $string,
@@ -159,18 +158,29 @@ class Path implements ValuesProviderInterface
      ************************************************************************/
     private static function getValidNormalizedParts(): array
     {
-        $allowedChars   = PathAllowedCharacters::get();
-        $otherChars     = array_diff(
+        $string             = 'path';
+        $invalidFirstChars  = PathAllowedCharacters::NON_FIRST_CHARS;
+        $allowedChars       = array_diff(
+            PathAllowedCharacters::get(),
+            $invalidFirstChars
+        );
+        $otherChars         = array_diff(
             SpecialCharacters::get(),
             $allowedChars,
+            $invalidFirstChars,
             [UriSubDelimiters::PATH_PARTS_SEPARATOR]
         );
-        $result         = [];
+        $result             = [];
 
         foreach ($allowedChars as $char) {
             $charEncoded            = rawurlencode($char);
             $result[$char]          = $char;
             $result[$charEncoded]   = $char;
+        }
+        foreach ($invalidFirstChars as $char) {
+            $charEncoded                    = rawurlencode($char);
+            $result[$string.$char]          = $string.$char;
+            $result[$string.$charEncoded]   = $string.$char;
         }
         foreach (array_merge($otherChars, [' ']) as $char) {
             $charEncoded            = rawurlencode($char);
@@ -179,14 +189,5 @@ class Path implements ValuesProviderInterface
         }
 
         return $result;
-    }
-    /** **********************************************************************
-     * Get invalid values parts set.
-     *
-     * @return  string[]                    Values set.
-     ************************************************************************/
-    private static function getInvalidParts(): array
-    {
-        return [];
     }
 }

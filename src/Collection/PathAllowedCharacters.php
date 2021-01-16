@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 namespace HNV\Http\Uri\Collection;
+
+use function array_merge;
 /** ***********************************************************************************************
  * URI path allowed characters collection.
  *
@@ -10,12 +12,15 @@ namespace HNV\Http\Uri\Collection;
  *************************************************************************************************/
 class PathAllowedCharacters implements CollectionInterface
 {
+    public const NON_FIRST_CHARS = [
+        ':',
+    ];
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
     public static function get(): array
     {
-        return [
+        return array_merge(self::NON_FIRST_CHARS, [
             '.',
             '-',
             '_',
@@ -31,8 +36,7 @@ class PathAllowedCharacters implements CollectionInterface
             ',',
             ';',
             '=',
-            ':',
             '@',
-        ];
+        ]);
     }
 }
