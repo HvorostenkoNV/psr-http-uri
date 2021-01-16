@@ -19,7 +19,7 @@ use function ltrim;
 use function array_keys;
 use function array_merge;
 /** ***********************************************************************************************
- * URI full string different combinations provider (path combinations).
+ * URI full string with it`s parsed parts provider (path combinations).
  *
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
@@ -162,7 +162,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'scheme'            => '',
                 'userInfo'          => '',
                 'host'              => '',
-                'port'              => '',
+                'port'              => 0,
                 'authority'         => '',
                 'path'              => '',
                 'query'             => '',
@@ -178,7 +178,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'scheme'            => '',
                 'userInfo'          => '',
                 'host'              => '',
-                'port'              => '',
+                'port'              => 0,
                 'authority'         => '',
                 'path'              => '',
                 'query'             => '',
@@ -194,7 +194,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'scheme'            => '',
                 'userInfo'          => '',
                 'host'              => '',
-                'port'              => '',
+                'port'              => 0,
                 'authority'         => '',
                 'path'              => '',
                 'query'             => '',
@@ -209,7 +209,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'scheme'            => '',
                 'userInfo'          => '',
                 'host'              => '',
-                'port'              => '',
+                'port'              => 0,
                 'authority'         => '',
                 'path'              => '',
                 'query'             => '',
@@ -228,7 +228,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'scheme'            => '',
                 'userInfo'          => '',
                 'host'              => '',
-                'port'              => '',
+                'port'              => 0,
                 'authority'         => '',
                 'path'              => '',
                 'query'             => '',
@@ -244,7 +244,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'scheme'            => '',
                 'userInfo'          => '',
                 'host'              => '',
-                'port'              => '',
+                'port'              => 0,
                 'authority'         => '',
                 'path'              => '',
                 'query'             => '',
@@ -260,7 +260,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'scheme'            => '',
                 'userInfo'          => '',
                 'host'              => '',
-                'port'              => '',
+                'port'              => 0,
                 'authority'         => '',
                 'path'              => '',
                 'query'             => '',
@@ -275,7 +275,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'scheme'            => '',
                 'userInfo'          => '',
                 'host'              => '',
-                'port'              => '',
+                'port'              => 0,
                 'authority'         => '',
                 'path'              => '',
                 'query'             => '',
