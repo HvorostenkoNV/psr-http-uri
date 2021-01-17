@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace HNV\Http\Uri;
 
 use InvalidArgumentException;
+use RuntimeException;
 use Psr\Http\Message\{
     UriInterface,
     UriFactoryInterface
@@ -44,44 +45,25 @@ class UriFactory implements UriFactoryInterface
         $port               = $this->parsePortFromAuthority($authority);
         $host               = $authority;
 
-        //TODO replace to class
-        $authorityInvalidConditions = [
-            strlen($userLogin)  > 0 && strlen($host) === 0,
-            $port               > 0 && strlen($host) === 0,
-        ];
-        $authorityIsValid           = true;
-
-        foreach ($authorityInvalidConditions as $condition) {
-            if ($condition) {
-                $authorityIsValid = false;
-                break;
-            }
+        try {
+            UriValidator::checkAuthorityIsValid($userInfo, $host, $port);
+        } catch (RuntimeException $exception) {
+            throw new InvalidArgumentException(
+                "uri \"$uriOrigin\" has invalid authority",
+                0,
+                $exception
+            );
         }
 
-        if (!$authorityIsValid) {
-            throw new InvalidArgumentException("uri \"$uriOrigin\" has invalid authority");
+        try {
+            UriValidator::checkUriIsValid($scheme, $host, $path);
+        } catch (RuntimeException $exception) {
+            throw new InvalidArgumentException(
+                "uri \"$uriOrigin\" has not enough parts",
+                0,
+                $exception
+            );
         }
-        //TODO end
-        //TODO replace to class
-        $uriValidConditions = [
-            strlen($scheme)  >  0   && strlen($host)  >  0  && strlen($path)  >  0,
-            strlen($scheme)  >  0   && strlen($host) === 0  && strlen($path)  >  0,
-            strlen($scheme)  >  0   && strlen($host)  >  0  && strlen($path) === 0,
-            strlen($scheme) === 0   && strlen($host) === 0  && strlen($path)  >  0,
-        ];
-        $uriIsValid         = false;
-
-        foreach ($uriValidConditions as $condition) {
-            if ($condition) {
-                $uriIsValid = true;
-                break;
-            }
-        }
-
-        if (!$uriIsValid) {
-            throw new InvalidArgumentException("uri \"$uriOrigin\" has not enough parts");
-        }
-        //TODO end
 
         try {
             return (new Uri())

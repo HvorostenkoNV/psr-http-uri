@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace HNV\Http\Uri;
 
 use InvalidArgumentException;
+use RuntimeException;
 use Psr\Http\Message\UriInterface;
 use HNV\Http\Uri\Normalizer\{
     NormalizingException,
@@ -166,17 +167,20 @@ class Uri implements UriInterface
         $userInfo   = $this->getUserInfo();
         $host       = $this->getHost();
         $port       = $this->getPort();
+        $result     = '';
 
-        if (strlen($host) === 0) {
+        try {
+            UriValidator::checkAuthorityIsValid($userInfo, $host, $port ?? 0);
+        } catch (RuntimeException) {
             return '';
         }
 
-        $result = $host;
         if (strlen($userInfo) > 0) {
-            $result = $userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER.$result;
+            $result .= $userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER;
         }
+        $result .= $host;
         if (!is_null($port)) {
-            $result = $result.UriGeneralDelimiters::PORT_DELIMITER.$port;
+            $result .= UriGeneralDelimiters::PORT_DELIMITER.$port;
         }
 
         return $result;
@@ -271,26 +275,11 @@ class Uri implements UriInterface
         $fragment   = $this->getFragment();
         $result     = '';
 
-        //TODO replace to class
-        $uriValidConditions = [
-            strlen($scheme)  >  0   && strlen($authority)  >  0 && strlen($path)  >  0,
-            strlen($scheme)  >  0   && strlen($authority) === 0 && strlen($path)  >  0,
-            strlen($scheme)  >  0   && strlen($authority)  >  0 && strlen($path) === 0,
-            strlen($scheme) === 0   && strlen($authority) === 0 && strlen($path)  >  0,
-        ];
-        $uriIsValid         = false;
-
-        foreach ($uriValidConditions as $condition) {
-            if ($condition) {
-                $uriIsValid = true;
-                break;
-            }
-        }
-
-        if (!$uriIsValid) {
+        try {
+            UriValidator::checkUriIsValid($scheme, $authority, $path);
+        } catch (RuntimeException) {
             return '';
         }
-        //TODO end
 
         if (strlen($scheme) > 0) {
             $result .= $scheme.UriGeneralDelimiters::SCHEME_DELIMITER;
