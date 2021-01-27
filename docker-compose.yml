@@ -6,11 +6,11 @@ networks:
 services:
   php:
     image: jorge07/alpine-php:${PHP_VERSION}-dev
-    container_name: php
+    container_name: psr-http-uri-php
     volumes:
       - .:/var/www/html
     ports:
-      - "9000:9000"
+      - "${PHP_PORT}:9000"
       - "${SSH_PORT}:22"
     working_dir: /var/www/html
     networks:
