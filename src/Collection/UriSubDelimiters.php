@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace HNV\Http\Uri\Collection;
 
+use HNV\Http\Helper\Collection\CollectionInterface;
+
 use function str_split;
 use function array_merge;
 use function array_unique;
