@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace HNV\Http\UriTests\ValuesProvider\UserInfo;
 
+use HNV\Http\Helper\Collection\SpecialCharacters;
 use HNV\Http\UriTests\ValuesProvider\ValuesProviderInterface;
-use HNV\Http\UriTests\Collection\SpecialCharacters;
 
 use function strtoupper;
 use function ucfirst;

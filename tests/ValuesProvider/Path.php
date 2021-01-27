@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace HNV\Http\UriTests\ValuesProvider;
 
-use HNV\Http\UriTests\Collection\SpecialCharacters;
+use HNV\Http\Helper\Collection\SpecialCharacters;
 use HNV\Http\Uri\Collection\{
     UriSubDelimiters,
     PathAllowedCharacters
