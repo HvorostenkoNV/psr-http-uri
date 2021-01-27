@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace HNV\Http\Uri\Normalizer\DomainName;
 
-use HNV\Http\Uri\Normalizer\{
-    NormalizingException,
-    NormalizerInterface
+use HNV\Http\Helper\Normalizer\{
+    NormalizerInterface,
+    NormalizingException
 };
 
 use function explode;

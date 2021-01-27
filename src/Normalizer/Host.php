@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 namespace HNV\Http\Uri\Normalizer;
 
+use HNV\Http\Helper\Normalizer\{
+    NormalizerInterface,
+    NormalizingException
+};
 use HNV\Http\Uri\Collection\UriGeneralDelimiters;
 use HNV\Http\Uri\Normalizer\{
     IpAddress\V4                        as IpAddressV4Normalizer,

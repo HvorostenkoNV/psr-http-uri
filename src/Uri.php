@@ -6,8 +6,8 @@ namespace HNV\Http\Uri;
 use InvalidArgumentException;
 use RuntimeException;
 use Psr\Http\Message\UriInterface;
+use HNV\Http\Helper\Normalizer\NormalizingException;
 use HNV\Http\Uri\Normalizer\{
-    NormalizingException,
     Scheme              as SchemeNormalizer,
     UserInfo\Login      as UserLoginNormalizer,
     UserInfo\Password   as UserPasswordNormalizer,

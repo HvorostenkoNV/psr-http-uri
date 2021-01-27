@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace HNV\Http\Uri\Normalizer\UserInfo;
 
-use HNV\Http\Uri\Normalizer\NormalizerInterface;
+use HNV\Http\Helper\Normalizer\NormalizerInterface;
 
 use function rawurldecode;
 use function rawurlencode;

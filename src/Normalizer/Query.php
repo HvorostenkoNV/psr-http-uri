@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 namespace HNV\Http\Uri\Normalizer;
 
+use HNV\Http\Helper\Normalizer\{
+    NormalizerInterface,
+    NormalizingException
+};
 use HNV\Http\Uri\Collection\{
     UriSubDelimiters,
     QueryAllowedCharacters
