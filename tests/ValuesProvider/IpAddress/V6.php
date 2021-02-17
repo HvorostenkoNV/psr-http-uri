@@ -7,7 +7,7 @@ use HNV\Http\UriTests\ValuesProvider\ValuesProviderInterface;
 /** ***********************************************************************************************
  * IP address V6 normalized values set provider.
  *
- * @package HNV\Psr\Http\Tests
+ * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
 class V6 implements ValuesProviderInterface

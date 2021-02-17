@@ -5,7 +5,7 @@ namespace HNV\Http\UriTests\ValuesProvider;
 /** ***********************************************************************************************
  * Values provider interface.
  *
- * @package HNV\Psr\Http\Tests
+ * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
 interface ValuesProviderInterface

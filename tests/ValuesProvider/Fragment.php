@@ -12,7 +12,7 @@ use function rawurlencode;
 /** ***********************************************************************************************
  * URI fragment normalized values set provider.
  *
- * @package HNV\Psr\Http\Tests
+ * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
 class Fragment implements ValuesProviderInterface

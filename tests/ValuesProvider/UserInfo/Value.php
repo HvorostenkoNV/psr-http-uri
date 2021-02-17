@@ -12,7 +12,7 @@ use function rawurlencode;
 /** ***********************************************************************************************
  * URI user (login or password) info values provider.
  *
- * @package HNV\Psr\Http\Tests
+ * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
 class Value implements ValuesProviderInterface

@@ -9,7 +9,7 @@ use function rand;
 /** ***********************************************************************************************
  * URI port normalized values set provider.
  *
- * @package HNV\Psr\Http\Tests
+ * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
 class Port implements ValuesProviderInterface

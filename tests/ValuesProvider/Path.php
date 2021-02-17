@@ -21,7 +21,7 @@ use function rawurlencode;
 /** ***********************************************************************************************
  * URI path normalized values collection.
  *
- * @package HNV\Psr\Http\Tests
+ * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
 class Path implements ValuesProviderInterface

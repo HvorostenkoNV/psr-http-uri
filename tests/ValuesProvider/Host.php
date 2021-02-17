@@ -13,7 +13,7 @@ use function array_merge;
 /** ***********************************************************************************************
  * URI host values provider.
  *
- * @package HNV\Psr\Http\Tests
+ * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
 class Host implements ValuesProviderInterface

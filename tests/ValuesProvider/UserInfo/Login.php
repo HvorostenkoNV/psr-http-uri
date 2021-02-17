@@ -7,7 +7,7 @@ use HNV\Http\UriTests\ValuesProvider\ValuesProviderInterface;
 /** ***********************************************************************************************
  * URI user login values provider.
  *
- * @package HNV\Psr\Http\Tests
+ * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
 class Login implements ValuesProviderInterface

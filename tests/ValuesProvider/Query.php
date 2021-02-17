@@ -20,7 +20,7 @@ use function rawurlencode;
 /** ***********************************************************************************************
  * URI query normalized values collection.
  *
- * @package HNV\Psr\Http\Tests
+ * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
 class Query implements ValuesProviderInterface

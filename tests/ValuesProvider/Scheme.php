@@ -16,7 +16,7 @@ use function array_diff;
 /** ***********************************************************************************************
  * URI scheme values provider.
  *
- * @package HNV\Psr\Http\Tests
+ * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
 class Scheme implements ValuesProviderInterface

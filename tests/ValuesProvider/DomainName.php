@@ -25,7 +25,7 @@ use function array_diff;
 /** ***********************************************************************************************
  * URI domain name values provider.
  *
- * @package HNV\Psr\Http\Tests
+ * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
 class DomainName implements ValuesProviderInterface

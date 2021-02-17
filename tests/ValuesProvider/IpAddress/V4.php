@@ -17,7 +17,7 @@ use function rand;
 /** ***********************************************************************************************
  * IP address V4 normalized values set provider.
  *
- * @package HNV\Psr\Http\Tests
+ * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
 class V4 implements ValuesProviderInterface
