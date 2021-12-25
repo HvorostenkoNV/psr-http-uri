@@ -7,7 +7,7 @@ use Throwable;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use HNV\Http\UriTests\CombinationsProvider\FullString\CombinedValue\{
-    FullStringCombinations as FullStringCombinationsProvider
+    FullStringCombinations as FullStringCombinationsProvider,
 };
 use HNV\Http\Uri\Uri;
 /** ***********************************************************************************************

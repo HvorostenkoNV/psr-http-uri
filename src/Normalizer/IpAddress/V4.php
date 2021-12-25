@@ -5,7 +5,7 @@ namespace HNV\Http\Uri\Normalizer\IpAddress;
 
 use HNV\Http\Helper\Normalizer\{
     NormalizerInterface,
-    NormalizingException
+    NormalizingException,
 };
 
 use function is_numeric;
@@ -31,29 +31,7 @@ class V4 implements NormalizerInterface
      ************************************************************************/
     public static function normalize($value): string
     {
-        $valueString        = (string) $value;
-        $valueTrim          = trim($valueString, self::PARTS_DELIMITER);
-        $valueParts         = explode(self::PARTS_DELIMITER, $valueTrim);
-        $valuePartsCount    = count($valueParts);
-        $needPartsCount     = self::PARTS_COUNT;
-
-        if ($valuePartsCount > $needPartsCount) {
-            throw new NormalizingException(
-                "ip address V4 \"$valueString\" contains more than $needPartsCount parts"
-            );
-        }
-        if ($valuePartsCount === 1) {
-            throw new NormalizingException("value \"$valueString\" is not ip address V4");
-        }
-        if ($valuePartsCount < $needPartsCount) {
-            $lastPart = array_pop($valueParts);
-
-            while (count($valueParts) < $needPartsCount - 1) {
-                $valueParts[] = (string) self::PART_MIN_VALUE;
-            }
-
-            $valueParts[] = $lastPart;
-        }
+        $valueParts = self::splitValueIntoParts((string) $value);
 
         foreach ($valueParts as $index => $part) {
             try {
@@ -68,6 +46,43 @@ class V4 implements NormalizerInterface
         }
 
         return implode(self::PARTS_DELIMITER, $valueParts);
+    }
+    /** **********************************************************************
+     * Split ip v6 value into parts.
+     *
+     * @param   string $value               IP address v4.
+     *
+     * @return  string[]                    Value parts.
+     * @throws  NormalizingException        Normalizing error.
+     ************************************************************************/
+    private static function splitValueIntoParts(string $value): array
+    {
+        $valueTrim          = trim($value, self::PARTS_DELIMITER);
+        $valueParts         = explode(self::PARTS_DELIMITER, $valueTrim);
+        $valuePartsCount    = count($valueParts);
+        $needPartsCount     = self::PARTS_COUNT;
+
+        if ($valuePartsCount > $needPartsCount) {
+            throw new NormalizingException(
+                "ip address V4 \"$value\" contains more than $needPartsCount parts"
+            );
+        }
+
+        if ($valuePartsCount === 1) {
+            throw new NormalizingException("value \"$value\" is not ip address V4");
+        }
+
+        if ($valuePartsCount < $needPartsCount) {
+            $lastPart = array_pop($valueParts);
+
+            while (count($valueParts) < $needPartsCount - 1) {
+                $valueParts[] = (string) self::PART_MIN_VALUE;
+            }
+
+            $valueParts[] = $lastPart;
+        }
+
+        return $valueParts;
     }
     /** **********************************************************************
      * Normalize IP address segment.

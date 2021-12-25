@@ -5,7 +5,7 @@ namespace HNV\Http\Uri\Normalizer\DomainName;
 
 use HNV\Http\Helper\Normalizer\{
     NormalizerInterface,
-    NormalizingException
+    NormalizingException,
 };
 
 use function explode;

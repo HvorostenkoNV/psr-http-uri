@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use HNV\Http\UriTests\ValuesProvider\Port as PortValuesProvider;
 use HNV\Http\Uri\{
     Uri,
-    Collection\SchemeStandardPorts
+    Collection\SchemeStandardPorts,
 };
 
 use function spl_object_id;

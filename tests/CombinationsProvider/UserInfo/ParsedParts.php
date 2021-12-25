@@ -6,23 +6,22 @@ namespace HNV\Http\UriTests\CombinationsProvider\UserInfo;
 use HNV\Http\Uri\Collection\UriSubDelimiters;
 use HNV\Http\UriTests\ValuesProvider\UserInfo\{
     Login       as UserLoginValuesProvider,
-    Password    as UserPasswordValuesProvider
+    Password    as UserPasswordValuesProvider,
 };
 use HNV\Http\UriTests\CombinationsProvider\{
     CombinationsProviderInterface,
-    ValidValuesTrait
+    AbstractCombinationsProvider,
 };
 
 use function array_merge;
 /** ***********************************************************************************************
- * URI user info in parsed parts different combinations provider.
+ * URI user info in parsed parts different combination`s provider.
  *
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
-class ParsedParts implements CombinationsProviderInterface
+class ParsedParts extends AbstractCombinationsProvider implements CombinationsProviderInterface
 {
-    use ValidValuesTrait;
     /** **********************************************************************
      * @inheritDoc
      *
@@ -47,8 +46,10 @@ class ParsedParts implements CombinationsProviderInterface
      *
      * @return  array                               Combinations data.
      ************************************************************************/
-    private static function getLoginCombinations(): array {
-        $result = [];
+    private static function getLoginCombinations(): array
+    {
+        $delimiter  = UriSubDelimiters::USER_INFO_SEPARATOR;
+        $result     = [];
 
         foreach (UserLoginValuesProvider::getValidValues() as $login => $loginNormalized) {
             $result[] = [
@@ -57,20 +58,14 @@ class ParsedParts implements CombinationsProviderInterface
                 'valueNormalized'   => $loginNormalized,
             ];
             $result[] = [
-                'value'             =>
-                    $login.UriSubDelimiters::USER_INFO_SEPARATOR.
-                    self::$password,
+                'value'             => $login.$delimiter.self::$password,
                 'isValid'           => true,
-                'valueNormalized'   =>
-                    $loginNormalized.UriSubDelimiters::USER_INFO_SEPARATOR.
-                    self::$passwordNormalized,
+                'valueNormalized'   => $loginNormalized.$delimiter.self::$passwordNormalized,
             ];
         }
         foreach (UserLoginValuesProvider::getInvalidValues() as $invalidLogin) {
             $result[] = [
-                'value'             =>
-                    $invalidLogin.UriSubDelimiters::USER_INFO_SEPARATOR.
-                    self::$password,
+                'value'             => $invalidLogin.$delimiter.self::$password,
                 'isValid'           => false,
                 'valueNormalized'   => '',
             ];
@@ -88,25 +83,21 @@ class ParsedParts implements CombinationsProviderInterface
      *
      * @return  array                               Combinations data.
      ************************************************************************/
-    private static function getPasswordCombinations(): array {
-        $result = [];
+    private static function getPasswordCombinations(): array
+    {
+        $delimiter  = UriSubDelimiters::USER_INFO_SEPARATOR;
+        $result     = [];
 
         foreach (UserPasswordValuesProvider::getValidValues() as $password => $passwordNormalized) {
             $result[] = [
-                'value'             =>
-                    self::$login.UriSubDelimiters::USER_INFO_SEPARATOR.
-                    $password,
+                'value'             => self::$login.$delimiter.$password,
                 'isValid'           => true,
-                'valueNormalized'   =>
-                    self::$loginNormalized.UriSubDelimiters::USER_INFO_SEPARATOR.
-                    $passwordNormalized,
+                'valueNormalized'   => self::$loginNormalized.$delimiter.$passwordNormalized,
             ];
         }
         foreach (UserPasswordValuesProvider::getInvalidValues() as $invalidPassword) {
             $result[] = [
-                'value'             =>
-                    self::$login.UriSubDelimiters::USER_INFO_SEPARATOR.
-                    $invalidPassword,
+                'value'             => self::$login.$delimiter.$invalidPassword,
                 'isValid'           => false,
                 'valueNormalized'   => '',
             ];

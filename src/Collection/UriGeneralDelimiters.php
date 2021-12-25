@@ -6,8 +6,6 @@ namespace HNV\Http\Uri\Collection;
 use HNV\Http\Helper\Collection\CollectionInterface;
 
 use function count;
-use function str_split;
-use function array_unique;
 /** ***********************************************************************************************
  * URI general delimiters collection.
  *
@@ -16,6 +14,8 @@ use function array_unique;
  *************************************************************************************************/
 class UriGeneralDelimiters implements CollectionInterface
 {
+    use CharactersSetProviderTrait;
+
     public const SCHEME_DELIMITER           = ':';
     public const AUTHORITY_DELIMITER        = '//';
     public const USER_INFO_DELIMITER        = '@';
@@ -32,7 +32,7 @@ class UriGeneralDelimiters implements CollectionInterface
     public static function get(): array
     {
         if (count(self::$collection) === 0) {
-            $delimiters         = [
+            self::$collection = self::getUniqueSingleCharactersSet([
                 self::SCHEME_DELIMITER,
                 self::AUTHORITY_DELIMITER,
                 self::USER_INFO_DELIMITER,
@@ -41,16 +41,7 @@ class UriGeneralDelimiters implements CollectionInterface
                 self::PORT_DELIMITER,
                 self::QUERY_DELIMITER,
                 self::FRAGMENT_DELIMITER,
-            ];
-            $delimitersChars    = [];
-
-            foreach ($delimiters as $value) {
-                foreach (str_split($value) as $char) {
-                    $delimitersChars[] = $char;
-                }
-            }
-
-            self::$collection = array_unique($delimitersChars);
+            ]);
         }
 
         return self::$collection;

@@ -5,17 +5,18 @@ namespace HNV\Http\Uri\Normalizer;
 
 use HNV\Http\Helper\Normalizer\{
     NormalizerInterface,
-    NormalizingException
+    NormalizingException,
 };
 use HNV\Http\Uri\Collection\{
     UriSubDelimiters,
-    PathAllowedCharacters
+    PathAllowedCharacters,
 };
 
 use function strlen;
 use function str_replace;
 use function implode;
 use function explode;
+use function array_map;
 use function rawurlencode;
 use function rawurldecode;
 /** ***********************************************************************************************
@@ -72,13 +73,12 @@ class Path implements NormalizerInterface
             throw new NormalizingException('value is empty string');
         }
 
-        $result = rawurlencode(rawurldecode($value));
+        $result                 = rawurlencode(rawurldecode($value));
+        $allowedChars           = PathAllowedCharacters::get();
+        $allowedCharsEncoded    = array_map(function(string $value): string {
+            return rawurlencode($value);
+        }, $allowedChars);
 
-        foreach (PathAllowedCharacters::get() as $char) {
-            $charEncoded    = rawurlencode($char);
-            $result         = str_replace($charEncoded, $char, $result);
-        }
-
-        return $result;
+        return str_replace($allowedCharsEncoded, $allowedChars, $result);
     }
 }

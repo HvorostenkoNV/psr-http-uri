@@ -5,7 +5,7 @@ namespace HNV\Http\Uri\Normalizer;
 
 use HNV\Http\Helper\Normalizer\{
     NormalizerInterface,
-    NormalizingException
+    NormalizingException,
 };
 
 use function is_numeric;

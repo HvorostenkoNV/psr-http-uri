@@ -5,30 +5,28 @@ namespace HNV\Http\UriTests\CombinationsProvider\Authority;
 
 use HNV\Http\Uri\Collection\{
     UriGeneralDelimiters,
-    SchemeStandardPorts
+    SchemeStandardPorts,
 };
 use HNV\Http\UriTests\CombinationsProvider\{
     CombinationsProviderInterface,
-    ValidValuesTrait
+    AbstractCombinationsProvider,
 };
 use HNV\Http\UriTests\CombinationsProvider\UserInfo\CombinedValue as UserInfoCombinationsProvider;
 use HNV\Http\UriTests\ValuesProvider\{
     Host    as HostValuesProvider,
-    Port    as PortValuesProvider
+    Port    as PortValuesProvider,
 };
 
 use function strlen;
 use function array_merge;
 /** ***********************************************************************************************
- * URI authority different combinations provider.
+ * URI authority different combination`s provider.
  *
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
-class CombinedValue implements CombinationsProviderInterface
+class CombinedValue extends AbstractCombinationsProvider implements CombinationsProviderInterface
 {
-    use ValidValuesTrait;
-
     private static array $userInfoValidCombinations     = [];
     private static array $userInfoInvalidCombinations   = [];
     /** **********************************************************************
@@ -49,7 +47,6 @@ class CombinedValue implements CombinationsProviderInterface
         $result = [];
 
         self::initializeDefaultValues();
-        self::initializeWorkableValues();
 
         foreach ([
             self::getUserInfoCombinations(),
@@ -63,23 +60,21 @@ class CombinedValue implements CombinationsProviderInterface
         return $result;
     }
     /** **********************************************************************
-     * Initialize workable values.
-     *
-     * @return void
+     * @inheritDoc
      ************************************************************************/
-    private static function initializeWorkableValues()
+    protected static function initializeDefaultValues()
     {
+        parent::initializeDefaultValues();
+
         foreach (UserInfoCombinationsProvider::get() as $combination) {
             $valueIsValid           = strlen($combination['value']) > 0;
-            $combinationModified = array_merge($combination, [
+            $combinationModified    = array_merge($combination, [
                 'user_info' => $combination['value'],
             ]);
 
-            if ($valueIsValid) {
-                self::$userInfoValidCombinations[]      = $combinationModified;
-            } else {
-                self::$userInfoInvalidCombinations[]    = $combinationModified;
-            }
+            $valueIsValid
+                ? self::$userInfoValidCombinations[]    = $combinationModified
+                : self::$userInfoInvalidCombinations[]  = $combinationModified;
         }
     }
     /** **********************************************************************
@@ -89,7 +84,9 @@ class CombinedValue implements CombinationsProviderInterface
      ************************************************************************/
     private static function getUserInfoCombinations(): array
     {
-        $result = [];
+        $userInfoDelimiter  = UriGeneralDelimiters::USER_INFO_DELIMITER;
+        $portDelimiter      = UriGeneralDelimiters::PORT_DELIMITER;
+        $result             = [];
 
         foreach (self::$userInfoValidCombinations as $combination) {
             $result[] = [
@@ -98,10 +95,8 @@ class CombinedValue implements CombinationsProviderInterface
                 'password'  => $combination['password'],
                 'host'      => self::$host,
                 'port'      => self::$port,
-                'value'     =>
-                    $combination['user_info'].UriGeneralDelimiters::USER_INFO_DELIMITER.
-                    self::$hostNormalized.
-                    UriGeneralDelimiters::PORT_DELIMITER.self::$portNormalized,
+                'value'     => $combination['user_info'].$userInfoDelimiter.
+                    self::$hostNormalized.$portDelimiter.self::$portNormalized,
             ];
             $result[] = [
                 'scheme'    => '',
@@ -117,9 +112,7 @@ class CombinedValue implements CombinationsProviderInterface
                 'password'  => $combination['password'],
                 'host'      => self::$host,
                 'port'      => 0,
-                'value'     =>
-                    $combination['user_info'].UriGeneralDelimiters::USER_INFO_DELIMITER.
-                    self::$hostNormalized,
+                'value'     => $combination['user_info'].$userInfoDelimiter.self::$hostNormalized,
             ];
             $result[] = [
                 'scheme'    => '',
@@ -137,9 +130,7 @@ class CombinedValue implements CombinationsProviderInterface
                 'password'  => $combination['password'],
                 'host'      => self::$host,
                 'port'      => self::$port,
-                'value'     =>
-                    self::$hostNormalized.
-                    UriGeneralDelimiters::PORT_DELIMITER.self::$portNormalized,
+                'value'     => self::$hostNormalized.$portDelimiter.self::$portNormalized,
             ];
             $result[] = [
                 'scheme'    => '',
@@ -176,7 +167,9 @@ class CombinedValue implements CombinationsProviderInterface
      ************************************************************************/
     private static function getHostCombinations(): array
     {
-        $result = [];
+        $userInfoDelimiter  = UriGeneralDelimiters::USER_INFO_DELIMITER;
+        $portDelimiter      = UriGeneralDelimiters::PORT_DELIMITER;
+        $result             = [];
 
         foreach (HostValuesProvider::getValidValues() as $host => $hostNormalized) {
             $result[] = [
@@ -185,10 +178,8 @@ class CombinedValue implements CombinationsProviderInterface
                 'password'  => self::$password,
                 'host'      => $host,
                 'port'      => self::$port,
-                'value'     =>
-                    self::$userInfoNormalized.UriGeneralDelimiters::USER_INFO_DELIMITER.
-                    $hostNormalized.
-                    UriGeneralDelimiters::PORT_DELIMITER.self::$portNormalized,
+                'value'     => self::$userInfoNormalized.$userInfoDelimiter.
+                    $hostNormalized.$portDelimiter.self::$portNormalized,
             ];
             $result[] = [
                 'scheme'    => '',
@@ -196,9 +187,7 @@ class CombinedValue implements CombinationsProviderInterface
                 'password'  => '',
                 'host'      => $host,
                 'port'      => self::$port,
-                'value'     =>
-                    $hostNormalized.
-                    UriGeneralDelimiters::PORT_DELIMITER.self::$portNormalized,
+                'value'     => $hostNormalized.$portDelimiter.self::$portNormalized,
             ];
             $result[] = [
                 'scheme'    => '',
@@ -206,9 +195,7 @@ class CombinedValue implements CombinationsProviderInterface
                 'password'  => self::$password,
                 'host'      => $host,
                 'port'      => 0,
-                'value'     =>
-                    self::$userInfoNormalized.UriGeneralDelimiters::USER_INFO_DELIMITER.
-                    $hostNormalized,
+                'value'     => self::$userInfoNormalized.$userInfoDelimiter.$hostNormalized,
             ];
             $result[] = [
                 'scheme'    => '',
@@ -263,7 +250,9 @@ class CombinedValue implements CombinationsProviderInterface
      ************************************************************************/
     private static function getPortCombinations(): array
     {
-        $result = [];
+        $userInfoDelimiter  = UriGeneralDelimiters::USER_INFO_DELIMITER;
+        $portDelimiter      = UriGeneralDelimiters::PORT_DELIMITER;
+        $result             = [];
 
         foreach (PortValuesProvider::getValidValues() as $port => $portNormalized) {
             $result[] = [
@@ -272,10 +261,8 @@ class CombinedValue implements CombinationsProviderInterface
                 'password'  => self::$password,
                 'host'      => self::$host,
                 'port'      => $port,
-                'value'     =>
-                    self::$userInfoNormalized.UriGeneralDelimiters::USER_INFO_DELIMITER.
-                    self::$hostNormalized.
-                    UriGeneralDelimiters::PORT_DELIMITER.$portNormalized,
+                'value'     => self::$userInfoNormalized.$userInfoDelimiter.
+                    self::$hostNormalized.$portDelimiter.$portNormalized,
             ];
             $result[] = [
                 'scheme'    => '',
@@ -283,9 +270,7 @@ class CombinedValue implements CombinationsProviderInterface
                 'password'  => '',
                 'host'      => self::$host,
                 'port'      => $port,
-                'value'     =>
-                    self::$hostNormalized.
-                    UriGeneralDelimiters::PORT_DELIMITER.$portNormalized,
+                'value'     => self::$hostNormalized.$portDelimiter.$portNormalized,
             ];
             $result[] = [
                 'scheme'    => '',
@@ -311,9 +296,7 @@ class CombinedValue implements CombinationsProviderInterface
                 'password'  => self::$password,
                 'host'      => self::$host,
                 'port'      => $invalidPort,
-                'value'     =>
-                    self::$userInfoNormalized.UriGeneralDelimiters::USER_INFO_DELIMITER.
-                    self::$hostNormalized,
+                'value'     => self::$userInfoNormalized.$userInfoDelimiter.self::$hostNormalized,
             ];
             $result[] = [
                 'scheme'    => '',
@@ -350,7 +333,8 @@ class CombinedValue implements CombinationsProviderInterface
      ************************************************************************/
     private static function getSchemeWithPortCombinations(): array
     {
-        $result = [];
+        $userInfoDelimiter  = UriGeneralDelimiters::USER_INFO_DELIMITER;
+        $result             = [];
 
         foreach (SchemeStandardPorts::get() as $port => $scheme) {
             $result[] = [
@@ -359,9 +343,7 @@ class CombinedValue implements CombinationsProviderInterface
                 'password'  => self::$password,
                 'host'      => self::$host,
                 'port'      => $port,
-                'value'     =>
-                    self::$userInfoNormalized.UriGeneralDelimiters::USER_INFO_DELIMITER.
-                    self::$hostNormalized,
+                'value'     => self::$userInfoNormalized.$userInfoDelimiter.self::$hostNormalized,
             ];
             $result[] = [
                 'scheme'    => $scheme,

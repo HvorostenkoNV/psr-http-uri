@@ -21,12 +21,14 @@ use HNV\Http\UriTests\ValuesProvider\{
 use function strlen;
 use function str_starts_with;
 /** ***********************************************************************************************
- * URI valid values provider.
+ * Abstract URI combinations provider.
+ *
+ * Generates basic valid values.
  *
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
-trait ValidValuesTrait
+abstract class AbstractCombinationsProvider
 {
     protected static string $scheme                 = '';
     protected static string $schemeNormalized       = '';

@@ -5,11 +5,11 @@ namespace HNV\Http\Uri\Normalizer;
 
 use HNV\Http\Helper\Normalizer\{
     NormalizerInterface,
-    NormalizingException
+    NormalizingException,
 };
 use HNV\Http\Uri\Collection\{
     UriSubDelimiters,
-    QueryAllowedCharacters
+    QueryAllowedCharacters,
 };
 
 use function strlen;
@@ -44,21 +44,31 @@ class Query implements NormalizerInterface
 
             if (strlen($key) === 0) {
                 continue;
-            } elseif (strlen($keyValue) === 0) {
-                try {
-                    $result[] = self::normalizeValue($key);
-                } catch (NormalizingException $exception) {
-                    throw new NormalizingException("query part \"$key\" is invalid", 0, $exception);
-                }
-            } else {
-                try {
-                    $keyNormalized      = self::normalizeValue($key);
-                    $keyValueNormalized = self::normalizeValue($keyValue);
-                    $result[]           = $keyNormalized.$fieldValueSeparator.$keyValueNormalized;
-                } catch (NormalizingException $exception) {
-                    throw new NormalizingException("query part \"$key\" is invalid", 0, $exception);
-                }
             }
+
+            try {
+                $keyNormalized = self::normalizeValue($key);
+            } catch (NormalizingException $exception) {
+                throw new NormalizingException(
+                    "query part \"$key\" is invalid",
+                    0,
+                    $exception
+                );
+            }
+
+            try {
+                $keyValueNormalized = strlen($keyValue) > 0 ? self::normalizeValue($keyValue) : null;
+            } catch (NormalizingException $exception) {
+                throw new NormalizingException(
+                    "query part \"$keyValue\" is invalid",
+                    0,
+                    $exception
+                );
+            }
+
+            $result[] = $keyValueNormalized
+                ? $keyNormalized.$fieldValueSeparator.$keyValueNormalized
+                : $keyNormalized;
         }
 
         return implode($fieldsSeparator, $result);

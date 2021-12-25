@@ -5,15 +5,15 @@ namespace HNV\Http\Uri\Normalizer\UserInfo;
 
 use HNV\Http\Helper\Normalizer\NormalizerInterface;
 
-use function rawurldecode;
 use function rawurlencode;
+use function rawurldecode;
 /** ***********************************************************************************************
  * URI user info value normalizer.
  *
  * @package HNV\Psr\Http\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
-class Value implements NormalizerInterface
+abstract class Value implements NormalizerInterface
 {
     /** **********************************************************************
      * @inheritDoc

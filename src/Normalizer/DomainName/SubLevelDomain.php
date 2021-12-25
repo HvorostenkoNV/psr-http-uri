@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace HNV\Http\Uri\Normalizer\DomainName;
 
-use HNV\Http\Uri\Collection\DomainNameAllowedCharacters;
 use HNV\Http\Helper\Normalizer\{
     NormalizerInterface,
-    NormalizingException
+    NormalizingException,
 };
+use HNV\Http\Uri\Collection\DomainNameAllowedCharacters;
+use HNV\Http\Uri\Normalizer\RegularExpressionCheckerTrait;
 
 use function strlen;
 use function strtolower;
 use function str_replace;
-use function preg_match;
 /** ***********************************************************************************************
  * Sub level domain normalizer.
  *
@@ -21,11 +21,11 @@ use function preg_match;
  *************************************************************************************************/
 class SubLevelDomain implements NormalizerInterface
 {
+    use RegularExpressionCheckerTrait;
+
     public const MAX_LENGTH = 63;
 
     private const MASK_PATTERN = '/^([a-z0-9]{1}[a-z0-9#SPECIAL_CHARS#]{0,}[a-z0-9]{1})|([a-z0-9]{1})$/';
-
-    private static ?string $mask = null;
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
@@ -33,8 +33,6 @@ class SubLevelDomain implements NormalizerInterface
     {
         $valueString    = (string) $value;
         $valueLowercase = strtolower($valueString);
-        $mask           = self::getMask();
-        $matches        = [];
         $maxLength      = self::MAX_LENGTH;
 
         if (strlen($valueLowercase) > $maxLength) {
@@ -43,32 +41,25 @@ class SubLevelDomain implements NormalizerInterface
             );
         }
 
-        preg_match($mask, $valueLowercase, $matches);
-        if (!isset($matches[0]) || $matches[0] !== $valueLowercase) {
+        if (!self::checkRegularExpressionMatch($valueLowercase)) {
             throw new NormalizingException(
-                "sub domain \"$valueString\" does not matched the pattern $mask"
+                "sub domain \"$valueString\" is invalid"
             );
         }
 
         return $valueLowercase;
     }
     /** **********************************************************************
-     * Get mask for preg match checking.
-     *
-     * @return  string                      Preg match mask.
+     * @inheritDoc
      ************************************************************************/
-    private static function getMask(): string
+    protected static function buildRegularExpressionMask(): string
     {
-        if (!self::$mask) {
-            $specialCharsMask = '';
+        $specialCharsMask = '';
 
-            foreach (DomainNameAllowedCharacters::get() as $char) {
-                $specialCharsMask .= "\\$char";
-            }
-
-            self::$mask = str_replace('#SPECIAL_CHARS#', $specialCharsMask, self::MASK_PATTERN);
+        foreach (DomainNameAllowedCharacters::get() as $char) {
+            $specialCharsMask .= "\\$char";
         }
 
-        return self::$mask;
+        return str_replace('#SPECIAL_CHARS#', $specialCharsMask, self::MASK_PATTERN);
     }
 }

@@ -5,11 +5,11 @@ namespace HNV\Http\UriTests\CombinationsProvider\FullString\CombinedValue;
 
 use HNV\Http\Uri\Collection\{
     UriGeneralDelimiters,
-    UriSubDelimiters
+    UriSubDelimiters,
 };
 use HNV\Http\UriTests\CombinationsProvider\{
     CombinationsProviderInterface,
-    ValidValuesTrait
+    AbstractCombinationsProvider,
 };
 use HNV\Http\UriTests\ValuesProvider\Path as PathValuesProvider;
 
@@ -18,15 +18,13 @@ use function ltrim;
 use function array_keys;
 use function array_merge;
 /** ***********************************************************************************************
- * URI full string different combinations provider (path combinations).
+ * URI full string different combination`s provider (path combinations).
  *
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
-class PathCombinations implements CombinationsProviderInterface
+class PathCombinations extends AbstractCombinationsProvider implements CombinationsProviderInterface
 {
-    use ValidValuesTrait;
-
     private static array $pathValidCombinations                 = [];
     private static array $pathInvalidCombinations               = [];
     private static array $pathWithoutAuthorityValidCombinations = [];
@@ -38,7 +36,6 @@ class PathCombinations implements CombinationsProviderInterface
         $result = [];
 
         self::initializeDefaultValues();
-        self::initializeWorkableValues();
 
         foreach ([
             self::getFullValues(),
@@ -53,12 +50,12 @@ class PathCombinations implements CombinationsProviderInterface
         return $result;
     }
     /** **********************************************************************
-     * Initialize workable values.
-     *
-     * @return void
+     * @inheritDoc
      ************************************************************************/
-    private static function initializeWorkableValues()
+    protected static function initializeDefaultValues()
     {
+        parent::initializeDefaultValues();
+
         $pathSeparator = UriSubDelimiters::PATH_PARTS_SEPARATOR;
 
         foreach (PathValuesProvider::getValidValues() as $path => $pathNormalized) {
@@ -81,7 +78,11 @@ class PathCombinations implements CombinationsProviderInterface
      ************************************************************************/
     private static function getFullValues(): array
     {
-        $result = [];
+        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_DELIMITER;
+        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER;
+        $queryDelimiter     = UriGeneralDelimiters::QUERY_DELIMITER;
+        $fragmentDelimiter  = UriGeneralDelimiters::FRAGMENT_DELIMITER;
+        $result             = [];
 
         foreach (self::$pathValidCombinations as $path => $pathNormalized) {
             $result[] = [
@@ -93,12 +94,10 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $path,
                 'query'     => self::$query,
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    $pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                    $authorityDelimiter.self::$authorityNormalized.
+                    $pathNormalized.$queryDelimiter.self::$queryNormalized.
+                    $fragmentDelimiter.self::$fragmentNormalized,
             ];
         }
         foreach (self::$pathInvalidCombinations as $invalidPath) {
@@ -111,11 +110,10 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $invalidPath,
                 'query'     => self::$query,
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                    $authorityDelimiter.self::$authorityNormalized.
+                    $queryDelimiter.self::$queryNormalized.
+                    $fragmentDelimiter.self::$fragmentNormalized,
             ];
         }
 
@@ -232,7 +230,10 @@ class PathCombinations implements CombinationsProviderInterface
      ************************************************************************/
     private static function getValuesWithoutAuthority(): array
     {
-        $result = [];
+        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_DELIMITER;
+        $queryDelimiter     = UriGeneralDelimiters::QUERY_DELIMITER;
+        $fragmentDelimiter  = UriGeneralDelimiters::FRAGMENT_DELIMITER;
+        $result             = [];
 
         foreach (self::$pathWithoutAuthorityValidCombinations as $path => $pathNormalized) {
             $result[] = [
@@ -244,11 +245,9 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $path,
                 'query'     => self::$query,
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    $pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                    $pathNormalized.$queryDelimiter.self::$queryNormalized.
+                    $fragmentDelimiter.self::$fragmentNormalized,
             ];
             $result[] = [
                 'scheme'    => '',
@@ -259,10 +258,8 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $path,
                 'query'     => self::$query,
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    $pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => $pathNormalized.$queryDelimiter.self::$queryNormalized.
+                    $fragmentDelimiter.self::$fragmentNormalized,
             ];
             $result[] = [
                 'scheme'    => '',
@@ -273,9 +270,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $path,
                 'query'     => '',
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    $pathNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => $pathNormalized.$fragmentDelimiter.self::$fragmentNormalized,
             ];
             $result[] = [
                 'scheme'    => '',
@@ -286,9 +281,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $path,
                 'query'     => self::$query,
                 'fragment'  => '',
-                'value'     =>
-                    $pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
+                'value'     => $pathNormalized.$queryDelimiter.self::$queryNormalized,
             ];
             $result[] = [
                 'scheme'    => '',
@@ -310,10 +303,8 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $path,
                 'query'     => '',
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    $pathNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                    $pathNormalized.$fragmentDelimiter.self::$fragmentNormalized,
             ];
             $result[] = [
                 'scheme'    => self::$scheme,
@@ -324,10 +315,8 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $path,
                 'query'     => self::$query,
                 'fragment'  => '',
-                'value'     =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    $pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
+                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                    $pathNormalized.$queryDelimiter.self::$queryNormalized,
             ];
             $result[] = [
                 'scheme'    => self::$scheme,
@@ -338,9 +327,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $path,
                 'query'     => '',
                 'fragment'  => '',
-                'value'     =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    $pathNormalized,
+                'value'     => self::$schemeNormalized.$schemeDelimiter.$pathNormalized,
             ];
         }
         foreach (self::$pathInvalidCombinations as $invalidPath) {
@@ -443,7 +430,10 @@ class PathCombinations implements CombinationsProviderInterface
      ************************************************************************/
     private static function getValuesWithoutQuery(): array
     {
-        $result = [];
+        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_DELIMITER;
+        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER;
+        $fragmentDelimiter  = UriGeneralDelimiters::FRAGMENT_DELIMITER;
+        $result             = [];
 
         foreach (self::$pathValidCombinations as $path => $pathNormalized) {
             $result[] = [
@@ -455,11 +445,9 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $path,
                 'query'     => '',
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    $pathNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                    $authorityDelimiter.self::$authorityNormalized.
+                    $pathNormalized.$fragmentDelimiter.self::$fragmentNormalized,
             ];
             $result[] = [
                 'scheme'    => self::$scheme,
@@ -470,10 +458,8 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $path,
                 'query'     => '',
                 'fragment'  => '',
-                'value'     =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    $pathNormalized,
+                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                    $authorityDelimiter.self::$authorityNormalized.$pathNormalized,
             ];
         }
         foreach (self::$pathInvalidCombinations as $invalidPath) {
@@ -486,10 +472,9 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $invalidPath,
                 'query'     => '',
                 'fragment'  => self::$fragment,
-                'value'     =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                    $authorityDelimiter.self::$authorityNormalized.
+                    $fragmentDelimiter.self::$fragmentNormalized,
             ];
             $result[] = [
                 'scheme'    => self::$scheme,
@@ -500,9 +485,8 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $invalidPath,
                 'query'     => '',
                 'fragment'  => '',
-                'value'     =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized,
+                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                    $authorityDelimiter.self::$authorityNormalized,
             ];
         }
 
@@ -515,7 +499,10 @@ class PathCombinations implements CombinationsProviderInterface
      ************************************************************************/
     private static function getValuesWithoutFragment(): array
     {
-        $result = [];
+        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_DELIMITER;
+        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER;
+        $queryDelimiter     = UriGeneralDelimiters::QUERY_DELIMITER;
+        $result             = [];
 
         foreach (self::$pathValidCombinations as $path => $pathNormalized) {
             $result[] = [
@@ -527,11 +514,9 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $path,
                 'query'     => self::$query,
                 'fragment'  => '',
-                'value'     =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    $pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
+                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                    $authorityDelimiter.self::$authorityNormalized.
+                    $pathNormalized.$queryDelimiter.self::$queryNormalized,
             ];
         }
         foreach (self::$pathInvalidCombinations as $invalidPath) {
@@ -544,10 +529,9 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'      => $invalidPath,
                 'query'     => self::$query,
                 'fragment'  => '',
-                'value'     =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
+                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                    $authorityDelimiter.self::$authorityNormalized.
+                    $queryDelimiter.self::$queryNormalized,
             ];
         }
 

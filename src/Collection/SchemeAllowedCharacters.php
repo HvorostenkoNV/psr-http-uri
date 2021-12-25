@@ -5,7 +5,7 @@ namespace HNV\Http\Uri\Collection;
 
 use HNV\Http\Helper\Collection\CollectionInterface;
 /** ***********************************************************************************************
- * URI scheme allowed characters collection.
+ * URI scheme allowed character`s collection.
  *
  * @package HNV\Psr\Http\Uri
  * @author  Hvorostenko

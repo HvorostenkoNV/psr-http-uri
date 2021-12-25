@@ -5,9 +5,7 @@ namespace HNV\Http\Uri\Collection;
 
 use HNV\Http\Helper\Collection\CollectionInterface;
 
-use function str_split;
 use function array_merge;
-use function array_unique;
 use function array_diff;
 /** ***********************************************************************************************
  * URI sub delimiters collection.
@@ -17,6 +15,8 @@ use function array_diff;
  *************************************************************************************************/
 class UriSubDelimiters implements CollectionInterface
 {
+    use CharactersSetProviderTrait;
+
     public const USER_INFO_SEPARATOR            = ':';
     public const PATH_PARTS_SEPARATOR           = '/';
     public const QUERY_FIELDS_SEPARATOR         = '&';
@@ -51,16 +51,8 @@ class UriSubDelimiters implements CollectionInterface
                 self::OTHER_SUB_DELIMITERS
             );
             $generalDelimiters  = UriGeneralDelimiters::get();
-            $separatorsChars    = [];
-
-            foreach ($separators as $value) {
-                foreach (str_split($value) as $char) {
-                    $separatorsChars[] = $char;
-                }
-            }
-
-            $allSubDelimiters   = array_unique($separatorsChars);
-            self::$collection   = array_diff($allSubDelimiters, $generalDelimiters);
+            $separatorsChars    = self::getUniqueSingleCharactersSet($separators);
+            self::$collection   = array_diff($separatorsChars, $generalDelimiters);
         }
 
         return self::$collection;

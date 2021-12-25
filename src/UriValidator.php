@@ -29,24 +29,18 @@ class UriValidator
         string  $host       = '',
         int     $port       = 0
     ): void {
-        $invalidConditions  = [
+        $invalidConditions = [
             strlen($userInfo) > 0 && strlen($host) === 0,
             $port             > 0 && strlen($host) === 0,
         ];
-        $authorityIsValid   = true;
 
         foreach ($invalidConditions as $condition) {
             if ($condition) {
-                $authorityIsValid = false;
-                break;
+                throw new RuntimeException(
+                    "authority with user info \"$userInfo\", ".
+                    "host \"$host\" and port \"$port\" can not be build"
+                );
             }
-        }
-
-        if (!$authorityIsValid) {
-            throw new RuntimeException(
-                "authority with user info \"$userInfo\", ".
-                "host \"$host\" and port \"$port\" can not be build"
-            );
         }
     }
     /** **********************************************************************
@@ -64,26 +58,22 @@ class UriValidator
         string  $authority  = '',
         string  $path       = ''
     ): void {
-        $validConditions    = [
+        $validConditions = [
             strlen($scheme)  >  0 && strlen($authority)  >  0 && strlen($path)  >  0,
             strlen($scheme)  >  0 && strlen($authority) === 0 && strlen($path)  >  0,
             strlen($scheme)  >  0 && strlen($authority)  >  0 && strlen($path) === 0,
             strlen($scheme) === 0 && strlen($authority) === 0 && strlen($path)  >  0,
         ];
-        $uriIsValid         = false;
 
         foreach ($validConditions as $condition) {
             if ($condition) {
-                $uriIsValid = true;
-                break;
+                return;
             }
         }
 
-        if (!$uriIsValid) {
-            throw new RuntimeException(
-                "URI with scheme \"$scheme\", ".
-                "authority \"$authority\" and path \"$path\" can not be build"
-            );
-        }
+        throw new RuntimeException(
+            "URI with scheme \"$scheme\", ".
+            "authority \"$authority\" and path \"$path\" can not be build"
+        );
     }
 }

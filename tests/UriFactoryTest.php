@@ -7,7 +7,7 @@ use Throwable;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use HNV\Http\UriTests\CombinationsProvider\FullString\ParsedParts\{
-    FullStringWithParsedParts as FullStringWithParsedPartsProvider
+    FullStringWithParsedParts as FullStringWithParsedPartsProvider,
 };
 use HNV\Http\Uri\UriFactory;
 /** ***********************************************************************************************

@@ -15,12 +15,12 @@ use HNV\Http\Uri\Normalizer\{
     Port                as PortNormalizer,
     Path                as PathNormalizer,
     Query               as QueryNormalizer,
-    Fragment            as FragmentNormalizer
+    Fragment            as FragmentNormalizer,
 };
 use HNV\Http\Uri\Collection\{
     UriGeneralDelimiters,
     UriSubDelimiters,
-    SchemeStandardPorts
+    SchemeStandardPorts,
 };
 
 use function is_null;
@@ -37,7 +37,7 @@ class Uri implements UriInterface
 {
     private string  $scheme     = '';
     private string  $host       = '';
-    private int     $port       = 0;
+    private ?int    $port       = null;
     private string  $user       = '';
     private string  $password   = '';
     private string  $path       = '';
@@ -107,17 +107,11 @@ class Uri implements UriInterface
     {
         try {
             $newInstance = clone $this;
-            $newInstance->host = strlen($host) > 0
-                ? HostNormalizer::normalize($host)
-                : '';
+            $newInstance->host = strlen($host) > 0 ? HostNormalizer::normalize($host) : '';
 
             return $newInstance;
         } catch (NormalizingException $exception) {
-            throw new InvalidArgumentException(
-                "host \"$host\" is invalid",
-                0,
-                $exception
-            );
+            throw new InvalidArgumentException("host \"$host\" is invalid", 0, $exception);
         }
     }
     /** **********************************************************************
@@ -133,31 +127,27 @@ class Uri implements UriInterface
     public function withPort(int $port = 0): static
     {
         try {
-            $newInstance = clone $this;
-            $newInstance->port = $port !== 0
-                ? PortNormalizer::normalize($port)
-                : 0;
-
-            return $newInstance;
+            $portNormalized = $port !== 0 ? PortNormalizer::normalize($port) : 0;
         } catch (NormalizingException $exception) {
-            throw new InvalidArgumentException(
-                "port \"$port\" is invalid",
-                0,
-                $exception
-            );
+            throw new InvalidArgumentException("port \"$port\" is invalid", 0, $exception);
         }
+
+        $newInstance    = clone $this;
+        $standardPorts  = SchemeStandardPorts::get();
+        $portIsStandard =
+            isset($standardPorts[$portNormalized]) &&
+            $standardPorts[$portNormalized] === $this->getScheme();
+
+        $newInstance->port = $portNormalized === 0 || $portIsStandard ? null : $portNormalized;
+
+        return $newInstance;
     }
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
     public function getPort(): ?int
     {
-        $port           = $this->port;
-        $scheme         = $this->getScheme();
-        $standardPorts  = SchemeStandardPorts::get();
-        $portIsStandard = isset($standardPorts[$port]) && $standardPorts[$port] === $scheme;
-
-        return $port === 0 || $portIsStandard ? null : $port;
+        return $this->port;
     }
     /** **********************************************************************
      * @inheritDoc
@@ -192,17 +182,11 @@ class Uri implements UriInterface
     {
         try {
             $newInstance = clone $this;
-            $newInstance->path = strlen($path) > 0
-                ? PathNormalizer::normalize($path)
-                : '';
+            $newInstance->path = strlen($path) > 0 ? PathNormalizer::normalize($path) : '';
 
             return $newInstance;
         } catch (NormalizingException $exception) {
-            throw new InvalidArgumentException(
-                "path \"$path\" is invalid",
-                0,
-                $exception
-            );
+            throw new InvalidArgumentException("path \"$path\" is invalid", 0, $exception);
         }
     }
     /** **********************************************************************
@@ -219,17 +203,11 @@ class Uri implements UriInterface
     {
         try {
             $newInstance = clone $this;
-            $newInstance->query = strlen($query) > 0
-                ? QueryNormalizer::normalize($query)
-                : '';
+            $newInstance->query = strlen($query) > 0 ? QueryNormalizer::normalize($query) : '';
 
             return $newInstance;
         } catch (NormalizingException $exception) {
-            throw new InvalidArgumentException(
-                "query \"$query\" is invalid",
-                0,
-                $exception
-            );
+            throw new InvalidArgumentException("query \"$query\" is invalid", 0, $exception);
         }
     }
     /** **********************************************************************

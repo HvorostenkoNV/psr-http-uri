@@ -7,7 +7,7 @@ use HNV\Http\Helper\Collection\CollectionInterface;
 
 use function array_merge;
 /** ***********************************************************************************************
- * URI path allowed characters collection.
+ * URI path allowed character`s collection.
  *
  * @package HNV\Psr\Http\Uri
  * @author  Hvorostenko

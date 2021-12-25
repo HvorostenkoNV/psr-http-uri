@@ -5,11 +5,11 @@ namespace HNV\Http\UriTests\CombinationsProvider\FullString\ParsedParts;
 
 use HNV\Http\Uri\Collection\{
     UriGeneralDelimiters,
-    UriSubDelimiters
+    UriSubDelimiters,
 };
 use HNV\Http\UriTests\CombinationsProvider\{
     CombinationsProviderInterface,
-    ValidValuesTrait
+    AbstractCombinationsProvider,
 };
 use HNV\Http\UriTests\ValuesProvider\Path as PathValuesProvider;
 
@@ -24,10 +24,8 @@ use function array_merge;
  * @package HNV\Psr\Http\Tests\Uri
  * @author  Hvorostenko
  *************************************************************************************************/
-class PathCombinations implements CombinationsProviderInterface
+class PathCombinations extends AbstractCombinationsProvider implements CombinationsProviderInterface
 {
-    use ValidValuesTrait;
-
     private static array $pathValidCombinations                 = [];
     private static array $pathInvalidCombinations               = [];
     private static array $pathValidCombinationsWithoutAuthority = [];
@@ -39,7 +37,6 @@ class PathCombinations implements CombinationsProviderInterface
         $result = [];
 
         self::initializeDefaultValues();
-        self::initializeWorkableValues();
 
         foreach ([
             self::getFullValues(),
@@ -54,12 +51,12 @@ class PathCombinations implements CombinationsProviderInterface
         return $result;
     }
     /** **********************************************************************
-     * Initialize workable values.
-     *
-     * @return void
+     * @inheritDoc
      ************************************************************************/
-    private static function initializeWorkableValues()
+    protected static function initializeDefaultValues()
     {
+        parent::initializeDefaultValues();
+
         $pathSeparator = UriSubDelimiters::PATH_PARTS_SEPARATOR;
 
         foreach (PathValuesProvider::getValidValues() as $path => $pathNormalized) {
@@ -92,16 +89,17 @@ class PathCombinations implements CombinationsProviderInterface
      ************************************************************************/
     private static function getFullValues(): array
     {
-        $result = [];
+        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_DELIMITER;
+        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER;
+        $queryDelimiter     = UriGeneralDelimiters::QUERY_DELIMITER;
+        $fragmentDelimiter  = UriGeneralDelimiters::FRAGMENT_DELIMITER;
+        $result             = [];
 
         foreach (self::$pathValidCombinations as $path => $pathNormalized) {
             $result[] = [
-                'value'             =>
-                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $path.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
+                'value'             => self::$scheme.$schemeDelimiter.
+                    $authorityDelimiter.self::$authority.$path.
+                    $queryDelimiter.self::$query.$fragmentDelimiter.self::$fragment,
                 'isValid'           => true,
                 'scheme'            => self::$schemeNormalized,
                 'userInfo'          => self::$userInfoNormalized,
@@ -111,22 +109,17 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'              => $pathNormalized,
                 'query'             => self::$queryNormalized,
                 'fragment'          => self::$fragmentNormalized,
-                'valueNormalized'   =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    $pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'valueNormalized'   => self::$schemeNormalized.$schemeDelimiter.
+                    $authorityDelimiter.self::$authorityNormalized.$pathNormalized.
+                    $queryDelimiter.self::$queryNormalized.
+                    $fragmentDelimiter.self::$fragmentNormalized,
             ];
         }
         foreach (self::$pathInvalidCombinations as $invalidPath) {
             $result[] = [
-                'value'             =>
-                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $invalidPath.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
+                'value'             => self::$scheme.$schemeDelimiter.
+                    $authorityDelimiter.self::$authority.$invalidPath.
+                    $queryDelimiter.self::$query.$fragmentDelimiter.self::$fragment,
                 'isValid'           => false,
                 'scheme'            => '',
                 'userInfo'          => '',
@@ -149,15 +142,15 @@ class PathCombinations implements CombinationsProviderInterface
      ************************************************************************/
     private static function getValuesWithoutScheme(): array
     {
-        $result = [];
+        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER;
+        $queryDelimiter     = UriGeneralDelimiters::QUERY_DELIMITER;
+        $fragmentDelimiter  = UriGeneralDelimiters::FRAGMENT_DELIMITER;
+        $result             = [];
 
         foreach (array_keys(self::$pathValidCombinations) as $path) {
             $result[] = [
-                'value'             =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $path.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
+                'value'             => $authorityDelimiter.self::$authority.$path.
+                    $queryDelimiter.self::$query.$fragmentDelimiter.self::$fragment,
                 'isValid'           => false,
                 'scheme'            => '',
                 'userInfo'          => '',
@@ -170,10 +163,8 @@ class PathCombinations implements CombinationsProviderInterface
                 'valueNormalized'   => '',
             ];
             $result[] = [
-                'value'             =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $path.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
+                'value'             => $authorityDelimiter.self::$authority.$path.
+                    $fragmentDelimiter.self::$fragment,
                 'isValid'           => false,
                 'scheme'            => '',
                 'userInfo'          => '',
@@ -186,10 +177,8 @@ class PathCombinations implements CombinationsProviderInterface
                 'valueNormalized'   => '',
             ];
             $result[] = [
-                'value'             =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $path.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query,
+                'value'             => $authorityDelimiter.self::$authority.$path.
+                    $queryDelimiter.self::$query,
                 'isValid'           => false,
                 'scheme'            => '',
                 'userInfo'          => '',
@@ -202,9 +191,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'valueNormalized'   => '',
             ];
             $result[] = [
-                'value'             =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $path,
+                'value'             => $authorityDelimiter.self::$authority.$path,
                 'isValid'           => false,
                 'scheme'            => '',
                 'userInfo'          => '',
@@ -219,11 +206,8 @@ class PathCombinations implements CombinationsProviderInterface
         }
         foreach (self::$pathInvalidCombinations as $invalidPath) {
             $result[] = [
-                'value'             =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $invalidPath.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
+                'value'             => $authorityDelimiter.self::$authority.$invalidPath.
+                    $queryDelimiter.self::$query.$fragmentDelimiter.self::$fragment,
                 'isValid'           => false,
                 'scheme'            => '',
                 'userInfo'          => '',
@@ -236,10 +220,8 @@ class PathCombinations implements CombinationsProviderInterface
                 'valueNormalized'   => '',
             ];
             $result[] = [
-                'value'             =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $invalidPath.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
+                'value'             => $authorityDelimiter.self::$authority.$invalidPath.
+                    $fragmentDelimiter.self::$fragment,
                 'isValid'           => false,
                 'scheme'            => '',
                 'userInfo'          => '',
@@ -252,10 +234,8 @@ class PathCombinations implements CombinationsProviderInterface
                 'valueNormalized'   => '',
             ];
             $result[] = [
-                'value'             =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $invalidPath.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query,
+                'value'             => $authorityDelimiter.self::$authority.$invalidPath.
+                    $queryDelimiter.self::$query,
                 'isValid'           => false,
                 'scheme'            => '',
                 'userInfo'          => '',
@@ -268,9 +248,7 @@ class PathCombinations implements CombinationsProviderInterface
                 'valueNormalized'   => '',
             ];
             $result[] = [
-                'value'             =>
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $invalidPath,
+                'value'             => $authorityDelimiter.self::$authority.$invalidPath,
                 'isValid'           => false,
                 'scheme'            => '',
                 'userInfo'          => '',
@@ -293,15 +271,15 @@ class PathCombinations implements CombinationsProviderInterface
      ************************************************************************/
     private static function getValuesWithoutAuthority(): array
     {
-        $result = [];
+        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_DELIMITER;
+        $queryDelimiter     = UriGeneralDelimiters::QUERY_DELIMITER;
+        $fragmentDelimiter  = UriGeneralDelimiters::FRAGMENT_DELIMITER;
+        $result             = [];
 
         foreach (self::$pathValidCombinationsWithoutAuthority as $path => $pathNormalized) {
             $result[] = [
-                'value'             =>
-                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    $path.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
+                'value'             => self::$scheme.$schemeDelimiter.$path.
+                    $queryDelimiter.self::$query.$fragmentDelimiter.self::$fragment,
                 'isValid'           => true,
                 'scheme'            => self::$schemeNormalized,
                 'userInfo'          => '',
@@ -311,320 +289,114 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'              => $pathNormalized,
                 'query'             => self::$queryNormalized,
                 'fragment'          => self::$fragmentNormalized,
-                'valueNormalized'   =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    $pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'valueNormalized'   => self::$schemeNormalized.$schemeDelimiter.$pathNormalized.
+                    $queryDelimiter.self::$queryNormalized.
+                    $fragmentDelimiter.self::$fragmentNormalized,
             ];
-//            $result[] = [
-//                'value'             =>
-//                    $path.
-//                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query.
-//                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
-//                'isValid'           => true,
-//                'scheme'            => '',
-//                'userInfo'          => '',
-//                'host'              => '',
-//                'port'              => 0,
-//                'authority'         => '',
-//                'path'              => $pathNormalized,
-//                'query'             => self::$queryNormalized,
-//                'fragment'          => self::$fragmentNormalized,
-//                'valueNormalized'   =>
-//                    $pathNormalized.
-//                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized.
-//                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
-//            ];
-//            $result[] = [
-//                'value'             =>
-//                    $path.
-//                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
-//                'isValid'           => true,
-//                'scheme'            => '',
-//                'userInfo'          => '',
-//                'host'              => '',
-//                'port'              => 0,
-//                'authority'         => '',
-//                'path'              => $pathNormalized,
-//                'query'             => '',
-//                'fragment'          => self::$fragmentNormalized,
-//                'valueNormalized'   =>
-//                    $pathNormalized.
-//                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
-//            ];
-//            $result[] = [
-//                'value'             =>
-//                    $path.
-//                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query,
-//                'isValid'           => true,
-//                'scheme'            => '',
-//                'userInfo'          => '',
-//                'host'              => '',
-//                'port'              => 0,
-//                'authority'         => '',
-//                'path'              => $pathNormalized,
-//                'query'             => self::$queryNormalized,
-//                'fragment'          => '',
-//                'valueNormalized'   =>
-//                    $pathNormalized.
-//                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
-//            ];
-//            $result[] = [
-//                'value'             => $path,
-//                'isValid'           => true,
-//                'scheme'            => '',
-//                'userInfo'          => '',
-//                'host'              => '',
-//                'port'              => 0,
-//                'authority'         => '',
-//                'path'              => $pathNormalized,
-//                'query'             => '',
-//                'fragment'          => '',
-//                'valueNormalized'   => $pathNormalized,
-//            ];
-//            $result[] = [
-//                'value'             =>
-//                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-//                    $path.
-//                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
-//                'isValid'           => true,
-//                'scheme'            => self::$schemeNormalized,
-//                'userInfo'          => '',
-//                'host'              => '',
-//                'port'              => 0,
-//                'authority'         => '',
-//                'path'              => $pathNormalized,
-//                'query'             => '',
-//                'fragment'          => self::$fragmentNormalized,
-//                'valueNormalized'   =>
-//                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-//                    $pathNormalized.
-//                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
-//            ];
-//            $result[] = [
-//                'value'             =>
-//                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-//                    $path.
-//                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query,
-//                'isValid'           => true,
-//                'scheme'            => self::$schemeNormalized,
-//                'userInfo'          => '',
-//                'host'              => '',
-//                'port'              => 0,
-//                'authority'         => '',
-//                'path'              => $pathNormalized,
-//                'query'             => self::$queryNormalized,
-//                'fragment'          => '',
-//                'valueNormalized'   =>
-//                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-//                    $pathNormalized.
-//                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
-//            ];
-//            $result[] = [
-//                'value'             =>
-//                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-//                    $path,
-//                'isValid'           => true,
-//                'scheme'            => self::$schemeNormalized,
-//                'userInfo'          => '',
-//                'host'              => '',
-//                'port'              => 0,
-//                'authority'         => '',
-//                'path'              => $pathNormalized,
-//                'query'             => '',
-//                'fragment'          => '',
-//                'valueNormalized'   =>
-//                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-//                    $pathNormalized,
-//            ];
-        }
-//        foreach (self::$pathInvalidCombinations as $invalidPath) {
-//            $result[] = [
-//                'value'             =>
-//                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-//                    $invalidPath.
-//                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query.
-//                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
-//                'isValid'           => false,
-//                'scheme'            => '',
-//                'userInfo'          => '',
-//                'host'              => '',
-//                'port'              => 0,
-//                'authority'         => '',
-//                'path'              => '',
-//                'query'             => '',
-//                'fragment'          => '',
-//                'valueNormalized'   => '',
-//            ];
-//            $result[] = [
-//                'value'             =>
-//                    $invalidPath.
-//                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query.
-//                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
-//                'isValid'           => false,
-//                'scheme'            => '',
-//                'userInfo'          => '',
-//                'host'              => '',
-//                'port'              => 0,
-//                'authority'         => '',
-//                'path'              => '',
-//                'query'             => '',
-//                'fragment'          => '',
-//                'valueNormalized'   => '',
-//            ];
-//            $result[] = [
-//                'value'             =>
-//                    $invalidPath.
-//                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
-//                'isValid'           => false,
-//                'scheme'            => '',
-//                'userInfo'          => '',
-//                'host'              => '',
-//                'port'              => 0,
-//                'authority'         => '',
-//                'path'              => '',
-//                'query'             => '',
-//                'fragment'          => '',
-//                'valueNormalized'   => '',
-//            ];
-//            $result[] = [
-//                'value'             =>
-//                    $invalidPath.
-//                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query,
-//                'isValid'           => false,
-//                'scheme'            => '',
-//                'userInfo'          => '',
-//                'host'              => '',
-//                'port'              => 0,
-//                'authority'         => '',
-//                'path'              => '',
-//                'query'             => '',
-//                'fragment'          => '',
-//                'valueNormalized'   => '',
-//            ];
-//            $result[] = [
-//                'value'             => $invalidPath,
-//                'isValid'           => false,
-//                'scheme'            => '',
-//                'userInfo'          => '',
-//                'host'              => '',
-//                'port'              => 0,
-//                'authority'         => '',
-//                'path'              => '',
-//                'query'             => '',
-//                'fragment'          => '',
-//                'valueNormalized'   => '',
-//            ];
-//            $result[] = [
-//                'value'             =>
-//                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-//                    $invalidPath.
-//                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
-//                'isValid'           => false,
-//                'scheme'            => '',
-//                'userInfo'          => '',
-//                'host'              => '',
-//                'port'              => 0,
-//                'authority'         => '',
-//                'path'              => '',
-//                'query'             => '',
-//                'fragment'          => '',
-//                'valueNormalized'   => '',
-//            ];
-//            $result[] = [
-//                'value'             =>
-//                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-//                    $invalidPath.
-//                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query,
-//                'isValid'           => false,
-//                'scheme'            => '',
-//                'userInfo'          => '',
-//                'host'              => '',
-//                'port'              => 0,
-//                'authority'         => '',
-//                'path'              => '',
-//                'query'             => '',
-//                'fragment'          => '',
-//                'valueNormalized'   => '',
-//            ];
-//            $result[] = [
-//                'value'             =>
-//                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-//                    $invalidPath,
-//                'isValid'           => false,
-//                'scheme'            => '',
-//                'userInfo'          => '',
-//                'host'              => '',
-//                'port'              => 0,
-//                'authority'         => '',
-//                'path'              => '',
-//                'query'             => '',
-//                'fragment'          => '',
-//                'valueNormalized'   => '',
-//            ];
-//        }
-
-        return $result;
-    }
-    /** **********************************************************************
-     * Get values without query data set.
-     *
-     * @return  array                       Data.
-     ************************************************************************/
-    private static function getValuesWithoutQuery(): array
-    {
-        $result = [];
-
-        foreach (self::$pathValidCombinations as $path => $pathNormalized) {
             $result[] = [
-                'value'             =>
-                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $path.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
+                'value'             => $path.$queryDelimiter.self::$query.
+                    $fragmentDelimiter.self::$fragment,
                 'isValid'           => true,
-                'scheme'            => self::$schemeNormalized,
-                'userInfo'          => self::$userInfoNormalized,
-                'host'              => self::$hostNormalized,
-                'port'              => self::$portNormalized,
-                'authority'         => self::$authorityNormalized,
+                'scheme'            => '',
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
+                'path'              => $pathNormalized,
+                'query'             => self::$queryNormalized,
+                'fragment'          => self::$fragmentNormalized,
+                'valueNormalized'   => $pathNormalized.$queryDelimiter.self::$queryNormalized.
+                    $fragmentDelimiter.self::$fragmentNormalized,
+            ];
+            $result[] = [
+                'value'             => $path.$fragmentDelimiter.self::$fragment,
+                'isValid'           => true,
+                'scheme'            => '',
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
                 'path'              => $pathNormalized,
                 'query'             => '',
                 'fragment'          => self::$fragmentNormalized,
-                'valueNormalized'   =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    $pathNormalized.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragmentNormalized,
+                'valueNormalized'   => $pathNormalized.
+                    $fragmentDelimiter.self::$fragmentNormalized,
             ];
             $result[] = [
-                'value'             =>
-                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $path,
+                'value'             => $path.$queryDelimiter.self::$query,
                 'isValid'           => true,
-                'scheme'            => self::$schemeNormalized,
-                'userInfo'          => self::$userInfoNormalized,
-                'host'              => self::$hostNormalized,
-                'port'              => self::$portNormalized,
-                'authority'         => self::$authorityNormalized,
+                'scheme'            => '',
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
+                'path'              => $pathNormalized,
+                'query'             => self::$queryNormalized,
+                'fragment'          => '',
+                'valueNormalized'   => $pathNormalized.
+                    $queryDelimiter.self::$queryNormalized,
+            ];
+            $result[] = [
+                'value'             => $path,
+                'isValid'           => true,
+                'scheme'            => '',
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
                 'path'              => $pathNormalized,
                 'query'             => '',
                 'fragment'          => '',
-                'valueNormalized'   =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    $pathNormalized,
+                'valueNormalized'   => $pathNormalized,
+            ];
+            $result[] = [
+                'value'             => self::$scheme.$schemeDelimiter.$path.
+                    $fragmentDelimiter.self::$fragment,
+                'isValid'           => true,
+                'scheme'            => self::$schemeNormalized,
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
+                'path'              => $pathNormalized,
+                'query'             => '',
+                'fragment'          => self::$fragmentNormalized,
+                'valueNormalized'   => self::$schemeNormalized.$schemeDelimiter.$pathNormalized.
+                    $fragmentDelimiter.self::$fragmentNormalized,
+            ];
+            $result[] = [
+                'value'             => self::$scheme.$schemeDelimiter.$path.
+                    $queryDelimiter.self::$query,
+                'isValid'           => true,
+                'scheme'            => self::$schemeNormalized,
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
+                'path'              => $pathNormalized,
+                'query'             => self::$queryNormalized,
+                'fragment'          => '',
+                'valueNormalized'   => self::$schemeNormalized.$schemeDelimiter.$pathNormalized.
+                    $queryDelimiter.self::$queryNormalized,
+            ];
+            $result[] = [
+                'value'             => self::$scheme.$schemeDelimiter.$path,
+                'isValid'           => true,
+                'scheme'            => self::$schemeNormalized,
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
+                'path'              => $pathNormalized,
+                'query'             => '',
+                'fragment'          => '',
+                'valueNormalized'   => self::$schemeNormalized.$schemeDelimiter.$pathNormalized,
             ];
         }
         foreach (self::$pathInvalidCombinations as $invalidPath) {
             $result[] = [
-                'value'             =>
-                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $invalidPath.
-                    UriGeneralDelimiters::FRAGMENT_DELIMITER.self::$fragment,
+                'value'             => self::$scheme.$schemeDelimiter.$invalidPath.
+                    $queryDelimiter.self::$query.$fragmentDelimiter.self::$fragment,
                 'isValid'           => false,
                 'scheme'            => '',
                 'userInfo'          => '',
@@ -637,10 +409,167 @@ class PathCombinations implements CombinationsProviderInterface
                 'valueNormalized'   => '',
             ];
             $result[] = [
-                'value'             =>
-                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $invalidPath,
+                'value'             => $invalidPath.$queryDelimiter.self::$query.
+                    $fragmentDelimiter.self::$fragment,
+                'isValid'           => false,
+                'scheme'            => '',
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
+                'path'              => '',
+                'query'             => '',
+                'fragment'          => '',
+                'valueNormalized'   => '',
+            ];
+            $result[] = [
+                'value'             => $invalidPath.$fragmentDelimiter.self::$fragment,
+                'isValid'           => false,
+                'scheme'            => '',
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
+                'path'              => '',
+                'query'             => '',
+                'fragment'          => '',
+                'valueNormalized'   => '',
+            ];
+            $result[] = [
+                'value'             => $invalidPath.$queryDelimiter.self::$query,
+                'isValid'           => false,
+                'scheme'            => '',
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
+                'path'              => '',
+                'query'             => '',
+                'fragment'          => '',
+                'valueNormalized'   => '',
+            ];
+            $result[] = [
+                'value'             => $invalidPath,
+                'isValid'           => false,
+                'scheme'            => '',
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
+                'path'              => '',
+                'query'             => '',
+                'fragment'          => '',
+                'valueNormalized'   => '',
+            ];
+            $result[] = [
+                'value'             => self::$scheme.$schemeDelimiter.$invalidPath.
+                    $fragmentDelimiter.self::$fragment,
+                'isValid'           => false,
+                'scheme'            => '',
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
+                'path'              => '',
+                'query'             => '',
+                'fragment'          => '',
+                'valueNormalized'   => '',
+            ];
+            $result[] = [
+                'value'             => self::$scheme.$schemeDelimiter.$invalidPath.
+                    $queryDelimiter.self::$query,
+                'isValid'           => false,
+                'scheme'            => '',
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
+                'path'              => '',
+                'query'             => '',
+                'fragment'          => '',
+                'valueNormalized'   => '',
+            ];
+            $result[] = [
+                'value'             => self::$scheme.$schemeDelimiter.$invalidPath,
+                'isValid'           => false,
+                'scheme'            => '',
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
+                'path'              => '',
+                'query'             => '',
+                'fragment'          => '',
+                'valueNormalized'   => '',
+            ];
+        }
+
+        return $result;
+    }
+    /** **********************************************************************
+     * Get values without query data set.
+     *
+     * @return  array                       Data.
+     ************************************************************************/
+    private static function getValuesWithoutQuery(): array
+    {
+        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_DELIMITER;
+        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER;
+        $fragmentDelimiter  = UriGeneralDelimiters::FRAGMENT_DELIMITER;
+        $result             = [];
+
+        foreach (self::$pathValidCombinations as $path => $pathNormalized) {
+            $result[] = [
+                'value'             => self::$scheme.$schemeDelimiter.
+                    $authorityDelimiter.self::$authority.$path.$fragmentDelimiter.self::$fragment,
+                'isValid'           => true,
+                'scheme'            => self::$schemeNormalized,
+                'userInfo'          => self::$userInfoNormalized,
+                'host'              => self::$hostNormalized,
+                'port'              => self::$portNormalized,
+                'authority'         => self::$authorityNormalized,
+                'path'              => $pathNormalized,
+                'query'             => '',
+                'fragment'          => self::$fragmentNormalized,
+                'valueNormalized'   => self::$schemeNormalized.$schemeDelimiter.
+                    $authorityDelimiter.self::$authorityNormalized.$pathNormalized.
+                    $fragmentDelimiter.self::$fragmentNormalized,
+            ];
+            $result[] = [
+                'value'             => self::$scheme.$schemeDelimiter.
+                    $authorityDelimiter.self::$authority.$path,
+                'isValid'           => true,
+                'scheme'            => self::$schemeNormalized,
+                'userInfo'          => self::$userInfoNormalized,
+                'host'              => self::$hostNormalized,
+                'port'              => self::$portNormalized,
+                'authority'         => self::$authorityNormalized,
+                'path'              => $pathNormalized,
+                'query'             => '',
+                'fragment'          => '',
+                'valueNormalized'   => self::$schemeNormalized.$schemeDelimiter.
+                    $authorityDelimiter.self::$authorityNormalized.$pathNormalized,
+            ];
+        }
+        foreach (self::$pathInvalidCombinations as $invalidPath) {
+            $result[] = [
+                'value'             => self::$scheme.$schemeDelimiter.
+                    $authorityDelimiter.self::$authority.$invalidPath.
+                    $fragmentDelimiter.self::$fragment,
+                'isValid'           => false,
+                'scheme'            => '',
+                'userInfo'          => '',
+                'host'              => '',
+                'port'              => 0,
+                'authority'         => '',
+                'path'              => '',
+                'query'             => '',
+                'fragment'          => '',
+                'valueNormalized'   => '',
+            ];
+            $result[] = [
+                'value'             => self::$scheme.$schemeDelimiter.
+                    $authorityDelimiter.self::$authority.$invalidPath,
                 'isValid'           => false,
                 'scheme'            => '',
                 'userInfo'          => '',
@@ -663,15 +592,15 @@ class PathCombinations implements CombinationsProviderInterface
      ************************************************************************/
     private static function getValuesWithoutFragment(): array
     {
-        $result = [];
+        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_DELIMITER;
+        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER;
+        $queryDelimiter     = UriGeneralDelimiters::QUERY_DELIMITER;
+        $result             = [];
 
         foreach (self::$pathValidCombinations as $path => $pathNormalized) {
             $result[] = [
-                'value'             =>
-                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $path.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query,
+                'value'             => self::$scheme.$schemeDelimiter.
+                    $authorityDelimiter.self::$authority.$path.$queryDelimiter.self::$query,
                 'isValid'           => true,
                 'scheme'            => self::$schemeNormalized,
                 'userInfo'          => self::$userInfoNormalized,
@@ -681,20 +610,16 @@ class PathCombinations implements CombinationsProviderInterface
                 'path'              => $pathNormalized,
                 'query'             => self::$queryNormalized,
                 'fragment'          => '',
-                'valueNormalized'   =>
-                    self::$schemeNormalized.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authorityNormalized.
-                    $pathNormalized.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$queryNormalized,
+                'valueNormalized'   => self::$schemeNormalized.$schemeDelimiter.
+                    $authorityDelimiter.self::$authorityNormalized.$pathNormalized.
+                    $queryDelimiter.self::$queryNormalized,
             ];
         }
         foreach (self::$pathInvalidCombinations as $invalidPath) {
             $result[] = [
-                'value'             =>
-                    self::$scheme.UriGeneralDelimiters::SCHEME_DELIMITER.
-                    UriGeneralDelimiters::AUTHORITY_DELIMITER.self::$authority.
-                    $invalidPath.
-                    UriGeneralDelimiters::QUERY_DELIMITER.self::$query,
+                'value'             => self::$scheme.$schemeDelimiter.
+                    $authorityDelimiter.self::$authority.$invalidPath.
+                    $queryDelimiter.self::$query,
                 'isValid'           => false,
                 'scheme'            => '',
                 'userInfo'          => '',

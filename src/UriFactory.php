@@ -7,11 +7,11 @@ use InvalidArgumentException;
 use RuntimeException;
 use Psr\Http\Message\{
     UriInterface,
-    UriFactoryInterface
+    UriFactoryInterface,
 };
 use HNV\Http\Uri\Collection\{
     UriGeneralDelimiters,
-    UriSubDelimiters
+    UriSubDelimiters,
 };
 
 use function strlen;
@@ -91,25 +91,24 @@ class UriFactory implements UriFactoryInterface
         $schemeDelimiterPosition    = strpos($uri, UriGeneralDelimiters::SCHEME_DELIMITER);
         $pathDelimiterPosition      = strpos($uri, UriSubDelimiters::PATH_PARTS_SEPARATOR);
         $ipV6FramePosition          = strpos($uri, UriGeneralDelimiters::IP_ADDRESS_V6_LEFT_FRAME);
-        $scheme                     = '';
 
-        $pathDelimiterIsAfterScheme =
-            $pathDelimiterPosition === false ||
-            $schemeDelimiterPosition < $pathDelimiterPosition;
-        $ipV6FrameIsAfterScheme     =
-            $ipV6FramePosition === false ||
-            $schemeDelimiterPosition < $ipV6FramePosition;
-
-        if (
-            $schemeDelimiterPosition !== false  &&
-            $pathDelimiterIsAfterScheme         &&
-            $ipV6FrameIsAfterScheme
-        ) {
-            $scheme = substr($uri, 0, $schemeDelimiterPosition);
-            $uri    = substr($uri, $schemeDelimiterPosition + 1);
+        if ($schemeDelimiterPosition === false || $schemeDelimiterPosition === 0) {
+            return '';
         }
 
-        return $scheme;
+        $pathDelimiterIsAfterScheme = $pathDelimiterPosition === false ||
+            $schemeDelimiterPosition < $pathDelimiterPosition;
+        $ipV6FrameIsAfterScheme     = $ipV6FramePosition === false ||
+            $schemeDelimiterPosition < $ipV6FramePosition;
+
+        if ($pathDelimiterIsAfterScheme && $ipV6FrameIsAfterScheme) {
+            $scheme = substr($uri, 0, $schemeDelimiterPosition);
+            $uri    = substr($uri, $schemeDelimiterPosition + 1);
+
+            return $scheme;
+        }
+
+        return '';
     }
     /** **********************************************************************
      * Parse authority from path string.
@@ -148,15 +147,16 @@ class UriFactory implements UriFactoryInterface
      ************************************************************************/
     private function parseUserInfoFromAuthority(string &$authority): string
     {
-        $userInfo           = '';
-        $delimiterPosition  = strrpos($authority, UriGeneralDelimiters::USER_INFO_DELIMITER);
+        $delimiterPosition = strrpos($authority, UriGeneralDelimiters::USER_INFO_DELIMITER);
 
         if (str_contains($authority, UriGeneralDelimiters::USER_INFO_DELIMITER)) {
             $userInfo   = substr($authority, 0, $delimiterPosition);
             $authority  = substr($authority, $delimiterPosition + 1);
+
+            return $userInfo;
         }
 
-        return $userInfo;
+        return '';
     }
     /** **********************************************************************
      * Parse port from authority string.
@@ -170,17 +170,17 @@ class UriFactory implements UriFactoryInterface
     {
         $portDelimiterPosition  = strrpos($authority, UriGeneralDelimiters::PORT_DELIMITER);
         $ipV6FramePosition      = strrpos($authority, UriGeneralDelimiters::IP_ADDRESS_V6_RIGHT_FRAME);
-        $ipV6FrameIsBeforePort  =
-            $ipV6FramePosition === false ||
+        $ipV6FrameIsBeforePort  = $ipV6FramePosition === false ||
             $portDelimiterPosition > $ipV6FramePosition;
-        $port                   = 0;
 
         if ($portDelimiterPosition !== false && $ipV6FrameIsBeforePort) {
             $port       = (int) substr($authority, $portDelimiterPosition + 1);
             $authority  = substr($authority, 0, $portDelimiterPosition);
+
+            return $port;
         }
 
-        return $port;
+        return 0;
     }
     /** **********************************************************************
      * Parse query from URI string.
@@ -192,15 +192,16 @@ class UriFactory implements UriFactoryInterface
      ************************************************************************/
     private function parseQueryFromUri(string &$uri): string
     {
-        $query              = '';
-        $delimiterPosition  = strrpos($uri, UriGeneralDelimiters::QUERY_DELIMITER);
+        $delimiterPosition = strrpos($uri, UriGeneralDelimiters::QUERY_DELIMITER);
 
         if ($delimiterPosition !== false) {
             $query  = substr($uri, $delimiterPosition + 1);
             $uri    = substr($uri, 0, $delimiterPosition);
+
+            return $query;
         }
 
-        return $query;
+        return '';
     }
     /** **********************************************************************
      * Parse fragment from URI string.
@@ -212,14 +213,15 @@ class UriFactory implements UriFactoryInterface
      ************************************************************************/
     private function parseFragmentFromUri(string &$uri): string
     {
-        $fragment           = '';
-        $delimiterPosition  = strrpos($uri, UriGeneralDelimiters::FRAGMENT_DELIMITER);
+        $delimiterPosition = strrpos($uri, UriGeneralDelimiters::FRAGMENT_DELIMITER);
 
         if ($delimiterPosition !== false) {
             $fragment   = substr($uri, $delimiterPosition + 1);
             $uri        = substr($uri, 0, $delimiterPosition);
+
+            return $fragment;
         }
 
-        return $fragment;
+        return '';
     }
 }

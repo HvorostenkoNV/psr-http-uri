@@ -5,13 +5,13 @@ namespace HNV\Http\Uri\Normalizer;
 
 use HNV\Http\Helper\Normalizer\{
     NormalizerInterface,
-    NormalizingException
+    NormalizingException,
 };
 use HNV\Http\Uri\Collection\UriGeneralDelimiters;
 use HNV\Http\Uri\Normalizer\{
     IpAddress\V4                        as IpAddressV4Normalizer,
     IpAddress\V6                        as IpAddressV6Normalizer,
-    DomainName\FullQualifiedDomainName  as DomainNameNormalizer
+    DomainName\FullQualifiedDomainName  as DomainNameNormalizer,
 };
 /** ***********************************************************************************************
  * URI host normalizer.
@@ -51,6 +51,6 @@ class Host implements NormalizerInterface
 
         }
 
-        throw new NormalizingException("value \"$valueString\" is not valid host");
+        throw new NormalizingException("value \"$valueString\" is not a valid host");
     }
 }

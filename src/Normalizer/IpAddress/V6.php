@@ -5,11 +5,11 @@ namespace HNV\Http\Uri\Normalizer\IpAddress;
 
 use HNV\Http\Helper\Normalizer\{
     NormalizerInterface,
-    NormalizingException
+    NormalizingException,
 };
 
 use function strlen;
-use function substr;
+use function str_ends_with;
 use function trim;
 use function ltrim;
 use function implode;
@@ -33,7 +33,7 @@ class V6 implements NormalizerInterface
     public const PARTS_COUNT            = 8;
     public const PARTS_COUNT_WITHOUT_V4 = 6;
     public const DELIMITER              = ':';
-    public const SHORTEN                = '::';
+    public const SHORTEN                = self::DELIMITER.self::DELIMITER;
 
     private const SEGMENT_MASK          = '/^[0-9a-fA-F]{1,4}$/';
     private const SEGMENT_MINIMAL_VALUE = 0;
@@ -45,14 +45,13 @@ class V6 implements NormalizerInterface
         $valueString    = (string) $value;
         $valueTrim      = trim($valueString);
         $delimiter      = self::DELIMITER;
-        $shorten        = self::SHORTEN;
 
         try {
             $valueExploded          = explode($delimiter, $valueTrim);
             $lastPart               = array_pop($valueExploded);
             $valueV4Part            = V4::normalize($lastPart);
             $valueV6Part            = implode($delimiter, $valueExploded);
-            $hasDelimiterInTheEnd   = substr($valueV6Part, strlen($delimiter) * -1) === $delimiter;
+            $hasDelimiterInTheEnd   = str_ends_with($valueV6Part, $delimiter);
             $valueV6Part            = $hasDelimiterInTheEnd ? $valueV6Part.$delimiter : $valueV6Part;
             $isDual                 = true;
         } catch (NormalizingException) {
@@ -63,7 +62,7 @@ class V6 implements NormalizerInterface
 
         try {
             $valueV6PartNormalized  = self::normalizeWithoutV4Part($valueV6Part, $isDual);
-            $hasShortenInTheEnd     = substr($valueV6PartNormalized, strlen($shorten) * -1) === $shorten;
+            $hasShortenInTheEnd     = str_ends_with($valueV6PartNormalized, self::SHORTEN);
 
             if ($isDual && $hasShortenInTheEnd) {
                 return $valueV6PartNormalized.$valueV4Part;
@@ -92,51 +91,16 @@ class V6 implements NormalizerInterface
      ************************************************************************/
     private static function normalizeWithoutV4Part(string $value, bool $hasV4Part): string
     {
-        $delimiter              = self::DELIMITER;
-        $valueExploded          = explode($delimiter, $value);
-        $valueNonEmptyParts     = array_filter($valueExploded, function($value) {
-            return strlen($value) > 0;
-        });
-        $currentPartsCount      = count($valueNonEmptyParts);
-        $needPartsCount         = $hasV4Part ? self::PARTS_COUNT_WITHOUT_V4 : self::PARTS_COUNT;
-        $shortsCount            = (int) preg_match_all("/[$delimiter]{2}/",     $value);
-        $incorrectShortsCount   = (int) preg_match_all("/[$delimiter]{3,}/",    $value);
-        $isShortened            = $shortsCount === 1;
+        $isShortened    = self::checkIsShortened($value);
+        $valueParts     = self::splitValueIntoParts($value, $hasV4Part, $isShortened);
 
-        if ($shortsCount > 1 || $incorrectShortsCount > 0) {
-            throw new NormalizingException(
-                "ip address V6 part \"$value\" contains incorrect shortens"
-            );
-        }
-        if (
-            strlen($value) < 2  || (
-                $value[0] === $delimiter &&
-                $value[1] !== $delimiter
-            )                   || (
-                $value[strlen($value) - 1] === $delimiter &&
-                $value[strlen($value) - 2] !== $delimiter
-            )
-        ) {
-            throw new NormalizingException(
-                "ip address V6 part \"$value\" has incorrect format"
-            );
-        }
-        if (
-            !$isShortened   && $currentPartsCount != $needPartsCount ||
-            $isShortened    && $currentPartsCount >  $needPartsCount - 2
-        ) {
-            throw new NormalizingException(
-                "ip address V6 part \"$value\" contains incorrect segments count"
-            );
-        }
-
-        foreach ($valueExploded as $index => $part) {
+        foreach ($valueParts as $index => $part) {
             if ($isShortened && strlen($part) === 0) {
                 continue;
             }
 
             try {
-                $valueExploded[$index] = self::normalizeSegment($part);
+                $valueParts[$index] = self::normalizeSegment($part);
             } catch (NormalizingException $exception) {
                 throw new NormalizingException(
                     "ip address V6 segment \"$part\" is invalid",
@@ -146,11 +110,79 @@ class V6 implements NormalizerInterface
             }
         }
 
-        $valueImploded = implode($delimiter, $valueExploded);
+        $valueImploded = implode(self::DELIMITER, $valueParts);
 
         return !$isShortened
             ? self::convertToShortFormat($valueImploded)
             : $valueImploded;
+    }
+    /** **********************************************************************
+     * Check IP address v6 is shortened.
+     *
+     * @param   string $value               IP address v6.
+     *
+     * @return  bool                        IP address is shortened.
+     * @throws  NormalizingException        Something wrong with shortens.
+     ************************************************************************/
+    private static function checkIsShortened(string $value): bool
+    {
+        $delimiter              = self::DELIMITER;
+        $shortsCount            = (int) preg_match_all("/[$delimiter]{2}/",     $value);
+        $incorrectShortsCount   = (int) preg_match_all("/[$delimiter]{3,}/",    $value);
+
+        if ($shortsCount > 1 || $incorrectShortsCount > 0) {
+            throw new NormalizingException(
+                "ip address V6 part \"$value\" contains incorrect shortens"
+            );
+        }
+
+        return $shortsCount === 1;
+    }
+    /** **********************************************************************
+     * Split ip v6 value into parts.
+     *
+     * @param   string  $value              IP address without v4 IP address postfix.
+     * @param   bool    $hasV4Part          IP address was with v4 IP address postfix.
+     * @param   bool    $isShortened        IP address v6 is shortened.
+     *
+     * @return  string[]                    Split value.
+     * @throws  NormalizingException        Any process error.
+     ************************************************************************/
+    private static function splitValueIntoParts(
+        string  $value,
+        bool    $hasV4Part,
+        bool    $isShortened
+    ): array {
+        $delimiter          = self::DELIMITER;
+        $valueParts         = explode($delimiter, $value);
+        $valueNonEmptyParts = array_filter($valueParts, function($value) {
+            return strlen($value) > 0;
+        });
+        $currentPartsCount  = count($valueNonEmptyParts);
+        $needPartsCount     = $hasV4Part ? self::PARTS_COUNT_WITHOUT_V4 : self::PARTS_COUNT;
+        $hasInvalidStart    =
+            $value[0] === $delimiter &&
+            $value[1] !== $delimiter;
+        $hasInvalidEnd      =
+            $value[strlen($value) - 1] === $delimiter &&
+            $value[strlen($value) - 2] !== $delimiter;
+
+        if (strlen($value) <= 1 || $hasInvalidStart || $hasInvalidEnd) {
+            throw new NormalizingException(
+                "ip address V6 part \"$value\" has incorrect format"
+            );
+        }
+
+        if (
+            !$isShortened   && $currentPartsCount != $needPartsCount ||
+            $isShortened    && $currentPartsCount >  $needPartsCount - 2
+        ) {
+            throw new NormalizingException(
+                "ip address V6 part \"$value\" contains incorrect segments count"
+            );
+        }
+
+        return $valueParts;
     }
     /** **********************************************************************
      * Convert IP address to short format.
