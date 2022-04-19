@@ -6,12 +6,12 @@ namespace HNV\Http\UriTests\ValuesProvider;
 use HNV\Http\Helper\Collection\SpecialCharacters;
 use HNV\Http\Uri\Collection\{
     UriGeneralDelimiters,
-    DomainNameAllowedCharacters
+    DomainNameAllowedCharacters,
 };
 use HNV\Http\Uri\Normalizer\DomainName\{
     FullQualifiedDomainName as FullQualifiedDomainNameNormalizer,
     SubLevelDomain          as SubLevelDomainNormalizer,
-    TopLevelDomain          as TopLevelDomainNormalizer
+    TopLevelDomain          as TopLevelDomainNormalizer,
 };
 
 use function str_repeat;
@@ -106,7 +106,7 @@ class DomainName implements ValuesProviderInterface
         return $result;
     }
     /** **********************************************************************
-     * Get valid domain name sub level parts set.
+     * Get valid domain name sub-level parts set.
      *
      * @return  string[]                    Values set.
      ************************************************************************/

@@ -6,7 +6,7 @@ namespace HNV\Http\UriTests\ValuesProvider;
 use HNV\Http\Uri\Collection\UriGeneralDelimiters;
 use HNV\Http\UriTests\ValuesProvider\IpAddress\{
     V4  as IpAddressV4ValuesProvider,
-    V6  as IpAddressV6ValuesProvider
+    V6  as IpAddressV6ValuesProvider,
 };
 
 use function array_merge;
@@ -34,7 +34,7 @@ class Host implements ValuesProviderInterface
         return array_merge(
             DomainName::getValidValues(),
             IpAddressV4ValuesProvider::getValidValues(),
-            $ipAddressesV6Values
+            $ipAddressesV6Values,
         );
     }
     /** **********************************************************************
@@ -53,7 +53,7 @@ class Host implements ValuesProviderInterface
         return array_merge(
             DomainName::getInvalidValues(),
             IpAddressV4ValuesProvider::getInvalidValues(),
-            $ipAddressesV6Values
+            $ipAddressesV6Values,
         );
     }
 }

@@ -6,7 +6,7 @@ namespace HNV\Http\UriTests\ValuesProvider;
 use HNV\Http\Helper\Collection\SpecialCharacters;
 use HNV\Http\Uri\Collection\{
     UriSubDelimiters,
-    PathAllowedCharacters
+    PathAllowedCharacters,
 };
 
 use function strtoupper;
