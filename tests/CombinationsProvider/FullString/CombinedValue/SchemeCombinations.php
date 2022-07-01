@@ -48,7 +48,7 @@ class SchemeCombinations extends AbstractCombinationsProvider implements Combina
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    protected static function initializeDefaultValues()
+    protected static function initializeDefaultValues(): void
     {
         parent::initializeDefaultValues();
 

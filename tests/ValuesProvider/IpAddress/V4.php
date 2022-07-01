@@ -168,9 +168,8 @@ class V4 implements ValuesProviderInterface
             IpAddressV4Normalizer::PARTS_COUNT + 1,
             self::getValidRandomValuePart()
         );
-        $result             = array_merge($result, self::buildValueInDifferentCombinations($tooManyValidParts));
 
-        return $result;
+        return array_merge($result, self::buildValueInDifferentCombinations($tooManyValidParts));
     }
     /** **********************************************************************
      * Get valid random value part.

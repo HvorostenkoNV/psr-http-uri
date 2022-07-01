@@ -60,7 +60,7 @@ abstract class AbstractCombinationsProvider
      *
      * @return void
      ************************************************************************/
-    protected static function initializeDefaultValues()
+    protected static function initializeDefaultValues(): void
     {
         foreach (SchemeValuesProvider::getValidValues() as $scheme => $schemeNormalized) {
             if (strlen($scheme) > 0) {

@@ -62,7 +62,7 @@ class CombinedValue extends AbstractCombinationsProvider implements Combinations
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    protected static function initializeDefaultValues()
+    protected static function initializeDefaultValues(): void
     {
         parent::initializeDefaultValues();
 

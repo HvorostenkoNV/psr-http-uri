@@ -53,7 +53,7 @@ class PathCombinations extends AbstractCombinationsProvider implements Combinati
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    protected static function initializeDefaultValues()
+    protected static function initializeDefaultValues(): void
     {
         parent::initializeDefaultValues();
 

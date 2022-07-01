@@ -49,7 +49,7 @@ class QueryCombinations extends AbstractCombinationsProvider implements Combinat
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    protected static function initializeDefaultValues()
+    protected static function initializeDefaultValues(): void
     {
         parent::initializeDefaultValues();
 

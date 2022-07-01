@@ -51,7 +51,7 @@ class AuthorityCombinations extends AbstractCombinationsProvider implements Comb
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    protected static function initializeDefaultValues()
+    protected static function initializeDefaultValues(): void
     {
         parent::initializeDefaultValues();
 

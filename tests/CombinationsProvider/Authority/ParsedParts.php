@@ -63,7 +63,7 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
     /** **********************************************************************
      * @inheritDoc
      ************************************************************************/
-    protected static function initializeDefaultValues()
+    protected static function initializeDefaultValues(): void
     {
         parent::initializeDefaultValues();
 
