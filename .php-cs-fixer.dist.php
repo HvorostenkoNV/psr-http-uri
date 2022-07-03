@@ -90,6 +90,14 @@ return (new Config())
             'import_classes'                                    => true,
         ],
         'group_import'                                      => true,
+        'ordered_imports'                                   => [
+            'imports_order'                                     => [
+                'class',
+                'function',
+                'const',
+            ],
+            'sort_algorithm'                                    => 'alpha',
+        ],
         'single_import_per_statement'                       => false,
 
         'declare_parentheses'                               => true,
@@ -170,7 +178,14 @@ return (new Config())
 
         'blank_line_before_statement'                       => [
             'statements'                                        => [
+                'declare',
+                'default',
+                'exit',
+                'goto',
                 'return',
+                'switch',
+                'throw',
+                'try',
             ],
         ],
         'blank_line_between_import_groups'                  => true,

@@ -1,112 +1,114 @@
 <?php
+
 declare(strict_types=1);
 
 namespace HNV\Http\UriTests;
 
-use Throwable;
-use PHPUnit\Framework\TestCase;
-use HNV\Http\UriTests\ValuesProvider\Fragment as FragmentValuesProvider;
 use HNV\Http\Uri\Uri;
+use HNV\Http\UriTests\ValuesProvider\Fragment as FragmentValuesProvider;
+use PHPUnit\Framework\TestCase;
+use Throwable;
 
 use function spl_object_id;
-/** ***********************************************************************************************
+
+/**
  * PSR-7 UriInterface implementation test.
  *
  * Testing working with fragment values.
  *
- * @package HNV\Psr\Http\Tests\Uri
- * @author  Hvorostenko
- *************************************************************************************************/
+ * @internal
+ * @covers Uri
+ * @small
+ */
 class UriFragmentTest extends TestCase
 {
-    /** **********************************************************************
+    /**
      * Test "Uri::withFragment" provides new instance of URI.
      *
-     * @covers          Uri::withFragment
-     * @dataProvider    dataProviderNormalizedValues
+     * @covers       Uri::withFragment
+     * @dataProvider dataProviderNormalizedValues
      *
-     * @param           string $value               Value.
+     * @param string $value value
      *
-     * @return          void
-     * @throws          Throwable
-     ************************************************************************/
+     * @throws Throwable
+     */
     public function testProvidesNewInstance(string $value): void
     {
-        $uriFirst   = new Uri();
-        $uriSecond  = $uriFirst->withFragment($value);
-        $uriThird   = $uriSecond->withFragment($value);
+        $uriFirst  = new Uri();
+        $uriSecond = $uriFirst->withFragment($value);
+        $uriThird  = $uriSecond->withFragment($value);
 
-        self::assertNotEquals(
+        static::assertNotSame(
             spl_object_id($uriFirst),
             spl_object_id($uriSecond),
             "Action \"Uri->withFragment\" returned unexpected result.\n".
             "Expected result is \"NEW INSTANCE\".\n".
-            "Caught result is \"SAME INSTANCE\"."
+            'Caught result is "SAME INSTANCE".'
         );
-        self::assertNotEquals(
+        static::assertNotSame(
             spl_object_id($uriSecond),
             spl_object_id($uriThird),
             "Action \"Uri->withFragment\" returned unexpected result.\n".
             "Expected result is \"NEW INSTANCE\".\n".
-            "Caught result is \"SAME INSTANCE\"."
+            'Caught result is "SAME INSTANCE".'
         );
     }
-    /** **********************************************************************
+
+    /**
      * Test "Uri::getFragment" provides valid normalized value.
      *
-     * @covers          Uri::getFragment
-     * @dataProvider    dataProviderNormalizedValues
+     * @covers       Uri::getFragment
+     * @dataProvider dataProviderNormalizedValues
      *
-     * @param           string  $value              Value.
-     * @param           string  $valueNormalized    Normalized value.
+     * @param string $value           value
+     * @param string $valueNormalized normalized value
      *
-     * @return          void
-     * @throws          Throwable
-     ************************************************************************/
+     * @throws Throwable
+     */
     public function testGetValue(string $value, string $valueNormalized): void
     {
         $valueCaught = (new Uri())->withFragment($value)->getFragment();
 
-        self::assertEquals(
+        static::assertSame(
             $valueNormalized,
             $valueCaught,
             "Action \"Uri->withFragment->getFragment\" returned unexpected result.\n".
-            "Action was called with parameters (value => $value).\n".
-            "Expected result is \"$valueNormalized\".\n".
-            "Caught result is \"$valueCaught\"."
+            "Action was called with parameters (value => {$value}).\n".
+            "Expected result is \"{$valueNormalized}\".\n".
+            "Caught result is \"{$valueCaught}\"."
         );
     }
-    /** **********************************************************************
+
+    /**
      * Test "Uri::getFragment" provides expects value from empty object.
      *
-     * @covers  Uri::getFragment
+     * @covers Uri::getFragment
      *
-     * @return  void
-     * @throws  Throwable
-     ************************************************************************/
+     * @throws Throwable
+     */
     public function testGetValueOnEmptyObject(): void
     {
         $valueCaught = (new Uri())->getFragment();
 
-        self::assertEquals(
+        static::assertSame(
             '',
             $valueCaught,
             "Action \"Uri->getFragment\" returned unexpected result.\n".
             "Expected result is \"empty string\" from empty object.\n".
-            "Caught result is \"$valueCaught\"."
+            "Caught result is \"{$valueCaught}\"."
         );
     }
-    /** **********************************************************************
+
+    /**
      * Test "Uri::withFragment" clears value on setting empty string.
      *
-     * @covers          Uri::withFragment
-     * @dataProvider    dataProviderNormalizedValues
+     * @covers       Uri::withFragment
+     * @dataProvider dataProviderNormalizedValues
      *
-     * @param           string $value               Value.
+     * @param string $value value
      *
-     * @return          void
-     * @throws          Throwable
-     ************************************************************************/
+     * @throws Throwable
+     */
     public function testClearValue(string $value): void
     {
         $valueCaught = (new Uri())
@@ -114,27 +116,27 @@ class UriFragmentTest extends TestCase
             ->withFragment('')
             ->getFragment();
 
-        self::assertEquals(
+        static::assertSame(
             '',
             $valueCaught,
             "Action \"Uri->withFragment->withFragment->getFragment\" returned unexpected result.\n".
-            "Action was called with parameters (login => $value, login => \"empty string\").\n".
+            "Action was called with parameters (login => {$value}, login => \"empty string\").\n".
             "Expected result is \"empty string\".\n".
-            "Caught result is \"$valueCaught\"."
+            "Caught result is \"{$valueCaught}\"."
         );
     }
-    /** **********************************************************************
+
+    /**
      * Test "Uri::withFragment" clears value on setting incorrect data.
      *
-     * @covers          Uri::withFragment
-     * @dataProvider    dataProviderValidWithInvalidValues
+     * @covers       Uri::withFragment
+     * @dataProvider dataProviderValidWithInvalidValues
      *
-     * @param           string  $validValue         Valid value.
-     * @param           string  $invalidValue       Invalid value.
+     * @param string $validValue   valid value
+     * @param string $invalidValue invalid value
      *
-     * @return          void
-     * @throws          Throwable
-     ************************************************************************/
+     * @throws Throwable
+     */
     public function testClearValueWithInvalidData(string $validValue, string $invalidValue): void
     {
         $valueCaught = (new Uri())
@@ -142,20 +144,21 @@ class UriFragmentTest extends TestCase
             ->withFragment($invalidValue)
             ->getFragment();
 
-        self::assertEquals(
+        static::assertSame(
             '',
             $valueCaught,
             "Action \"Uri->withFragment->withFragment->getFragment\" returned unexpected result.\n".
-            "Action was called with parameters (value => $validValue, value => $invalidValue).\n".
+            "Action was called with parameters (value => {$validValue}, value => {$invalidValue}).\n".
             "Expected result is \"empty string\".\n".
-            "Caught result is \"$valueCaught\"."
+            "Caught result is \"{$valueCaught}\"."
         );
     }
-    /** **********************************************************************
+
+    /**
      * Data provider: values with their normalized pairs.
      *
-     * @return  array                               Data.
-     ************************************************************************/
+     * @return array data
+     */
     public function dataProviderNormalizedValues(): array
     {
         $result = [];
@@ -166,11 +169,12 @@ class UriFragmentTest extends TestCase
 
         return $result;
     }
-    /** **********************************************************************
+
+    /**
      * Data provider: invalid values.
      *
-     * @return  array                               Data.
-     ************************************************************************/
+     * @return array data
+     */
     public function dataProviderInvalidValues(): array
     {
         $result = [];
@@ -181,22 +185,23 @@ class UriFragmentTest extends TestCase
 
         return $result;
     }
-    /** **********************************************************************
+
+    /**
      * Data provider: valid values with invalid values.
      *
-     * @return  array                               Data.
-     ************************************************************************/
+     * @return array data
+     */
     public function dataProviderValidWithInvalidValues(): array
     {
-        $validValues    = $this->dataProviderNormalizedValues();
-        $invalidValues  = $this->dataProviderInvalidValues();
-        $result         = [];
+        $validValues   = $this->dataProviderNormalizedValues();
+        $invalidValues = $this->dataProviderInvalidValues();
+        $result        = [];
 
         foreach ($invalidValues as $data) {
             $result[] = [
                 $validValues[0][0],
                 $validValues[0][1],
-                $data[0]
+                $data[0],
             ];
         }
 
