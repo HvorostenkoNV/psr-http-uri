@@ -1,60 +1,25 @@
 <?php
+
 declare(strict_types=1);
 
 namespace HNV\Http\Uri\Collection;
 
-use HNV\Http\Helper\Collection\CollectionInterface;
-
-use function array_merge;
-use function array_diff;
-/** ***********************************************************************************************
+/**
  * URI sub delimiters collection.
- *
- * @package HNV\Psr\Http\Uri
- * @author  Hvorostenko
- *************************************************************************************************/
-class UriSubDelimiters implements CollectionInterface
+ */
+enum UriSubDelimiters: string
 {
-    use CharactersSetProviderTrait;
-
-    public const USER_INFO_SEPARATOR            = ':';
-    public const PATH_PARTS_SEPARATOR           = '/';
-    public const QUERY_FIELDS_SEPARATOR         = '&';
-    public const QUERY_FIELD_VALUE_SEPARATOR    = '=';
-
-    private const OTHER_SUB_DELIMITERS = [
-        '!',
-        '$',
-        '\'',
-        '(',
-        ')',
-        '*',
-        '+',
-        ',',
-        ';',
-    ];
-
-    private static array $collection = [];
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
-    public static function get(): array
-    {
-        if (count(self::$collection) === 0) {
-            $separators         = array_merge(
-                [
-                    self::USER_INFO_SEPARATOR,
-                    self::PATH_PARTS_SEPARATOR,
-                    self::QUERY_FIELDS_SEPARATOR,
-                    self::QUERY_FIELD_VALUE_SEPARATOR,
-                ],
-                self::OTHER_SUB_DELIMITERS
-            );
-            $generalDelimiters  = UriGeneralDelimiters::get();
-            $separatorsChars    = self::getUniqueSingleCharactersSet($separators);
-            self::$collection   = array_diff($separatorsChars, $generalDelimiters);
-        }
-
-        return self::$collection;
-    }
+    case USER_INFO_SEPARATOR                = ':';
+    case PATH_PARTS_SEPARATOR               = '/';
+    case QUERY_FIELDS_SEPARATOR             = '&';
+    case QUERY_FIELD_VALUE_SEPARATOR        = '=';
+    case SUB_DELIMITER_EXCLAMATION_POINT    = '!';
+    case SUB_DELIMITER_DOLLAR               = '$';
+    case SUB_DELIMITER_BACKSLASH            = '\'';
+    case SUB_DELIMITER_OPEN_PARENTHESIS     = '(';
+    case SUB_DELIMITER_CLOSE_PARENTHESIS    = ')';
+    case SUB_DELIMITER_ASTERISK             = '*';
+    case SUB_DELIMITER_PLUS                 = '+';
+    case SUB_DELIMITER_COMMA                = ',';
+    case SUB_DELIMITER_SEMICOLON            = ';';
 }

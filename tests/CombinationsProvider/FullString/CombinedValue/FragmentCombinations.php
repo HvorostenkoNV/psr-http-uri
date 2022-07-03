@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace HNV\Http\UriTests\CombinationsProvider\FullString\CombinedValue;
@@ -8,26 +9,25 @@ use HNV\Http\Uri\Collection\{
     UriSubDelimiters,
 };
 use HNV\Http\UriTests\CombinationsProvider\{
-    CombinationsProviderInterface,
     AbstractCombinationsProvider,
+    CombinationsProviderInterface,
 };
 use HNV\Http\UriTests\ValuesProvider\Fragment as FragmentValuesProvider;
 
-use function strlen;
 use function array_merge;
-/** ***********************************************************************************************
+use function strlen;
+
+/**
  * URI full string different combinations provider (fragment combinations).
- *
- * @package HNV\Psr\Http\Tests\Uri
- * @author  Hvorostenko
- *************************************************************************************************/
+ */
 class FragmentCombinations extends AbstractCombinationsProvider implements CombinationsProviderInterface
 {
-    private static array $fragmentValidCombinations     = [];
-    private static array $fragmentInvalidCombinations   = [];
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
+    private static array $fragmentValidCombinations   = [];
+    private static array $fragmentInvalidCombinations = [];
+
+    /**
+     * {@inheritDoc}
+     */
     public static function get(): array
     {
         $result = [];
@@ -46,45 +46,47 @@ class FragmentCombinations extends AbstractCombinationsProvider implements Combi
 
         return $result;
     }
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
+
+    /**
+     * {@inheritDoc}
+     */
     protected static function initializeDefaultValues(): void
     {
         parent::initializeDefaultValues();
 
         foreach (FragmentValuesProvider::getValidValues() as $fragment => $fragmentNormalized) {
             self::$fragmentValidCombinations[$fragment] = strlen($fragmentNormalized) > 0
-                ? UriGeneralDelimiters::FRAGMENT_DELIMITER.$fragmentNormalized
+                ? UriGeneralDelimiters::FRAGMENT_DELIMITER->value.$fragmentNormalized
                 : '';
         }
 
         self::$fragmentInvalidCombinations = FragmentValuesProvider::getInvalidValues();
     }
-    /** **********************************************************************
+
+    /**
      * Get full values data set.
      *
-     * @return  array                       Data.
-     ************************************************************************/
+     * @return array data
+     */
     private static function getFullValues(): array
     {
-        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_DELIMITER;
-        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER;
-        $pathDelimiter      = UriSubDelimiters::PATH_PARTS_SEPARATOR;
-        $queryDelimiter     = UriGeneralDelimiters::QUERY_DELIMITER;
+        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
+        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER->value;
+        $pathDelimiter      = UriSubDelimiters::PATH_PARTS_SEPARATOR->value;
+        $queryDelimiter     = UriGeneralDelimiters::QUERY_DELIMITER->value;
         $result             = [];
 
         foreach (self::$fragmentValidCombinations as $fragment => $fragmentNormalized) {
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => self::$path,
-                'query'     => self::$query,
-                'fragment'  => (string) $fragment,
-                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                'scheme'   => self::$scheme,
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => self::$path,
+                'query'    => self::$query,
+                'fragment' => (string) $fragment,
+                'value'    => self::$schemeNormalized.$schemeDelimiter.
                     $authorityDelimiter.self::$authorityNormalized.
                     $pathDelimiter.self::$pathNormalized.
                     $queryDelimiter.self::$queryNormalized.$fragmentNormalized,
@@ -92,432 +94,436 @@ class FragmentCombinations extends AbstractCombinationsProvider implements Combi
         }
         foreach (self::$fragmentInvalidCombinations as $invalidFragment) {
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => self::$path,
-                'query'     => self::$query,
-                'fragment'  => $invalidFragment,
-                'value'     => '',
+                'scheme'   => self::$scheme,
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => self::$path,
+                'query'    => self::$query,
+                'fragment' => $invalidFragment,
+                'value'    => '',
             ];
         }
 
         return $result;
     }
-    /** **********************************************************************
+
+    /**
      * Get values without scheme data set.
      *
-     * @return  array                       Data.
-     ************************************************************************/
+     * @return array data
+     */
     private static function getValuesWithoutScheme(): array
     {
-        $pathDelimiter  = UriSubDelimiters::PATH_PARTS_SEPARATOR;
-        $queryDelimiter = UriGeneralDelimiters::QUERY_DELIMITER;
+        $pathDelimiter  = UriSubDelimiters::PATH_PARTS_SEPARATOR->value;
+        $queryDelimiter = UriGeneralDelimiters::QUERY_DELIMITER->value;
         $result         = [];
 
         foreach (self::$fragmentValidCombinations as $fragment => $fragmentNormalized) {
             $result[] = [
-                'scheme'    => '',
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => self::$path,
-                'query'     => self::$query,
-                'fragment'  => (string) $fragment,
-                'value'     => '',
+                'scheme'   => '',
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => self::$path,
+                'query'    => self::$query,
+                'fragment' => (string) $fragment,
+                'value'    => '',
             ];
             $result[] = [
-                'scheme'    => '',
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => self::$path,
-                'query'     => self::$query,
-                'fragment'  => (string) $fragment,
-                'value'     => self::$pathNormalized.
+                'scheme'   => '',
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => self::$path,
+                'query'    => self::$query,
+                'fragment' => (string) $fragment,
+                'value'    => self::$pathNormalized.
                     $queryDelimiter.self::$queryNormalized.$fragmentNormalized,
             ];
             $result[] = [
-                'scheme'    => '',
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => '',
-                'query'     => self::$query,
-                'fragment'  => (string) $fragment,
-                'value'     => '',
+                'scheme'   => '',
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => '',
+                'query'    => self::$query,
+                'fragment' => (string) $fragment,
+                'value'    => '',
             ];
             $result[] = [
-                'scheme'    => '',
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => self::$path,
-                'query'     => '',
-                'fragment'  => (string) $fragment,
-                'value'     => self::$pathNormalized.$fragmentNormalized,
+                'scheme'   => '',
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => self::$path,
+                'query'    => '',
+                'fragment' => (string) $fragment,
+                'value'    => self::$pathNormalized.$fragmentNormalized,
             ];
             $result[] = [
-                'scheme'    => '',
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => '',
-                'query'     => '',
-                'fragment'  => (string) $fragment,
-                'value'     => '',
+                'scheme'   => '',
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => '',
+                'query'    => '',
+                'fragment' => (string) $fragment,
+                'value'    => '',
             ];
             $result[] = [
-                'scheme'    => '',
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => '',
-                'query'     => self::$query,
-                'fragment'  => (string) $fragment,
-                'value'     => '',
+                'scheme'   => '',
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => '',
+                'query'    => self::$query,
+                'fragment' => (string) $fragment,
+                'value'    => '',
             ];
             $result[] = [
-                'scheme'    => '',
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => '',
-                'query'     => '',
-                'fragment'  => (string) $fragment,
-                'value'     => '',
+                'scheme'   => '',
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => '',
+                'query'    => '',
+                'fragment' => (string) $fragment,
+                'value'    => '',
             ];
             $result[] = [
-                'scheme'    => '',
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => self::$path,
-                'query'     => '',
-                'fragment'  => (string) $fragment,
-                'value'     => '',
+                'scheme'   => '',
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => self::$path,
+                'query'    => '',
+                'fragment' => (string) $fragment,
+                'value'    => '',
             ];
         }
         foreach (self::$fragmentInvalidCombinations as $invalidFragment) {
             $result[] = [
-                'scheme'    => '',
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => self::$path,
-                'query'     => self::$query,
-                'fragment'  => $invalidFragment,
-                'value'     => '',
+                'scheme'   => '',
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => self::$path,
+                'query'    => self::$query,
+                'fragment' => $invalidFragment,
+                'value'    => '',
             ];
             $result[] = [
-                'scheme'    => '',
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => self::$path,
-                'query'     => self::$query,
-                'fragment'  => $invalidFragment,
-                'value'     => self::$pathNormalized.$queryDelimiter.self::$queryNormalized,
+                'scheme'   => '',
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => self::$path,
+                'query'    => self::$query,
+                'fragment' => $invalidFragment,
+                'value'    => self::$pathNormalized.$queryDelimiter.self::$queryNormalized,
             ];
             $result[] = [
-                'scheme'    => '',
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => '',
-                'query'     => self::$query,
-                'fragment'  => $invalidFragment,
-                'value'     => '',
+                'scheme'   => '',
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => '',
+                'query'    => self::$query,
+                'fragment' => $invalidFragment,
+                'value'    => '',
             ];
             $result[] = [
-                'scheme'    => '',
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => self::$path,
-                'query'     => '',
-                'fragment'  => $invalidFragment,
-                'value'     => $pathDelimiter.self::$pathNormalized,
+                'scheme'   => '',
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => self::$path,
+                'query'    => '',
+                'fragment' => $invalidFragment,
+                'value'    => $pathDelimiter.self::$pathNormalized,
             ];
             $result[] = [
-                'scheme'    => '',
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => '',
-                'query'     => '',
-                'fragment'  => $invalidFragment,
-                'value'     => '',
+                'scheme'   => '',
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => '',
+                'query'    => '',
+                'fragment' => $invalidFragment,
+                'value'    => '',
             ];
             $result[] = [
-                'scheme'    => '',
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => '',
-                'query'     => self::$query,
-                'fragment'  => $invalidFragment,
-                'value'     => '',
+                'scheme'   => '',
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => '',
+                'query'    => self::$query,
+                'fragment' => $invalidFragment,
+                'value'    => '',
             ];
             $result[] = [
-                'scheme'    => '',
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => '',
-                'query'     => '',
-                'fragment'  => $invalidFragment,
-                'value'     => '',
+                'scheme'   => '',
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => '',
+                'query'    => '',
+                'fragment' => $invalidFragment,
+                'value'    => '',
             ];
             $result[] = [
-                'scheme'    => '',
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => self::$path,
-                'query'     => '',
-                'fragment'  => $invalidFragment,
-                'value'     => '',
+                'scheme'   => '',
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => self::$path,
+                'query'    => '',
+                'fragment' => $invalidFragment,
+                'value'    => '',
             ];
         }
 
         return $result;
     }
-    /** **********************************************************************
+
+    /**
      * Get values without authority data set.
      *
-     * @return  array                       Data.
-     ************************************************************************/
+     * @return array data
+     */
     private static function getValuesWithoutAuthority(): array
     {
-        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_DELIMITER;
-        $queryDelimiter     = UriGeneralDelimiters::QUERY_DELIMITER;
-        $result             = [];
+        $schemeDelimiter = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
+        $queryDelimiter  = UriGeneralDelimiters::QUERY_DELIMITER->value;
+        $result          = [];
 
         foreach (self::$fragmentValidCombinations as $fragment => $fragmentNormalized) {
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => self::$path,
-                'query'     => self::$query,
-                'fragment'  => (string) $fragment,
-                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                'scheme'   => self::$scheme,
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => self::$path,
+                'query'    => self::$query,
+                'fragment' => (string) $fragment,
+                'value'    => self::$schemeNormalized.$schemeDelimiter.
                     self::$pathNormalized.$queryDelimiter.self::$queryNormalized.
                     $fragmentNormalized,
             ];
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => '',
-                'query'     => self::$query,
-                'fragment'  => (string) $fragment,
-                'value'     => '',
+                'scheme'   => self::$scheme,
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => '',
+                'query'    => self::$query,
+                'fragment' => (string) $fragment,
+                'value'    => '',
             ];
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => '',
-                'query'     => '',
-                'fragment'  => (string) $fragment,
-                'value'     => '',
+                'scheme'   => self::$scheme,
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => '',
+                'query'    => '',
+                'fragment' => (string) $fragment,
+                'value'    => '',
             ];
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => self::$path,
-                'query'     => '',
-                'fragment'  => (string) $fragment,
-                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                'scheme'   => self::$scheme,
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => self::$path,
+                'query'    => '',
+                'fragment' => (string) $fragment,
+                'value'    => self::$schemeNormalized.$schemeDelimiter.
                     self::$pathNormalized.$fragmentNormalized,
             ];
         }
         foreach (self::$fragmentInvalidCombinations as $invalidFragment) {
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => self::$path,
-                'query'     => self::$query,
-                'fragment'  => $invalidFragment,
-                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                'scheme'   => self::$scheme,
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => self::$path,
+                'query'    => self::$query,
+                'fragment' => $invalidFragment,
+                'value'    => self::$schemeNormalized.$schemeDelimiter.
                     self::$pathNormalized.$queryDelimiter.self::$queryNormalized,
             ];
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => '',
-                'query'     => self::$query,
-                'fragment'  => $invalidFragment,
-                'value'     => '',
+                'scheme'   => self::$scheme,
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => '',
+                'query'    => self::$query,
+                'fragment' => $invalidFragment,
+                'value'    => '',
             ];
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => '',
-                'query'     => '',
-                'fragment'  => $invalidFragment,
-                'value'     => '',
+                'scheme'   => self::$scheme,
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => '',
+                'query'    => '',
+                'fragment' => $invalidFragment,
+                'value'    => '',
             ];
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => '',
-                'password'  => '',
-                'host'      => '',
-                'port'      => 0,
-                'path'      => self::$path,
-                'query'     => '',
-                'fragment'  => $invalidFragment,
-                'value'     => self::$schemeNormalized.$schemeDelimiter.self::$pathNormalized,
+                'scheme'   => self::$scheme,
+                'login'    => '',
+                'password' => '',
+                'host'     => '',
+                'port'     => 0,
+                'path'     => self::$path,
+                'query'    => '',
+                'fragment' => $invalidFragment,
+                'value'    => self::$schemeNormalized.$schemeDelimiter.self::$pathNormalized,
             ];
         }
 
         return $result;
     }
-    /** **********************************************************************
+
+    /**
      * Get values without path data set.
      *
-     * @return  array                       Data.
-     ************************************************************************/
+     * @return array data
+     */
     private static function getValuesWithoutPath(): array
     {
-        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_DELIMITER;
-        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER;
-        $queryDelimiter     = UriGeneralDelimiters::QUERY_DELIMITER;
+        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
+        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER->value;
+        $queryDelimiter     = UriGeneralDelimiters::QUERY_DELIMITER->value;
         $result             = [];
 
         foreach (self::$fragmentValidCombinations as $fragment => $fragmentNormalized) {
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => '',
-                'query'     => self::$query,
-                'fragment'  => (string) $fragment,
-                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                'scheme'   => self::$scheme,
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => '',
+                'query'    => self::$query,
+                'fragment' => (string) $fragment,
+                'value'    => self::$schemeNormalized.$schemeDelimiter.
                     $authorityDelimiter.self::$authorityNormalized.
                     $queryDelimiter.self::$queryNormalized.$fragmentNormalized,
             ];
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => '',
-                'query'     => '',
-                'fragment'  => (string) $fragment,
-                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                'scheme'   => self::$scheme,
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => '',
+                'query'    => '',
+                'fragment' => (string) $fragment,
+                'value'    => self::$schemeNormalized.$schemeDelimiter.
                     $authorityDelimiter.self::$authorityNormalized.$fragmentNormalized,
             ];
         }
         foreach (self::$fragmentInvalidCombinations as $invalidFragment) {
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => '',
-                'query'     => self::$query,
-                'fragment'  => $invalidFragment,
-                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                'scheme'   => self::$scheme,
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => '',
+                'query'    => self::$query,
+                'fragment' => $invalidFragment,
+                'value'    => self::$schemeNormalized.$schemeDelimiter.
                     $authorityDelimiter.self::$authorityNormalized.
                     $queryDelimiter.self::$queryNormalized,
             ];
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => '',
-                'query'     => '',
-                'fragment'  => $invalidFragment,
-                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                'scheme'   => self::$scheme,
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => '',
+                'query'    => '',
+                'fragment' => $invalidFragment,
+                'value'    => self::$schemeNormalized.$schemeDelimiter.
                     $authorityDelimiter.self::$authorityNormalized,
             ];
         }
 
         return $result;
     }
-    /** **********************************************************************
+
+    /**
      * Get values without query data set.
      *
-     * @return  array                       Data.
-     ************************************************************************/
+     * @return array data
+     */
     private static function getValuesWithoutQuery(): array
     {
-        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_DELIMITER;
-        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER;
-        $pathDelimiter      = UriSubDelimiters::PATH_PARTS_SEPARATOR;
+        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
+        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER->value;
+        $pathDelimiter      = UriSubDelimiters::PATH_PARTS_SEPARATOR->value;
         $result             = [];
 
         foreach (self::$fragmentValidCombinations as $fragment => $fragmentNormalized) {
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => self::$path,
-                'query'     => '',
-                'fragment'  => (string) $fragment,
-                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                'scheme'   => self::$scheme,
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => self::$path,
+                'query'    => '',
+                'fragment' => (string) $fragment,
+                'value'    => self::$schemeNormalized.$schemeDelimiter.
                     $authorityDelimiter.self::$authorityNormalized.
                     $pathDelimiter.self::$pathNormalized.$fragmentNormalized,
             ];
         }
         foreach (self::$fragmentInvalidCombinations as $invalidFragment) {
             $result[] = [
-                'scheme'    => self::$scheme,
-                'login'     => self::$login,
-                'password'  => self::$password,
-                'host'      => self::$host,
-                'port'      => self::$port,
-                'path'      => self::$path,
-                'query'     => '',
-                'fragment'  => $invalidFragment,
-                'value'     => self::$schemeNormalized.$schemeDelimiter.
+                'scheme'   => self::$scheme,
+                'login'    => self::$login,
+                'password' => self::$password,
+                'host'     => self::$host,
+                'port'     => self::$port,
+                'path'     => self::$path,
+                'query'    => '',
+                'fragment' => $invalidFragment,
+                'value'    => self::$schemeNormalized.$schemeDelimiter.
                     $authorityDelimiter.self::$authorityNormalized.
                     $pathDelimiter.self::$pathNormalized,
             ];

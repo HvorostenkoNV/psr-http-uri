@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4f7cd6fc5d08ce66138d967cdcf9708e",
+    "content-hash": "85c79d050c6bcc11e11705beecd3110b",
     "packages": [
         {
             "name": "hnv/psr-http-helper",
@@ -52,20 +52,23 @@
         },
         {
             "name": "hnv/psr-http-interfaces",
-            "version": "2.0.2",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/HvorostenkoNV/psr-http-interfaces.git",
-                "reference": "490595e878380784b535d96c89021ae5ad966ab6"
+                "reference": "855293c8e38be7b5cb28f25dc7be06bbb83ca519"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/HvorostenkoNV/psr-http-interfaces/zipball/490595e878380784b535d96c89021ae5ad966ab6",
-                "reference": "490595e878380784b535d96c89021ae5ad966ab6",
+                "url": "https://api.github.com/repos/HvorostenkoNV/psr-http-interfaces/zipball/855293c8e38be7b5cb28f25dc7be06bbb83ca519",
+                "reference": "855293c8e38be7b5cb28f25dc7be06bbb83ca519",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0"
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "dev-master"
             },
             "type": "library",
             "autoload": {
@@ -89,9 +92,9 @@
             ],
             "support": {
                 "issues": "https://github.com/HvorostenkoNV/psr-http-interfaces/issues",
-                "source": "https://github.com/HvorostenkoNV/psr-http-interfaces/tree/2.0.2"
+                "source": "https://github.com/HvorostenkoNV/psr-http-interfaces/tree/3.0.0"
             },
-            "time": "2021-12-11T14:29:12+00:00"
+            "time": "2022-07-03T18:00:02+00:00"
         }
     ],
     "packages-dev": [

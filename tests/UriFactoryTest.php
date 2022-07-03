@@ -1,172 +1,170 @@
 <?php
+
 declare(strict_types=1);
 
 namespace HNV\Http\UriTests;
 
-use Throwable;
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
+use HNV\Http\Uri\UriFactory;
 use HNV\Http\UriTests\CombinationsProvider\FullString\ParsedParts\{
     FullStringWithParsedParts as FullStringWithParsedPartsProvider,
 };
-use HNV\Http\Uri\UriFactory;
-/** ***********************************************************************************************
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
+
+/**
  * PSR-7 UriFactoryInterface implementation test.
  *
  * Testing working URI string parsing behavior.
  *
- * @package HNV\Psr\Http\Tests\Uri
- * @author  Hvorostenko
- *************************************************************************************************/
+ * @internal
+ * @covers Uri
+ * @large
+ */
 class UriFactoryTest extends TestCase
 {
-    /** **********************************************************************
+    /**
      * Test UriFactory parses string in expected way.
      *
-     * @covers          UriFactory::createUri
-     * @dataProvider    dataProviderUriParsedToParts
+     * @covers       UriFactory::createUri
+     * @dataProvider dataProviderUriParsedToParts
      *
-     * @param           string  $uriString                  Full URI string.
-     * @param           string  $scheme                     Scheme expected.
-     * @param           string  $userInfo                   User info expected.
-     * @param           string  $host                       Host expected.
-     * @param           int     $port                       Port expected.
-     * @param           string  $authority                  Authority expected.
-     * @param           string  $path                       Path expected.
-     * @param           string  $query                      Query expected.
-     * @param           string  $fragment                   Fragment expected.
-     * @param           string  $uriStringNormalized        Full URI string in normalized state.
-     *
-     * @return          void
-     * @throws          Throwable
-     ************************************************************************/
+     * @param string $uriString           full URI string
+     * @param string $scheme              scheme expected
+     * @param string $userInfo            user info expected
+     * @param string $host                host expected
+     * @param int    $port                port expected
+     * @param string $authority           authority expected
+     * @param string $path                path expected
+     * @param string $query               query expected
+     * @param string $fragment            fragment expected
+     * @param string $uriStringNormalized full URI string in normalized state
+     */
     public function testParsesString(
-        string  $uriString,
-        string  $scheme,
-        string  $userInfo,
-        string  $host,
-        int     $port,
-        string  $authority,
-        string  $path,
-        string  $query,
-        string  $fragment,
-        string  $uriStringNormalized
+        string $uriString,
+        string $scheme,
+        string $userInfo,
+        string $host,
+        int $port,
+        string $authority,
+        string $path,
+        string $query,
+        string $fragment,
+        string $uriStringNormalized
     ): void {
-        $uri                    = (new UriFactory())->createUri($uriString);
-        $schemeCaught           = $uri->getScheme();
-        $userInfoCaught         = $uri->getUserInfo();
-        $hostCaught             = $uri->getHost();
-        $portExpected           = $port !== 0 ? $port : null;
-        $portCaught             = $uri->getPort();
-        $authorityCaught        = $uri->getAuthority();
-        $pathCaught             = $uri->getPath();
-        $queryCaught            = $uri->getQuery();
-        $fragmentCaught         = $uri->getFragment();
-        $uriToStringConverted   = (string) $uri;
+        $uri                  = (new UriFactory())->createUri($uriString);
+        $schemeCaught         = $uri->getScheme();
+        $userInfoCaught       = $uri->getUserInfo();
+        $hostCaught           = $uri->getHost();
+        $portExpected         = $port !== 0 ? $port : null;
+        $portCaught           = $uri->getPort();
+        $authorityCaught      = $uri->getAuthority();
+        $pathCaught           = $uri->getPath();
+        $queryCaught          = $uri->getQuery();
+        $fragmentCaught       = $uri->getFragment();
+        $uriToStringConverted = (string) $uri;
 
-        self::assertEquals(
+        static::assertSame(
             $scheme,
             $schemeCaught,
             "Action \"UriFactory->createUri->getScheme\" returned unexpected result.\n".
-            "Action was called with parameters (uri => $uriString).\n".
-            "Expected result is \"$scheme\".\n".
-            "Caught result is \"$schemeCaught\"."
+            "Action was called with parameters (uri => {$uriString}).\n".
+            "Expected result is \"{$scheme}\".\n".
+            "Caught result is \"{$schemeCaught}\"."
         );
-        self::assertEquals(
+        static::assertSame(
             $userInfo,
             $userInfoCaught,
             "Action \"UriFactory->createUri->getUserInfo\" returned unexpected result.\n".
-            "Action was called with parameters (uri => $uriString).\n".
-            "Expected result is \"$userInfo\".\n".
-            "Caught result is \"$userInfoCaught\"."
+            "Action was called with parameters (uri => {$uriString}).\n".
+            "Expected result is \"{$userInfo}\".\n".
+            "Caught result is \"{$userInfoCaught}\"."
         );
-        self::assertEquals(
+        static::assertSame(
             $host,
             $hostCaught,
             "Action \"UriFactory->createUri->getHost\" returned unexpected result.\n".
-            "Action was called with parameters (uri => $uriString).\n".
-            "Expected result is \"$host\".\n".
-            "Caught result is \"$hostCaught\"."
+            "Action was called with parameters (uri => {$uriString}).\n".
+            "Expected result is \"{$host}\".\n".
+            "Caught result is \"{$hostCaught}\"."
         );
-        self::assertEquals(
+        static::assertSame(
             $portExpected,
             $portCaught,
             "Action \"UriFactory->createUri->getPort\" returned unexpected result.\n".
-            "Action was called with parameters (uri => $uriString).\n".
-            "Expected result is \"$portExpected\".\n".
-            "Caught result is \"$portCaught\"."
+            "Action was called with parameters (uri => {$uriString}).\n".
+            "Expected result is \"{$portExpected}\".\n".
+            "Caught result is \"{$portCaught}\"."
         );
-        self::assertEquals(
+        static::assertSame(
             $authority,
             $authorityCaught,
             "Action \"UriFactory->createUri->getAuthority\" returned unexpected result.\n".
-            "Action was called with parameters (uri => $uriString).\n".
-            "Expected result is \"$authority\".\n".
-            "Caught result is \"$authorityCaught\"."
+            "Action was called with parameters (uri => {$uriString}).\n".
+            "Expected result is \"{$authority}\".\n".
+            "Caught result is \"{$authorityCaught}\"."
         );
-        self::assertEquals(
+        static::assertSame(
             $path,
             $pathCaught,
             "Action \"UriFactory->createUri->getPath\" returned unexpected result.\n".
-            "Action was called with parameters (uri => $uriString).\n".
-            "Expected result is \"$path\".\n".
-            "Caught result is \"$pathCaught\"."
+            "Action was called with parameters (uri => {$uriString}).\n".
+            "Expected result is \"{$path}\".\n".
+            "Caught result is \"{$pathCaught}\"."
         );
-        self::assertEquals(
+        static::assertSame(
             $query,
             $queryCaught,
             "Action \"UriFactory->createUri->getQuery\" returned unexpected result.\n".
-            "Action was called with parameters (uri => $uriString).\n".
-            "Expected result is \"$query\".\n".
-            "Caught result is \"$queryCaught\"."
+            "Action was called with parameters (uri => {$uriString}).\n".
+            "Expected result is \"{$query}\".\n".
+            "Caught result is \"{$queryCaught}\"."
         );
-        self::assertEquals(
+        static::assertSame(
             $fragment,
             $fragmentCaught,
             "Action \"UriFactory->createUri->getFragment\" returned unexpected result.\n".
-            "Action was called with parameters (uri => $uriString).\n".
-            "Expected result is \"$fragment\".\n".
-            "Caught result is \"$fragmentCaught\"."
+            "Action was called with parameters (uri => {$uriString}).\n".
+            "Expected result is \"{$fragment}\".\n".
+            "Caught result is \"{$fragmentCaught}\"."
         );
 
-        self::assertEquals(
+        static::assertSame(
             $uriStringNormalized,
             $uriToStringConverted,
             "Action \"UriFactory->createUri->toString\" returned unexpected result.\n".
-            "Action was called with parameters (uri => $uriString).\n".
-            "Expected result is \"$uriStringNormalized\".\n".
-            "Caught result is \"$uriToStringConverted\"."
+            "Action was called with parameters (uri => {$uriString}).\n".
+            "Expected result is \"{$uriStringNormalized}\".\n".
+            "Caught result is \"{$uriToStringConverted}\"."
         );
     }
-    /** **********************************************************************
+
+    /**
      * Test "Uri::withPath" throws exception with invalid argument.
      *
-     * @covers          Uri::withPath
-     * @dataProvider    dataProviderInvalidUri
+     * @covers       Uri::withPath
+     * @dataProvider dataProviderInvalidUri
      *
-     * @param           string  $uriString                  Full URI string.
-     *
-     * @return          void
-     * @throws          Throwable
-     ************************************************************************/
+     * @param string $uriString full URI string
+     */
     public function testThrowsException(string $uriString): void
     {
         $this->expectException(InvalidArgumentException::class);
 
         (new UriFactory())->createUri($uriString);
 
-        self::fail(
+        static::fail(
             "Action \"UriFactory->createUri\" threw no expected exception.\n".
-            "Action was called with parameters (uri => $uriString).\n".
+            "Action was called with parameters (uri => {$uriString}).\n".
             "Expects \"InvalidArgumentException\" exception.\n".
             'Caught no exception.'
         );
     }
-    /** **********************************************************************
+
+    /**
      * Data provider: full URI string with expected parsed parts.
      *
-     * @return  array                                       Data.
-     ************************************************************************/
+     * @return array data
+     */
     public function dataProviderUriParsedToParts(): array
     {
         $result = [];
@@ -190,11 +188,12 @@ class UriFactoryTest extends TestCase
 
         return $result;
     }
-    /** **********************************************************************
+
+    /**
      * Data provider: full URI string invalid values.
      *
-     * @return  array                                       Data.
-     ************************************************************************/
+     * @return array data
+     */
     public function dataProviderInvalidUri(): array
     {
         $result = [];

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace HNV\Http\UriTests\ValuesProvider;
@@ -10,22 +11,20 @@ use HNV\Http\UriTests\ValuesProvider\IpAddress\{
 };
 
 use function array_merge;
-/** ***********************************************************************************************
+
+/**
  * URI host values provider.
- *
- * @package HNV\Psr\Http\Tests\Uri
- * @author  Hvorostenko
- *************************************************************************************************/
+ */
 class Host implements ValuesProviderInterface
 {
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
+    /**
+     * {@inheritDoc}
+     */
     public static function getValidValues(): array
     {
-        $leftBracer             = UriGeneralDelimiters::IP_ADDRESS_V6_LEFT_FRAME;
-        $rightBracer            = UriGeneralDelimiters::IP_ADDRESS_V6_RIGHT_FRAME;
-        $ipAddressesV6Values    = [];
+        $leftBracer          = UriGeneralDelimiters::IP_ADDRESS_V6_LEFT_FRAME->value;
+        $rightBracer         = UriGeneralDelimiters::IP_ADDRESS_V6_RIGHT_FRAME->value;
+        $ipAddressesV6Values = [];
 
         foreach (IpAddressV6ValuesProvider::getValidValues() as $value => $valueNormalized) {
             $ipAddressesV6Values[$leftBracer.$value.$rightBracer] = $leftBracer.$valueNormalized.$rightBracer;
@@ -37,14 +36,15 @@ class Host implements ValuesProviderInterface
             $ipAddressesV6Values,
         );
     }
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
+
+    /**
+     * {@inheritDoc}
+     */
     public static function getInvalidValues(): array
     {
-        $leftBracer             = UriGeneralDelimiters::IP_ADDRESS_V6_LEFT_FRAME;
-        $rightBracer            = UriGeneralDelimiters::IP_ADDRESS_V6_RIGHT_FRAME;
-        $ipAddressesV6Values    = [];
+        $leftBracer          = UriGeneralDelimiters::IP_ADDRESS_V6_LEFT_FRAME->value;
+        $rightBracer         = UriGeneralDelimiters::IP_ADDRESS_V6_RIGHT_FRAME->value;
+        $ipAddressesV6Values = [];
 
         foreach (IpAddressV6ValuesProvider::getInvalidValues() as $invalidValue) {
             $ipAddressesV6Values[] = $leftBracer.$invalidValue.$rightBracer;

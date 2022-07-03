@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace HNV\Http\Uri\Normalizer\DomainName;
@@ -11,23 +12,21 @@ use HNV\Http\Uri\Normalizer\RegularExpressionCheckerTrait;
 
 use function strlen;
 use function strtolower;
-/** ***********************************************************************************************
+
+/**
  * Top level domain normalizer.
- *
- * @package HNV\Psr\Http\Uri
- * @author  Hvorostenko
- *************************************************************************************************/
+ */
 class TopLevelDomain implements NormalizerInterface
 {
     use RegularExpressionCheckerTrait;
 
     public const MIN_LENGTH = 2;
     public const MAX_LENGTH = 6;
+    private const MASK      = '/^[a-z]{1,}$/';
 
-    private const MASK = '/^[a-z]{1,}$/';
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
+    /**
+     * {@inheritDoc}
+     */
     public static function normalize($value): string
     {
         $valueString    = (string) $value;
@@ -37,26 +36,27 @@ class TopLevelDomain implements NormalizerInterface
 
         if (strlen($valueLowercase) < $minLength) {
             throw new NormalizingException(
-                "top level domain \"$valueString\" is shorter than $minLength"
+                "top level domain \"{$valueString}\" is shorter than {$minLength}"
             );
         }
         if (strlen($valueLowercase) > $maxLength) {
             throw new NormalizingException(
-                "top level domain \"$valueString\" is longer than $maxLength"
+                "top level domain \"{$valueString}\" is longer than {$maxLength}"
             );
         }
 
         if (!self::checkRegularExpressionMatch($valueLowercase)) {
             throw new NormalizingException(
-                "top level domain \"$valueString\" is invalid"
+                "top level domain \"{$valueString}\" is invalid"
             );
         }
 
         return $valueLowercase;
     }
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
+
+    /**
+     * {@inheritDoc}
+     */
     protected static function buildRegularExpressionMask(): string
     {
         return self::MASK;

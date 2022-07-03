@@ -1,27 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace HNV\Http\Uri\Collection;
 
-use HNV\Http\Helper\Collection\CollectionInterface;
-/** ***********************************************************************************************
+/**
  * URI query allowed character`s collection.
- *
- * @package HNV\Psr\Http\Uri
- * @author  Hvorostenko
- *************************************************************************************************/
-class QueryAllowedCharacters implements CollectionInterface
+ */
+enum QueryAllowedCharacters: string
 {
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
-    public static function get(): array
-    {
-        return [
-            '*',
-            '-',
-            '.',
-            '_',
-        ];
-    }
+    case ASTERISK   = '*';
+    case MINUS      = '-';
+    case DOT        = '.';
+    case UNDERSCORE = '_';
 }
