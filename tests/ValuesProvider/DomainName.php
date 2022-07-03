@@ -1,12 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 namespace HNV\Http\UriTests\ValuesProvider;
 
 use HNV\Http\Helper\Collection\SpecialCharacters;
 use HNV\Http\Uri\Collection\{
-    UriGeneralDelimiters,
     DomainNameAllowedCharacters,
+    UriGeneralDelimiters,
 };
 use HNV\Http\Uri\Normalizer\DomainName\{
     FullQualifiedDomainName as FullQualifiedDomainNameNormalizer,
@@ -14,25 +15,24 @@ use HNV\Http\Uri\Normalizer\DomainName\{
     TopLevelDomain          as TopLevelDomainNormalizer,
 };
 
+use function array_column;
+use function array_diff;
+use function array_shift;
+use function count;
+use function implode;
 use function str_repeat;
 use function strtolower;
 use function strtoupper;
 use function ucfirst;
-use function implode;
-use function count;
-use function array_shift;
-use function array_diff;
-/** ***********************************************************************************************
+
+/**
  * URI domain name values provider.
- *
- * @package HNV\Psr\Http\Tests\Uri
- * @author  Hvorostenko
- *************************************************************************************************/
+ */
 class DomainName implements ValuesProviderInterface
 {
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
+    /**
+     * {@inheritDoc}
+     */
     public static function getValidValues(): array
     {
         $result = [];
@@ -43,9 +43,10 @@ class DomainName implements ValuesProviderInterface
 
         return $result;
     }
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
+
+    /**
+     * {@inheritDoc}
+     */
     public static function getInvalidValues(): array
     {
         $subDomainPartValid = self::getValidSubLevelDomainParts()[0];
@@ -69,34 +70,35 @@ class DomainName implements ValuesProviderInterface
 
         return $result;
     }
-    /** **********************************************************************
+
+    /**
      * Get all valid values combinations set.
      *
-     * @return  string[]                    Values set.
-     ************************************************************************/
+     * @return string[] values set
+     */
     private static function getAllValidValuesCombinations(): array
     {
-        $subDomainParts     = [];
-        $getSubDomainPart   = function() use ($subDomainParts) {
+        $subDomainParts   = [];
+        $getSubDomainPart = function () use ($subDomainParts) {
             if (count($subDomainParts) === 0) {
                 $subDomainParts = self::getValidSubLevelDomainParts();
             }
 
             return array_shift($subDomainParts);
         };
-        $topDomainParts     = self::getValidTopLevelDomainParts();
-        $partsDelimiter     = FullQualifiedDomainNameNormalizer::PARTS_DELIMITER;
-        $result             = [];
+        $topDomainParts = self::getValidTopLevelDomainParts();
+        $partsDelimiter = FullQualifiedDomainNameNormalizer::PARTS_DELIMITER;
+        $result         = [];
 
         for ($partsCount = 1; $partsCount <= 4; $partsCount++) {
-            $parts      = [];
+            $parts = [];
 
             for ($iteration = $partsCount; $iteration > 0; $iteration--) {
                 $parts[] = $getSubDomainPart();
             }
 
-            $parts[]    = $topDomainParts[0];
-            $result[]   = implode($partsDelimiter, $parts);
+            $parts[]  = $topDomainParts[0];
+            $result[] = implode($partsDelimiter, $parts);
         }
 
         foreach ($topDomainParts as $topDomainPart) {
@@ -105,11 +107,12 @@ class DomainName implements ValuesProviderInterface
 
         return $result;
     }
-    /** **********************************************************************
-     * Get valid domain name sub-level parts set.
+
+    /**
+     * Get valid domain name sublevel parts set.
      *
-     * @return  string[]                    Values set.
-     ************************************************************************/
+     * @return string[] values set
+     */
     private static function getValidSubLevelDomainParts(): array
     {
         $letter = 'd';
@@ -121,112 +124,115 @@ class DomainName implements ValuesProviderInterface
             strtoupper($string),
             ucfirst($string),
 
-            "$digit$string",
-            "$string$digit",
-            "$string$digit$string",
+            "{$digit}{$string}",
+            "{$string}{$digit}",
+            "{$string}{$digit}{$string}",
 
             $letter,
             strtoupper($letter),
-            "$digit",
+            "{$digit}",
         ];
 
-        foreach (DomainNameAllowedCharacters::get() as $char) {
-            $result[] = "$string$char$string";
-            $result[] = "$digit$char$digit";
-            $result[] = "$string$char$digit";
-            $result[] = "$digit$char$string";
+        foreach (DomainNameAllowedCharacters::cases() as $case) {
+            $result[] = "{$string}{$case->value}{$string}";
+            $result[] = "{$digit}{$case->value}{$digit}";
+            $result[] = "{$string}{$case->value}{$digit}";
+            $result[] = "{$digit}{$case->value}{$string}";
         }
 
         return $result;
     }
-    /** **********************************************************************
-     * Get invalid domain name sub level parts set.
+
+    /**
+     * Get invalid domain name sublevel parts set.
      *
-     * @return  string[]                    Values set.
-     ************************************************************************/
+     * @return string[] values set
+     */
     private static function getInvalidSubLevelDomainParts(): array
     {
-        $letter         = 'd';
-        $string         = 'domain';
+        $letter = 'd';
+        $string = 'domain';
 
-        $allowedChars   = DomainNameAllowedCharacters::get();
-        $otherChars     = array_diff(
+        $allowedChars = array_column(DomainNameAllowedCharacters::cases(), 'value');
+        $otherChars   = array_diff(
             SpecialCharacters::get(),
-            UriGeneralDelimiters::get(),
+            array_column(UriGeneralDelimiters::cases(), 'value'),
             $allowedChars,
             [FullQualifiedDomainNameNormalizer::PARTS_DELIMITER]
         );
 
-        $result         = [
-            "$string ",
-            " $string",
-            "$string $string",
+        $result = [
+            "{$string} ",
+            " {$string}",
+            "{$string} {$string}",
         ];
 
         foreach ($allowedChars as $char) {
-            $result[]   = "$char$string";
-            $result[]   = "$string$char";
+            $result[] = "{$char}{$string}";
+            $result[] = "{$string}{$char}";
         }
         foreach ($otherChars as $char) {
-            $result[]   = "$char$string";
-            $result[]   = "$string$char";
-            $result[]   = "$string$char$string";
+            $result[] = "{$char}{$string}";
+            $result[] = "{$string}{$char}";
+            $result[] = "{$string}{$char}{$string}";
         }
 
         $result[] = str_repeat($letter, SubLevelDomainNormalizer::MAX_LENGTH + 1);
 
         return $result;
     }
-    /** **********************************************************************
+
+    /**
      * Get valid domain name top level parts set.
      *
-     * @return  string[]                    Values set.
-     ************************************************************************/
+     * @return string[] values set
+     */
     private static function getValidTopLevelDomainParts(): array
     {
-        $letter     = 'd';
-        $minLength  = TopLevelDomainNormalizer::MIN_LENGTH;
-        $maxLength  = TopLevelDomainNormalizer::MAX_LENGTH;
-        $result     = [];
+        $letter    = 'd';
+        $minLength = TopLevelDomainNormalizer::MIN_LENGTH;
+        $maxLength = TopLevelDomainNormalizer::MAX_LENGTH;
+        $result    = [];
 
         for ($length = $minLength; $length <= $maxLength; $length++) {
-            $value      = str_repeat($letter, $length);
-            $result[]   = $value;
-            $result[]   = strtoupper($value);
-            $result[]   = ucfirst($value);
+            $value    = str_repeat($letter, $length);
+            $result[] = $value;
+            $result[] = strtoupper($value);
+            $result[] = ucfirst($value);
         }
 
         return $result;
     }
-    /** **********************************************************************
+
+    /**
      * Get invalid domain name top level parts set.
      *
-     * @return  string[]                    Values set.
-     ************************************************************************/
+     * @return string[] values set
+     */
     private static function getInvalidTopLevelDomainParts(): array
     {
         $letter = 'd';
         $digit  = 1;
         $string = 'domain';
 
-        $chars  = array_diff(
+        $chars = array_diff(
             SpecialCharacters::get(),
-            UriGeneralDelimiters::get(),
+            array_column(UriGeneralDelimiters::cases(), 'value'),
             [FullQualifiedDomainNameNormalizer::PARTS_DELIMITER]
         );
 
         $result = [
-            "$string ",
-            " $string",
-            "$string $string",
+            "{$string} ",
+            " {$string}",
+            "{$string} {$string}",
         ];
 
         for ($length = 1; $length < TopLevelDomainNormalizer::MIN_LENGTH; $length++) {
             $result[] = str_repeat($letter, $length);
         }
 
-        $result[]   = str_repeat($letter, TopLevelDomainNormalizer::MAX_LENGTH + 1);
-        $result[]   = str_repeat("$digit", TopLevelDomainNormalizer::MIN_LENGTH);
+        $result[] = str_repeat($letter, TopLevelDomainNormalizer::MAX_LENGTH + 1);
+        $result[] = str_repeat("{$digit}", TopLevelDomainNormalizer::MIN_LENGTH);
 
         foreach ($chars as $char) {
             $result[] = $char;

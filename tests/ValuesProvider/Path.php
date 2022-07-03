@@ -1,34 +1,35 @@
 <?php
+
 declare(strict_types=1);
 
 namespace HNV\Http\UriTests\ValuesProvider;
 
 use HNV\Http\Helper\Collection\SpecialCharacters;
 use HNV\Http\Uri\Collection\{
+    PathAllowedCharactersAny,
+    PathAllowedCharactersNonFirst,
     UriSubDelimiters,
-    PathAllowedCharacters,
 };
 
-use function strtoupper;
-use function str_repeat;
-use function ucfirst;
-use function implode;
-use function count;
-use function array_merge;
+use function array_column;
 use function array_diff;
+use function array_merge;
 use function array_shift;
+use function count;
+use function implode;
 use function rawurlencode;
-/** ***********************************************************************************************
+use function str_repeat;
+use function strtoupper;
+use function ucfirst;
+
+/**
  * URI path normalized values collection.
- *
- * @package HNV\Psr\Http\Tests\Uri
- * @author  Hvorostenko
- *************************************************************************************************/
+ */
 class Path implements ValuesProviderInterface
 {
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
+    /**
+     * {@inheritDoc}
+     */
     public static function getValidValues(): array
     {
         $result = [];
@@ -42,38 +43,40 @@ class Path implements ValuesProviderInterface
 
         return $result;
     }
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
+
+    /**
+     * {@inheritDoc}
+     */
     public static function getInvalidValues(): array
     {
-        $validValues    = self::getValidValues();
-        $result         = [];
+        $validValues = self::getValidValues();
+        $result      = [];
 
-        foreach (PathAllowedCharacters::NON_FIRST_CHARS as $char) {
+        foreach (PathAllowedCharactersNonFirst::cases() as $case) {
             foreach ($validValues as $value) {
-                $result[] = "$char$value";
+                $result[] = "{$case->value}{$value}";
             }
         }
 
         return $result;
     }
-    /** **********************************************************************
+
+    /**
      * Get valid simple (without need for normalizing) values set.
      *
-     * @return  string[]                    Values set.
-     ************************************************************************/
+     * @return string[] values set
+     */
     private static function getValidSimpleValues(): array
     {
-        $validParts     = [];
-        $getValidPart   = function() use ($validParts) {
+        $validParts   = [];
+        $getValidPart = function () use ($validParts) {
             if (count($validParts) === 0) {
                 $validParts = self::getValidSimpleParts();
             }
 
             return array_shift($validParts);
         };
-        $result         = [];
+        $result = [];
 
         for ($partsCount = 1; $partsCount <= 5; $partsCount++) {
             $parts = [];
@@ -82,22 +85,23 @@ class Path implements ValuesProviderInterface
                 $parts[] = $getValidPart();
             }
 
-            $result[] = implode(UriSubDelimiters::PATH_PARTS_SEPARATOR, $parts);
+            $result[] = implode(UriSubDelimiters::PATH_PARTS_SEPARATOR->value, $parts);
         }
 
         return $result;
     }
-    /** **********************************************************************
+
+    /**
      * Get valid values with their normalized representation set.
      *
-     * @return  string[]                    Values set.
-     ************************************************************************/
+     * @return string[] values set
+     */
     private static function getValidNormalizedValues(): array
     {
-        $separator          = UriSubDelimiters::PATH_PARTS_SEPARATOR;
-        $normalizedParts    = self::getValidNormalizedParts();
-        $simplePart         = self::getValidSimpleParts()[0];
-        $result             = [];
+        $separator       = UriSubDelimiters::PATH_PARTS_SEPARATOR->value;
+        $normalizedParts = self::getValidNormalizedParts();
+        $simplePart      = self::getValidSimpleParts()[0];
+        $result          = [];
 
         foreach ($normalizedParts as $value => $valueNormalized) {
             $result[$value] = $valueNormalized;
@@ -127,11 +131,12 @@ class Path implements ValuesProviderInterface
 
         return $result;
     }
-    /** **********************************************************************
+
+    /**
      * Get valid simple (without need for normalizing) values parts set.
      *
-     * @return  string[]                    Values set.
-     ************************************************************************/
+     * @return string[] values set
+     */
     private static function getValidSimpleParts(): array
     {
         $letter = 'p';
@@ -143,49 +148,47 @@ class Path implements ValuesProviderInterface
             strtoupper($string),
             ucfirst($string),
 
-            "$string$digit",
-            "$string$digit$string",
-            "$digit$string",
+            "{$string}{$digit}",
+            "{$string}{$digit}{$string}",
+            "{$digit}{$string}",
 
             $letter,
-            "$digit",
+            "{$digit}",
         ];
     }
-    /** **********************************************************************
+
+    /**
      * Get valid parts with their normalized representation set.
      *
-     * @return  string[]                    Values set.
-     ************************************************************************/
+     * @return string[] values set
+     */
     private static function getValidNormalizedParts(): array
     {
         $string             = 'path';
-        $invalidFirstChars  = PathAllowedCharacters::NON_FIRST_CHARS;
-        $allowedChars       = array_diff(
-            PathAllowedCharacters::get(),
-            $invalidFirstChars
-        );
+        $invalidFirstChars  = array_column(PathAllowedCharactersNonFirst::cases(), 'value');
+        $allowedChars       = array_column(PathAllowedCharactersAny::cases(), 'value');
         $otherChars         = array_diff(
             SpecialCharacters::get(),
             $allowedChars,
             $invalidFirstChars,
-            [UriSubDelimiters::PATH_PARTS_SEPARATOR]
+            [UriSubDelimiters::PATH_PARTS_SEPARATOR->value]
         );
-        $result             = [];
+        $result = [];
 
         foreach ($allowedChars as $char) {
-            $charEncoded            = rawurlencode($char);
-            $result[$char]          = $char;
-            $result[$charEncoded]   = $char;
+            $charEncoded          = rawurlencode($char);
+            $result[$char]        = $char;
+            $result[$charEncoded] = $char;
         }
         foreach ($invalidFirstChars as $char) {
-            $charEncoded                    = rawurlencode($char);
-            $result[$string.$char]          = $string.$char;
-            $result[$string.$charEncoded]   = $string.$char;
+            $charEncoded                  = rawurlencode($char);
+            $result[$string.$char]        = $string.$char;
+            $result[$string.$charEncoded] = $string.$char;
         }
         foreach (array_merge($otherChars, [' ']) as $char) {
-            $charEncoded            = rawurlencode($char);
-            $result[$char]          = $charEncoded;
-            $result[$charEncoded]   = $charEncoded;
+            $charEncoded          = rawurlencode($char);
+            $result[$char]        = $charEncoded;
+            $result[$charEncoded] = $charEncoded;
         }
 
         return $result;

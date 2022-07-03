@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace HNV\Http\UriTests\ValuesProvider;
@@ -6,17 +7,15 @@ namespace HNV\Http\UriTests\ValuesProvider;
 use HNV\Http\Uri\Normalizer\Port as PortNormalizer;
 
 use function rand;
-/** ***********************************************************************************************
+
+/**
  * URI port normalized values set provider.
- *
- * @package HNV\Psr\Http\Tests\Uri
- * @author  Hvorostenko
- *************************************************************************************************/
+ */
 class Port implements ValuesProviderInterface
 {
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
+    /**
+     * {@inheritDoc}
+     */
     public static function getValidValues(): array
     {
         $result = [
@@ -31,9 +30,10 @@ class Port implements ValuesProviderInterface
 
         return $result;
     }
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
+
+    /**
+     * {@inheritDoc}
+     */
     public static function getInvalidValues(): array
     {
         $result = [
@@ -42,8 +42,8 @@ class Port implements ValuesProviderInterface
         ];
 
         for ($iteration = 5; $iteration > 0; $iteration--) {
-            $result[]   = rand(PortNormalizer::MIN_VALUE - 100, PortNormalizer::MIN_VALUE - 2);
-            $result[]   = rand(PortNormalizer::MAX_VALUE + 2,   PortNormalizer::MAX_VALUE + 100);
+            $result[] = rand(PortNormalizer::MIN_VALUE - 100, PortNormalizer::MIN_VALUE - 2);
+            $result[] = rand(PortNormalizer::MAX_VALUE + 2, PortNormalizer::MAX_VALUE + 100);
         }
 
         return $result;

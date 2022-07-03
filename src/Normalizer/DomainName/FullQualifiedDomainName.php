@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace HNV\Http\Uri\Normalizer\DomainName;
@@ -8,40 +9,39 @@ use HNV\Http\Helper\Normalizer\{
     NormalizingException,
 };
 
+use function array_pop;
+use function count;
 use function explode;
 use function implode;
-use function count;
-use function array_pop;
-/** ***********************************************************************************************
+
+/**
  * Full qualified domain name normalizer.
- *
- * @package HNV\Psr\Http\Uri
- * @author  Hvorostenko
- *************************************************************************************************/
+ */
 class FullQualifiedDomainName implements NormalizerInterface
 {
     public const PARTS_DELIMITER = '.';
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
+
+    /**
+     * {@inheritDoc}
+     */
     public static function normalize($value): string
     {
-        $valueString    = (string) $value;
-        $valueExploded  = explode(self::PARTS_DELIMITER, $valueString);
+        $valueString   = (string) $value;
+        $valueExploded = explode(self::PARTS_DELIMITER, $valueString);
 
         if (count($valueExploded) < 2) {
-            throw new NormalizingException("domain \"$valueString\" has not enough parts");
+            throw new NormalizingException("domain \"{$valueString}\" has not enough parts");
         }
 
-        $topLevelDomain     = array_pop($valueExploded);
-        $normalizedParts    = [];
+        $topLevelDomain  = array_pop($valueExploded);
+        $normalizedParts = [];
 
         foreach ($valueExploded as $subDomain) {
             try {
                 $normalizedParts[] = SubLevelDomain::normalize($subDomain);
             } catch (NormalizingException $exception) {
                 throw new NormalizingException(
-                    "sub domain \"$subDomain\" is invalid",
+                    "sub domain \"{$subDomain}\" is invalid",
                     0,
                     $exception
                 );
@@ -52,7 +52,7 @@ class FullQualifiedDomainName implements NormalizerInterface
             $normalizedParts[] = TopLevelDomain::normalize($topLevelDomain);
         } catch (NormalizingException $exception) {
             throw new NormalizingException(
-                "top level domain \"$topLevelDomain\" is invalid",
+                "top level domain \"{$topLevelDomain}\" is invalid",
                 0,
                 $exception
             );

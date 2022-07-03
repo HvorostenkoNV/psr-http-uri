@@ -1,55 +1,54 @@
 <?php
+
 declare(strict_types=1);
 
 namespace HNV\Http\Uri;
 
-use InvalidArgumentException;
-use RuntimeException;
-use Psr\Http\Message\{
-    UriInterface,
-    UriFactoryInterface,
-};
 use HNV\Http\Uri\Collection\{
     UriGeneralDelimiters,
     UriSubDelimiters,
 };
+use InvalidArgumentException;
+use Psr\Http\Message\{
+    UriFactoryInterface,
+    UriInterface,
+};
+use RuntimeException;
 
+use function explode;
 use function strlen;
-use function substr;
 use function strpos;
 use function strrpos;
-use function explode;
-/** ***********************************************************************************************
+use function substr;
+
+/**
  * PSR-7 UriFactoryInterface implementation.
- *
- * @package HNV\Psr\Http\Uri
- * @author  Hvorostenko
- *************************************************************************************************/
+ */
 class UriFactory implements UriFactoryInterface
 {
-    /** **********************************************************************
-     * @inheritDoc
-     ************************************************************************/
+    /**
+     * {@inheritDoc}
+     */
     public function createUri(string $uri = ''): UriInterface
     {
-        $uriOrigin          = $uri;
-        $scheme             = $this->parseSchemeFromUri($uri);
-        $fragment           = $this->parseFragmentFromUri($uri);
-        $query              = $this->parseQueryFromUri($uri);
-        $path               = $uri;
-        $authority          = $this->parseAuthorityFromPath($path);
-        $userInfo           = $this->parseUserInfoFromAuthority($authority);
-        $userInfoExploded   = explode(UriSubDelimiters::USER_INFO_SEPARATOR, $userInfo, 2);
-        $userLogin          = $userInfoExploded[0];
-        $userPassword       = $userInfoExploded[1] ?? '';
-        $port               = $this->parsePortFromAuthority($authority);
-        $host               = $authority;
+        $uriOrigin        = $uri;
+        $scheme           = $this->parseSchemeFromUri($uri);
+        $fragment         = $this->parseFragmentFromUri($uri);
+        $query            = $this->parseQueryFromUri($uri);
+        $path             = $uri;
+        $authority        = $this->parseAuthorityFromPath($path);
+        $userInfo         = $this->parseUserInfoFromAuthority($authority);
+        $userInfoExploded = explode(UriSubDelimiters::USER_INFO_SEPARATOR->value, $userInfo, 2);
+        $userLogin        = $userInfoExploded[0];
+        $userPassword     = $userInfoExploded[1] ?? '';
+        $port             = $this->parsePortFromAuthority($authority);
+        $host             = $authority;
 
         try {
             UriValidator::checkAuthorityIsValid($userInfo, $host, $port);
         } catch (RuntimeException $exception) {
             throw new InvalidArgumentException(
-                "uri \"$uriOrigin\" has invalid authority",
+                "uri \"{$uriOrigin}\" has invalid authority",
                 0,
                 $exception
             );
@@ -59,7 +58,7 @@ class UriFactory implements UriFactoryInterface
             UriValidator::checkUriIsValid($scheme, $host, $path);
         } catch (RuntimeException $exception) {
             throw new InvalidArgumentException(
-                "uri \"$uriOrigin\" has not enough parts",
+                "uri \"{$uriOrigin}\" has not enough parts",
                 0,
                 $exception
             );
@@ -75,31 +74,32 @@ class UriFactory implements UriFactoryInterface
                 ->withQuery($query)
                 ->withFragment($fragment);
         } catch (InvalidArgumentException $exception) {
-            throw new InvalidArgumentException("uri \"$uriOrigin\" building error", 0, $exception);
+            throw new InvalidArgumentException("uri \"{$uriOrigin}\" building error", 0, $exception);
         }
     }
-    /** **********************************************************************
+
+    /**
      * Parse scheme from URI string.
      * URI string will be changed.
      *
-     * @param   string $uri                 The URI string link.
+     * @param string $uri the URI string link
      *
-     * @return  string                      Scheme.
-     ************************************************************************/
+     * @return string scheme
+     */
     private function parseSchemeFromUri(string &$uri): string
     {
-        $schemeDelimiterPosition    = strpos($uri, UriGeneralDelimiters::SCHEME_DELIMITER);
-        $pathDelimiterPosition      = strpos($uri, UriSubDelimiters::PATH_PARTS_SEPARATOR);
-        $ipV6FramePosition          = strpos($uri, UriGeneralDelimiters::IP_ADDRESS_V6_LEFT_FRAME);
+        $schemeDelimiterPosition = strpos($uri, UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value);
+        $pathDelimiterPosition   = strpos($uri, UriSubDelimiters::PATH_PARTS_SEPARATOR->value);
+        $ipV6FramePosition       = strpos($uri, UriGeneralDelimiters::IP_ADDRESS_V6_LEFT_FRAME->value);
 
         if ($schemeDelimiterPosition === false || $schemeDelimiterPosition === 0) {
             return '';
         }
 
-        $pathDelimiterIsAfterScheme = $pathDelimiterPosition === false ||
-            $schemeDelimiterPosition < $pathDelimiterPosition;
-        $ipV6FrameIsAfterScheme     = $ipV6FramePosition === false ||
-            $schemeDelimiterPosition < $ipV6FramePosition;
+        $pathDelimiterIsAfterScheme = $pathDelimiterPosition === false
+            || $schemeDelimiterPosition < $pathDelimiterPosition;
+        $ipV6FrameIsAfterScheme = $ipV6FramePosition === false
+            || $schemeDelimiterPosition < $ipV6FramePosition;
 
         if ($pathDelimiterIsAfterScheme && $ipV6FrameIsAfterScheme) {
             $scheme = substr($uri, 0, $schemeDelimiterPosition);
@@ -110,114 +110,119 @@ class UriFactory implements UriFactoryInterface
 
         return '';
     }
-    /** **********************************************************************
+
+    /**
      * Parse authority from path string.
      * Path string will be changed.
      *
-     * @param   string $path                The path string link.
+     * @param string $path the path string link
      *
-     * @return  string                      Authority.
-     ************************************************************************/
+     * @return string authority
+     */
     private function parseAuthorityFromPath(string &$path): string
     {
         $authority = '';
 
-        if (str_starts_with($path, UriGeneralDelimiters::AUTHORITY_DELIMITER)) {
-            $value                  = substr($path, strlen(UriGeneralDelimiters::AUTHORITY_DELIMITER));
-            $pathDelimiterPosition  = strpos($value, UriSubDelimiters::PATH_PARTS_SEPARATOR);
+        if (str_starts_with($path, UriGeneralDelimiters::AUTHORITY_DELIMITER->value)) {
+            $value                 = substr($path, strlen(UriGeneralDelimiters::AUTHORITY_DELIMITER->value));
+            $pathDelimiterPosition = strpos($value, UriSubDelimiters::PATH_PARTS_SEPARATOR->value);
 
             if ($pathDelimiterPosition !== false) {
-                $authority  = substr($value, 0, $pathDelimiterPosition);
-                $path       = substr($value, $pathDelimiterPosition);
+                $authority = substr($value, 0, $pathDelimiterPosition);
+                $path      = substr($value, $pathDelimiterPosition);
             } else {
-                $authority  = $value;
-                $path       = '';
+                $authority = $value;
+                $path      = '';
             }
         }
 
         return $authority;
     }
-    /** **********************************************************************
+
+    /**
      * Parse user info from authority string.
      * Authority string will be changed.
      *
-     * @param   string $authority           The authority string link.
+     * @param string $authority the authority string link
      *
-     * @return  string                      User info
-     ************************************************************************/
+     * @return string User info
+     */
     private function parseUserInfoFromAuthority(string &$authority): string
     {
-        $delimiterPosition = strrpos($authority, UriGeneralDelimiters::USER_INFO_DELIMITER);
+        $delimiterPosition = strrpos($authority, UriGeneralDelimiters::USER_INFO_DELIMITER->value);
 
-        if (str_contains($authority, UriGeneralDelimiters::USER_INFO_DELIMITER)) {
-            $userInfo   = substr($authority, 0, $delimiterPosition);
-            $authority  = substr($authority, $delimiterPosition + 1);
+        if (str_contains($authority, UriGeneralDelimiters::USER_INFO_DELIMITER->value)) {
+            $userInfo  = substr($authority, 0, $delimiterPosition);
+            $authority = substr($authority, $delimiterPosition + 1);
 
             return $userInfo;
         }
 
         return '';
     }
-    /** **********************************************************************
+
+    /**
      * Parse port from authority string.
      * Authority string will be changed.
      *
-     * @param   string $authority           The authority string link.
+     * @param string $authority the authority string link
      *
-     * @return  int                         Port.
-     ************************************************************************/
+     * @return int port
+     */
     private function parsePortFromAuthority(string &$authority): int
     {
-        $portDelimiterPosition  = strrpos($authority, UriGeneralDelimiters::PORT_DELIMITER);
-        $ipV6FramePosition      = strrpos($authority, UriGeneralDelimiters::IP_ADDRESS_V6_RIGHT_FRAME);
-        $ipV6FrameIsBeforePort  = $ipV6FramePosition === false ||
-            $portDelimiterPosition > $ipV6FramePosition;
+        $portDelimiterPosition = strrpos($authority, UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value);
+        $ipV6FramePosition     = strrpos($authority, UriGeneralDelimiters::IP_ADDRESS_V6_RIGHT_FRAME->value);
+        $ipV6FrameIsBeforePort = $ipV6FramePosition === false
+            || $portDelimiterPosition > $ipV6FramePosition;
 
         if ($portDelimiterPosition !== false && $ipV6FrameIsBeforePort) {
-            $port       = (int) substr($authority, $portDelimiterPosition + 1);
-            $authority  = substr($authority, 0, $portDelimiterPosition);
+            $port      = (int) substr($authority, $portDelimiterPosition + 1);
+            $authority = substr($authority, 0, $portDelimiterPosition);
 
             return $port;
         }
 
         return 0;
     }
-    /** **********************************************************************
+
+    /**
      * Parse query from URI string.
      * URI string will be changed.
      *
-     * @param   string $uri                 The URI string link.
+     * @param string $uri the URI string link
      *
-     * @return  string                      Query.
-     ************************************************************************/
+     * @return string query
+     */
     private function parseQueryFromUri(string &$uri): string
     {
-        $delimiterPosition = strrpos($uri, UriGeneralDelimiters::QUERY_DELIMITER);
+        $delimiterPosition = strrpos($uri, UriGeneralDelimiters::QUERY_DELIMITER->value);
 
         if ($delimiterPosition !== false) {
-            $query  = substr($uri, $delimiterPosition + 1);
-            $uri    = substr($uri, 0, $delimiterPosition);
+            $query = substr($uri, $delimiterPosition + 1);
+            $uri   = substr($uri, 0, $delimiterPosition);
 
             return $query;
         }
 
         return '';
     }
-    /** **********************************************************************
+
+    /**
      * Parse fragment from URI string.
      * URI string will be changed.
      *
-     * @param   string $uri                 The URI string link.
+     * @param string $uri the URI string link
      *
-     * @return  string                      Fragment.
-     ************************************************************************/
+     * @return string fragment
+     */
     private function parseFragmentFromUri(string &$uri): string
     {
-        $delimiterPosition = strrpos($uri, UriGeneralDelimiters::FRAGMENT_DELIMITER);
+        $delimiterPosition = strrpos($uri, UriGeneralDelimiters::FRAGMENT_DELIMITER->value);
 
         if ($delimiterPosition !== false) {
-            $fragment   = substr($uri, $delimiterPosition + 1);
-            $uri        = substr($uri, 0, $delimiterPosition);
+            $fragment = substr($uri, $delimiterPosition + 1);
+            $uri      = substr($uri, 0, $delimiterPosition);
 
             return $fragment;
         }

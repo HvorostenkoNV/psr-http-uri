@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace HNV\Http\UriTests\CombinationsProvider\FullString\ParsedParts;
@@ -6,16 +7,14 @@ namespace HNV\Http\UriTests\CombinationsProvider\FullString\ParsedParts;
 use HNV\Http\UriTests\CombinationsProvider\CombinationsProviderInterface;
 
 use function array_merge;
-/** ***********************************************************************************************
+
+/**
  * URI full string with it`s parsed parts provider.
- *
- * @package HNV\Psr\Http\Tests\Uri
- * @author  Hvorostenko
- *************************************************************************************************/
+ */
 class FullStringWithParsedParts implements CombinationsProviderInterface
 {
-    /** **********************************************************************
-     * @inheritDoc
+    /**
+     * {@inheritDoc}
      *
      * @example
      *         [
@@ -35,7 +34,7 @@ class FullStringWithParsedParts implements CombinationsProviderInterface
      *              http://login:password@site.com:10/page/sub-page?key=value&key2#fragment
      *              (full URI string in normalized form),
      *         ]
-     ************************************************************************/
+     */
     public static function get(): array
     {
         $result = [];
