@@ -177,8 +177,6 @@ class V4 implements ValuesProviderInterface
 
     /**
      * Get valid random value part.
-     *
-     * @return int random value part
      */
     private static function getValidRandomValuePart(): int
     {
@@ -190,8 +188,6 @@ class V4 implements ValuesProviderInterface
 
     /**
      * Get invalid random small value part.
-     *
-     * @return int random value part
      */
     private static function getInvalidRandomSmallValuePart(): int
     {
@@ -203,8 +199,6 @@ class V4 implements ValuesProviderInterface
 
     /**
      * Get invalid random big value part.
-     *
-     * @return int random value part
      */
     private static function getInvalidRandomBigValuePart(): int
     {
@@ -218,8 +212,6 @@ class V4 implements ValuesProviderInterface
      * Build full value from parts.
      *
      * @param int[] $parts parts
-     *
-     * @return string full value
      */
     private static function buildValueFromParts(array $parts): string
     {

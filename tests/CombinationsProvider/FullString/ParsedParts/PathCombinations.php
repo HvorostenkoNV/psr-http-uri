@@ -86,8 +86,6 @@ class PathCombinations extends AbstractCombinationsProvider implements Combinati
 
     /**
      * Get full values data set.
-     *
-     * @return array data
      */
     private static function getFullValues(): array
     {
@@ -140,8 +138,6 @@ class PathCombinations extends AbstractCombinationsProvider implements Combinati
 
     /**
      * Get values without scheme data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutScheme(): array
     {
@@ -270,8 +266,6 @@ class PathCombinations extends AbstractCombinationsProvider implements Combinati
 
     /**
      * Get values without authority data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutAuthority(): array
     {
@@ -513,8 +507,6 @@ class PathCombinations extends AbstractCombinationsProvider implements Combinati
 
     /**
      * Get values without query data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutQuery(): array
     {
@@ -593,8 +585,6 @@ class PathCombinations extends AbstractCombinationsProvider implements Combinati
 
     /**
      * Get values without fragment data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutFragment(): array
     {

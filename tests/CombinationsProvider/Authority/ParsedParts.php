@@ -89,8 +89,6 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
 
     /**
      * Get user info combinations.
-     *
-     * @return array combinations data
      */
     private static function getUserInfoCombinations(): array
     {
@@ -185,8 +183,6 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
 
     /**
      * Get host combinations.
-     *
-     * @return array combinations data
      */
     private static function getHostCombinations(): array
     {
@@ -280,8 +276,6 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
 
     /**
      * Get port combinations.
-     *
-     * @return array combinations data
      */
     private static function getPortCombinations(): array
     {
@@ -374,8 +368,6 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
 
     /**
      * Get scheme with port combinations.
-     *
-     * @return array combinations data
      */
     private static function getSchemeWithPortCombinations(): array
     {

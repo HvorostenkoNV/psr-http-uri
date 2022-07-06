@@ -14,7 +14,6 @@ use HNV\Http\Uri\Collection\{
     UriSubDelimiters,
 };
 
-use function array_column;
 use function array_map;
 use function array_merge;
 use function explode;
@@ -36,7 +35,7 @@ class Path implements NormalizerInterface
     {
         $valueString       = (string) $value;
         $valueExploded     = explode(UriSubDelimiters::PATH_PARTS_SEPARATOR->value, $valueString);
-        $invalidFirstChars = array_column(PathAllowedCharactersNonFirst::cases(), 'value');
+        $invalidFirstChars = PathAllowedCharactersNonFirst::casesValues();
         $result            = [];
 
         foreach ($invalidFirstChars as $char) {
@@ -65,11 +64,7 @@ class Path implements NormalizerInterface
     /**
      * Normalize path part value.
      *
-     * @param string $value path part
-     *
      * @throws NormalizingException normalizing error
-     *
-     * @return string normalized path part
      */
     private static function normalizePart(string $value): string
     {
@@ -79,8 +74,8 @@ class Path implements NormalizerInterface
 
         $result              = rawurlencode(rawurldecode($value));
         $allowedChars        = array_merge(
-            array_column(PathAllowedCharactersNonFirst::cases(), 'value'),
-            array_column(PathAllowedCharactersAny::cases(), 'value'),
+            PathAllowedCharactersNonFirst::casesValues(),
+            PathAllowedCharactersAny::casesValues(),
         );
         $allowedCharsEncoded = array_map(fn (string $value): string => rawurlencode($value), $allowedChars);
 

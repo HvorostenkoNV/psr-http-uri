@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace HNV\Http\Uri\Collection;
 
+use HNV\Http\Helper\Collection\CasesValuesProviderTrait;
+
 /**
  * URI path allowed character`s (NON-first/leading) collection.
  *
@@ -11,5 +13,7 @@ namespace HNV\Http\Uri\Collection;
  */
 enum PathAllowedCharactersNonFirst: string
 {
+    use CasesValuesProviderTrait;
+
     case COLON = ':';
 }

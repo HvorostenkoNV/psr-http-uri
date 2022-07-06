@@ -26,12 +26,8 @@ use function spl_object_id;
 class UriPortTest extends TestCase
 {
     /**
-     * Test "Uri::withPort" provides new instance of URI.
-     *
      * @covers       Uri::withPort
      * @dataProvider dataProviderNormalizedValues
-     *
-     * @param int $value value
      */
     public function testProvidesNewInstance(int $value): void
     {
@@ -56,13 +52,8 @@ class UriPortTest extends TestCase
     }
 
     /**
-     * Test "Uri::getPort" provides valid normalized value.
-     *
      * @covers       Uri::getPort
      * @dataProvider dataProviderNormalizedValues
-     *
-     * @param int $value           value
-     * @param int $valueNormalized normalized value
      */
     public function testGetValue(int $value, int $valueNormalized): void
     {
@@ -79,8 +70,6 @@ class UriPortTest extends TestCase
     }
 
     /**
-     * Test "Uri::getPort" provides expects value from empty object.
-     *
      * @covers Uri::getPort
      */
     public function testGetValueOnEmptyObject(): void
@@ -96,13 +85,8 @@ class UriPortTest extends TestCase
     }
 
     /**
-     * Test "Uri::getPort" provides null if port is standard for given scheme.
-     *
      * @covers       Uri::getPort
      * @dataProvider dataProviderSchemeWithStandardPorts
-     *
-     * @param string $scheme scheme
-     * @param int    $port   standard port fo this scheme
      */
     public function testGetValueWithStandardPort(string $scheme, int $port): void
     {
@@ -121,12 +105,8 @@ class UriPortTest extends TestCase
     }
 
     /**
-     * Test "Uri::withPort" clears value on setting empty string.
-     *
      * @covers       Uri::withPort
      * @dataProvider dataProviderNormalizedValues
-     *
-     * @param int $value value
      */
     public function testClearValue(int $value): void
     {
@@ -145,12 +125,8 @@ class UriPortTest extends TestCase
     }
 
     /**
-     * Test "Uri::withPort" throws exception with invalid argument.
-     *
      * @covers       Uri::withPort
      * @dataProvider dataProviderInvalidValues
-     *
-     * @param int $value invalid value
      */
     public function testThrowsException(int $value): void
     {
@@ -167,14 +143,8 @@ class UriPortTest extends TestCase
     }
 
     /**
-     * Test "Uri::withPort" saves previous value with setting new invalid value.
-     *
      * @covers       Uri::withPort
      * @dataProvider dataProviderValidWithInvalidValues
-     *
-     * @param int $value           valid value
-     * @param int $valueNormalized normalized valid value
-     * @param int $invalidValue    invalid value
      */
     public function testSavesPreviousValueOnError(
         int $value,
@@ -203,8 +173,6 @@ class UriPortTest extends TestCase
 
     /**
      * Data provider: values with their normalized pairs.
-     *
-     * @return array data
      */
     public function dataProviderNormalizedValues(): array
     {
@@ -219,8 +187,6 @@ class UriPortTest extends TestCase
 
     /**
      * Data provider: invalid values.
-     *
-     * @return array data
      */
     public function dataProviderInvalidValues(): array
     {
@@ -235,8 +201,6 @@ class UriPortTest extends TestCase
 
     /**
      * Data provider: schemes with standard ports.
-     *
-     * @return array data
      */
     public function dataProviderSchemeWithStandardPorts(): array
     {
@@ -253,8 +217,6 @@ class UriPortTest extends TestCase
 
     /**
      * Data provider: valid values (with their normalized pairs) with invalid values.
-     *
-     * @return array data
      */
     public function dataProviderValidWithInvalidValues(): array
     {

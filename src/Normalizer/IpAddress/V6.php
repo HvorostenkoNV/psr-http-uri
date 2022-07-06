@@ -87,8 +87,6 @@ class V6 implements NormalizerInterface
      * @param bool   $hasV4Part IP address was with v4 IP address postfix
      *
      * @throws NormalizingException normalizing error
-     *
-     * @return string normalized IP address
      */
     private static function normalizeWithoutV4Part(string $value, bool $hasV4Part): string
     {
@@ -121,11 +119,7 @@ class V6 implements NormalizerInterface
     /**
      * Check IP address v6 is shortened.
      *
-     * @param string $value IP address v6
-     *
      * @throws NormalizingException something wrong with shortens
-     *
-     * @return bool IP address is shortened
      */
     private static function checkIsShortened(string $value): bool
     {
@@ -150,8 +144,6 @@ class V6 implements NormalizerInterface
      * @param bool   $isShortened IP address v6 is shortened
      *
      * @throws NormalizingException any process error
-     *
-     * @return string[] split value
      */
     private static function splitValueIntoParts(
         string $value,
@@ -190,10 +182,6 @@ class V6 implements NormalizerInterface
 
     /**
      * Convert IP address to short format.
-     *
-     * @param string $value IP address
-     *
-     * @return string converted IP address to short format
      */
     private static function convertToShortFormat(string $value): string
     {
@@ -219,11 +207,7 @@ class V6 implements NormalizerInterface
     /**
      * Normalize the v6 IP address segment.
      *
-     * @param string $value V6 IP address segment
-     *
      * @throws NormalizingException normalizing error
-     *
-     * @return string normalized v6 IP address segment
      */
     private static function normalizeSegment(string $value): string
     {

@@ -4,27 +4,28 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "85c79d050c6bcc11e11705beecd3110b",
+    "content-hash": "10428259ec937a00f5ce430c00c9cdbf",
     "packages": [
         {
             "name": "hnv/psr-http-helper",
-            "version": "1.0.6",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/HvorostenkoNV/psr-http-helper.git",
-                "reference": "ba87c45dab46ad53f52d5194542ad92de3e219c2"
+                "reference": "a5258deedae71b11db5354c97501932b45ead772"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/HvorostenkoNV/psr-http-helper/zipball/ba87c45dab46ad53f52d5194542ad92de3e219c2",
-                "reference": "ba87c45dab46ad53f52d5194542ad92de3e219c2",
+                "url": "https://api.github.com/repos/HvorostenkoNV/psr-http-helper/zipball/a5258deedae71b11db5354c97501932b45ead772",
+                "reference": "a5258deedae71b11db5354c97501932b45ead772",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0"
+                "php": "8.1.*"
             },
             "require-dev": {
-                "phpunit/phpunit": ">=9.5"
+                "friendsofphp/php-cs-fixer": "dev-master",
+                "phpunit/phpunit": "9.5.*"
             },
             "type": "library",
             "autoload": {
@@ -46,26 +47,26 @@
             ],
             "support": {
                 "issues": "https://github.com/HvorostenkoNV/psr-http-helper/issues",
-                "source": "https://github.com/HvorostenkoNV/psr-http-helper/tree/1.0.6"
+                "source": "https://github.com/HvorostenkoNV/psr-http-helper/tree/2.0.2"
             },
-            "time": "2021-12-29T13:38:13+00:00"
+            "time": "2022-07-06T14:28:55+00:00"
         },
         {
             "name": "hnv/psr-http-interfaces",
-            "version": "3.0.0",
+            "version": "3.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/HvorostenkoNV/psr-http-interfaces.git",
-                "reference": "855293c8e38be7b5cb28f25dc7be06bbb83ca519"
+                "reference": "d209e20083a6442d790670a9dc85da61a551be71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/HvorostenkoNV/psr-http-interfaces/zipball/855293c8e38be7b5cb28f25dc7be06bbb83ca519",
-                "reference": "855293c8e38be7b5cb28f25dc7be06bbb83ca519",
+                "url": "https://api.github.com/repos/HvorostenkoNV/psr-http-interfaces/zipball/d209e20083a6442d790670a9dc85da61a551be71",
+                "reference": "d209e20083a6442d790670a9dc85da61a551be71",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.1"
+                "php": "8.1.*"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "dev-master"
@@ -92,9 +93,9 @@
             ],
             "support": {
                 "issues": "https://github.com/HvorostenkoNV/psr-http-interfaces/issues",
-                "source": "https://github.com/HvorostenkoNV/psr-http-interfaces/tree/3.0.0"
+                "source": "https://github.com/HvorostenkoNV/psr-http-interfaces/tree/3.0.3"
             },
-            "time": "2022-07-03T18:00:02+00:00"
+            "time": "2022-07-06T14:25:19+00:00"
         }
     ],
     "packages-dev": [
@@ -541,12 +542,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/PHP-CS-Fixer.git",
-                "reference": "866715801ac121a0a4cde6fdb9d9a3dd6873b606"
+                "reference": "c17e8422ecbfbf1afe65d2a30083108033246406"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/866715801ac121a0a4cde6fdb9d9a3dd6873b606",
-                "reference": "866715801ac121a0a4cde6fdb9d9a3dd6873b606",
+                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/c17e8422ecbfbf1afe65d2a30083108033246406",
+                "reference": "c17e8422ecbfbf1afe65d2a30083108033246406",
                 "shasum": ""
             },
             "require": {
@@ -623,7 +624,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-06-30T17:37:29+00:00"
+            "time": "2022-07-06T16:23:33+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -4137,7 +4138,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.1"
+        "php": "8.1.*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"

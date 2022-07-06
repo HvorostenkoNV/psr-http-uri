@@ -75,7 +75,7 @@ class Value implements ValuesProviderInterface
     {
         $result = [];
 
-        foreach (SpecialCharacters::get() as $char) {
+        foreach (SpecialCharacters::casesValues() as $char) {
             $charEncoded          = rawurlencode($char);
             $result[$char]        = $charEncoded;
             $result[$charEncoded] = $charEncoded;

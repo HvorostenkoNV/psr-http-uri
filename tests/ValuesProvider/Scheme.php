@@ -10,7 +10,6 @@ use HNV\Http\Uri\Collection\{
     UriGeneralDelimiters,
 };
 
-use function array_column;
 use function array_diff;
 use function strtolower;
 use function strtoupper;
@@ -67,10 +66,10 @@ class Scheme implements ValuesProviderInterface
         $digit  = 1;
         $string = 'scheme';
 
-        $allowedChars = array_column(SchemeAllowedCharacters::cases(), 'value');
+        $allowedChars = SchemeAllowedCharacters::casesValues();
         $otherChars   = array_diff(
-            SpecialCharacters::get(),
-            array_column(UriGeneralDelimiters::cases(), 'value'),
+            SpecialCharacters::casesValues(),
+            UriGeneralDelimiters::casesValues(),
             $allowedChars
         );
 

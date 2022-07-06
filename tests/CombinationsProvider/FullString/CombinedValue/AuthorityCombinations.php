@@ -81,8 +81,6 @@ class AuthorityCombinations extends AbstractCombinationsProvider implements Comb
 
     /**
      * Get full values data set.
-     *
-     * @return array data
      */
     private static function getFullValues(): array
     {
@@ -131,8 +129,6 @@ class AuthorityCombinations extends AbstractCombinationsProvider implements Comb
 
     /**
      * Get values without scheme data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutScheme(): array
     {
@@ -328,8 +324,6 @@ class AuthorityCombinations extends AbstractCombinationsProvider implements Comb
 
     /**
      * Get values without path data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutPath(): array
     {
@@ -445,8 +439,6 @@ class AuthorityCombinations extends AbstractCombinationsProvider implements Comb
 
     /**
      * Get values without query data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutQuery(): array
     {
@@ -517,8 +509,6 @@ class AuthorityCombinations extends AbstractCombinationsProvider implements Comb
 
     /**
      * Get values without fragment data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutFragment(): array
     {

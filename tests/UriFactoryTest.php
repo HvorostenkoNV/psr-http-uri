@@ -23,21 +23,8 @@ use PHPUnit\Framework\TestCase;
 class UriFactoryTest extends TestCase
 {
     /**
-     * Test UriFactory parses string in expected way.
-     *
      * @covers       UriFactory::createUri
      * @dataProvider dataProviderUriParsedToParts
-     *
-     * @param string $uriString           full URI string
-     * @param string $scheme              scheme expected
-     * @param string $userInfo            user info expected
-     * @param string $host                host expected
-     * @param int    $port                port expected
-     * @param string $authority           authority expected
-     * @param string $path                path expected
-     * @param string $query               query expected
-     * @param string $fragment            fragment expected
-     * @param string $uriStringNormalized full URI string in normalized state
      */
     public function testParsesString(
         string $uriString,
@@ -139,12 +126,8 @@ class UriFactoryTest extends TestCase
     }
 
     /**
-     * Test "Uri::withPath" throws exception with invalid argument.
-     *
      * @covers       Uri::withPath
      * @dataProvider dataProviderInvalidUri
-     *
-     * @param string $uriString full URI string
      */
     public function testThrowsException(string $uriString): void
     {
@@ -162,8 +145,6 @@ class UriFactoryTest extends TestCase
 
     /**
      * Data provider: full URI string with expected parsed parts.
-     *
-     * @return array data
      */
     public function dataProviderUriParsedToParts(): array
     {
@@ -191,8 +172,6 @@ class UriFactoryTest extends TestCase
 
     /**
      * Data provider: full URI string invalid values.
-     *
-     * @return array data
      */
     public function dataProviderInvalidUri(): array
     {

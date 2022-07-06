@@ -23,12 +23,8 @@ use function spl_object_id;
 class UriHostTest extends TestCase
 {
     /**
-     * Test "Uri::withHost" provides new instance of URI.
-     *
      * @covers       Uri::withHost
      * @dataProvider dataProviderNormalizedValues
-     *
-     * @param string $value value
      */
     public function testProvidesNewInstance(string $value): void
     {
@@ -53,13 +49,8 @@ class UriHostTest extends TestCase
     }
 
     /**
-     * Test "Uri::getHost" provides valid normalized value.
-     *
      * @covers       Uri::getHost
      * @dataProvider dataProviderNormalizedValues
-     *
-     * @param string $value           value
-     * @param string $valueNormalized normalized value
      */
     public function testGetValue(string $value, string $valueNormalized): void
     {
@@ -76,8 +67,6 @@ class UriHostTest extends TestCase
     }
 
     /**
-     * Test "Uri::getHost" provides expects value from empty object.
-     *
      * @covers Uri::getHost
      */
     public function testGetValueOnEmptyObject(): void
@@ -94,12 +83,8 @@ class UriHostTest extends TestCase
     }
 
     /**
-     * Test "Uri::withHost" clears value on setting empty string.
-     *
      * @covers       Uri::withHost
      * @dataProvider dataProviderNormalizedValues
-     *
-     * @param string $value value
      */
     public function testClearValue(string $value): void
     {
@@ -119,12 +104,8 @@ class UriHostTest extends TestCase
     }
 
     /**
-     * Test "Uri::withHost" throws exception with invalid argument.
-     *
      * @covers       Uri::withHost
      * @dataProvider dataProviderInvalidValues
-     *
-     * @param string $value invalid value
      */
     public function testThrowsException(string $value): void
     {
@@ -141,14 +122,8 @@ class UriHostTest extends TestCase
     }
 
     /**
-     * Test "Uri::withHost" saves previous value with setting new invalid value.
-     *
      * @covers       Uri::withHost
      * @dataProvider dataProviderValidWithInvalidValues
-     *
-     * @param string $value           valid value
-     * @param string $valueNormalized normalized valid value
-     * @param string $invalidValue    invalid value
      */
     public function testSavesPreviousValueOnError(
         string $value,
@@ -177,8 +152,6 @@ class UriHostTest extends TestCase
 
     /**
      * Data provider: values with their normalized pairs.
-     *
-     * @return array data
      */
     public function dataProviderNormalizedValues(): array
     {
@@ -193,8 +166,6 @@ class UriHostTest extends TestCase
 
     /**
      * Data provider: invalid values.
-     *
-     * @return array data
      */
     public function dataProviderInvalidValues(): array
     {
@@ -209,8 +180,6 @@ class UriHostTest extends TestCase
 
     /**
      * Data provider: valid values (with their normalized pairs) with invalid values.
-     *
-     * @return array data
      */
     public function dataProviderValidWithInvalidValues(): array
     {

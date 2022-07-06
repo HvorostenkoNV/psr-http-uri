@@ -74,17 +74,17 @@ class UriFactory implements UriFactoryInterface
                 ->withQuery($query)
                 ->withFragment($fragment);
         } catch (InvalidArgumentException $exception) {
-            throw new InvalidArgumentException("uri \"{$uriOrigin}\" building error", 0, $exception);
+            throw new InvalidArgumentException(
+                "uri \"{$uriOrigin}\" building error",
+                0,
+                $exception
+            );
         }
     }
 
     /**
      * Parse scheme from URI string.
      * URI string will be changed.
-     *
-     * @param string $uri the URI string link
-     *
-     * @return string scheme
      */
     private function parseSchemeFromUri(string &$uri): string
     {
@@ -114,10 +114,6 @@ class UriFactory implements UriFactoryInterface
     /**
      * Parse authority from path string.
      * Path string will be changed.
-     *
-     * @param string $path the path string link
-     *
-     * @return string authority
      */
     private function parseAuthorityFromPath(string &$path): string
     {
@@ -142,10 +138,6 @@ class UriFactory implements UriFactoryInterface
     /**
      * Parse user info from authority string.
      * Authority string will be changed.
-     *
-     * @param string $authority the authority string link
-     *
-     * @return string User info
      */
     private function parseUserInfoFromAuthority(string &$authority): string
     {
@@ -164,10 +156,6 @@ class UriFactory implements UriFactoryInterface
     /**
      * Parse port from authority string.
      * Authority string will be changed.
-     *
-     * @param string $authority the authority string link
-     *
-     * @return int port
      */
     private function parsePortFromAuthority(string &$authority): int
     {
@@ -189,10 +177,6 @@ class UriFactory implements UriFactoryInterface
     /**
      * Parse query from URI string.
      * URI string will be changed.
-     *
-     * @param string $uri the URI string link
-     *
-     * @return string query
      */
     private function parseQueryFromUri(string &$uri): string
     {
@@ -211,10 +195,6 @@ class UriFactory implements UriFactoryInterface
     /**
      * Parse fragment from URI string.
      * URI string will be changed.
-     *
-     * @param string $uri the URI string link
-     *
-     * @return string fragment
      */
     private function parseFragmentFromUri(string &$uri): string
     {

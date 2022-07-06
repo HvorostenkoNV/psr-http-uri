@@ -17,39 +17,21 @@ trait RegularExpressionCheckerTrait
      * Check if value match to regular expression mask.
      *
      * Mask builds only once. Mask building must be implemented in class-user.
-     *
-     * @param string $value value
-     *
-     * @return bool value regular expression check result
      */
     protected static function checkRegularExpressionMatch(string $value): bool
     {
-        $mask    = self::getRegularExpressionMask();
-        $matches = [];
+        if (!self::$regularExpressionMask) {
+            self::$regularExpressionMask = self::buildRegularExpressionMask();
+        }
 
-        preg_match($mask, $value, $matches);
+        $matches = [];
+        preg_match(self::$regularExpressionMask, $value, $matches);
 
         return isset($matches[0]) && $matches[0] === $value;
     }
 
     /**
      * Build mask for regular expression checking.
-     *
-     * @return string mask
      */
     abstract protected static function buildRegularExpressionMask(): string;
-
-    /**
-     * Get mask for regular expression checking.
-     *
-     * @return string mask
-     */
-    private static function getRegularExpressionMask(): string
-    {
-        if (!self::$regularExpressionMask) {
-            self::$regularExpressionMask = self::buildRegularExpressionMask();
-        }
-
-        return self::$regularExpressionMask;
-    }
 }

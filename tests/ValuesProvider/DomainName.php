@@ -15,7 +15,6 @@ use HNV\Http\Uri\Normalizer\DomainName\{
     TopLevelDomain          as TopLevelDomainNormalizer,
 };
 
-use function array_column;
 use function array_diff;
 use function array_shift;
 use function count;
@@ -153,10 +152,10 @@ class DomainName implements ValuesProviderInterface
         $letter = 'd';
         $string = 'domain';
 
-        $allowedChars = array_column(DomainNameAllowedCharacters::cases(), 'value');
+        $allowedChars = DomainNameAllowedCharacters::casesValues();
         $otherChars   = array_diff(
-            SpecialCharacters::get(),
-            array_column(UriGeneralDelimiters::cases(), 'value'),
+            SpecialCharacters::casesValues(),
+            UriGeneralDelimiters::casesValues(),
             $allowedChars,
             [FullQualifiedDomainNameNormalizer::PARTS_DELIMITER]
         );
@@ -216,8 +215,8 @@ class DomainName implements ValuesProviderInterface
         $string = 'domain';
 
         $chars = array_diff(
-            SpecialCharacters::get(),
-            array_column(UriGeneralDelimiters::cases(), 'value'),
+            SpecialCharacters::casesValues(),
+            UriGeneralDelimiters::casesValues(),
             [FullQualifiedDomainNameNormalizer::PARTS_DELIMITER]
         );
 

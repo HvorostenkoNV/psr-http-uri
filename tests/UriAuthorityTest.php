@@ -21,17 +21,8 @@ use PHPUnit\Framework\TestCase;
 class UriAuthorityTest extends TestCase
 {
     /**
-     * Test "Uri::getAuthority" provides valid normalized value.
-     *
      * @covers       Uri::getAuthority
      * @dataProvider dataProviderAuthorityByParts
-     *
-     * @param string $scheme          scheme
-     * @param string $login           login
-     * @param string $password        password
-     * @param string $host            host
-     * @param int    $port            port
-     * @param string $valueNormalized normalized value
      */
     public function testGetValue(
         string $scheme,
@@ -70,8 +61,6 @@ class UriAuthorityTest extends TestCase
     }
 
     /**
-     * Test "Uri::getAuthority" provides expects value from empty object.
-     *
      * @covers Uri::getAuthority
      */
     public function testGetValueOnEmptyObject(): void
@@ -89,8 +78,6 @@ class UriAuthorityTest extends TestCase
 
     /**
      * Data provider: authority by parts.
-     *
-     * @return array data
      */
     public function dataProviderAuthorityByParts(): array
     {

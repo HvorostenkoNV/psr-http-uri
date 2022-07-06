@@ -69,8 +69,8 @@ class Fragment implements ValuesProviderInterface
             "{$digit}",
         ];
 
-        foreach (SpecialCharacters::get() as $char) {
-            $result[] = $char;
+        foreach (SpecialCharacters::cases() as $char) {
+            $result[] = $char->value;
         }
 
         return $result;
@@ -83,7 +83,7 @@ class Fragment implements ValuesProviderInterface
      */
     private static function getValidNormalizedValues(): array
     {
-        $allChars = SpecialCharacters::get();
+        $allChars = SpecialCharacters::casesValues();
         $result   = [];
 
         foreach (array_merge($allChars, [' ']) as $char) {

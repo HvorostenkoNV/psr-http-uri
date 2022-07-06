@@ -11,7 +11,6 @@ use HNV\Http\Uri\Collection\{
     UriSubDelimiters,
 };
 
-use function array_column;
 use function array_diff;
 use function array_merge;
 use function array_shift;
@@ -165,10 +164,10 @@ class Path implements ValuesProviderInterface
     private static function getValidNormalizedParts(): array
     {
         $string             = 'path';
-        $invalidFirstChars  = array_column(PathAllowedCharactersNonFirst::cases(), 'value');
-        $allowedChars       = array_column(PathAllowedCharactersAny::cases(), 'value');
+        $invalidFirstChars  = PathAllowedCharactersNonFirst::casesValues();
+        $allowedChars       = PathAllowedCharactersAny::casesValues();
         $otherChars         = array_diff(
-            SpecialCharacters::get(),
+            SpecialCharacters::casesValues(),
             $allowedChars,
             $invalidFirstChars,
             [UriSubDelimiters::PATH_PARTS_SEPARATOR->value]

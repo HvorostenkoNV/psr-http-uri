@@ -10,7 +10,6 @@ use HNV\Http\Uri\Collection\{
     UriSubDelimiters,
 };
 
-use function array_column;
 use function array_diff;
 use function array_merge;
 use function array_shift;
@@ -167,9 +166,9 @@ class Query implements ValuesProviderInterface
      */
     private static function getValidNormalizedParts(): array
     {
-        $allowedChars = array_column(QueryAllowedCharacters::cases(), 'value');
+        $allowedChars = QueryAllowedCharacters::casesValues();
         $otherChars   = array_diff(
-            SpecialCharacters::get(),
+            SpecialCharacters::casesValues(),
             $allowedChars,
             [
                 UriSubDelimiters::QUERY_FIELDS_SEPARATOR->value,

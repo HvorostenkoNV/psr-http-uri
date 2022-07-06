@@ -51,11 +51,9 @@ class V4 implements NormalizerInterface
     /**
      * Split ip v6 value into parts.
      *
-     * @param string $value IP address v4
-     *
      * @throws NormalizingException normalizing error
      *
-     * @return string[] value parts
+     * @return string[]
      */
     private static function splitValueIntoParts(string $value): array
     {
@@ -90,11 +88,7 @@ class V4 implements NormalizerInterface
     /**
      * Normalize IP address segment.
      *
-     * @param string $value IP address segment
-     *
      * @throws NormalizingException normalizing error
-     *
-     * @return int normalized IP address segment
      */
     private static function normalizeSegment(string $value): int
     {

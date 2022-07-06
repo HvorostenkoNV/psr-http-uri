@@ -23,20 +23,8 @@ use PHPUnit\Framework\TestCase;
 class UriToStringConvertingTest extends TestCase
 {
     /**
-     * Test URI object converts to string in expected way.
-     *
      * @covers       Uri::__toString
      * @dataProvider dataProviderUriByParts
-     *
-     * @param string $scheme      scheme
-     * @param string $login       login
-     * @param string $password    password
-     * @param string $host        host
-     * @param int    $port        port
-     * @param string $path        path
-     * @param string $query       query
-     * @param string $fragment    fragment
-     * @param string $uriExpected expected normalized URI string
      */
     public function testToStringConverting(
         string $scheme,
@@ -96,8 +84,6 @@ class UriToStringConvertingTest extends TestCase
 
     /**
      * Data provider: URI by parts.
-     *
-     * @return array data
      */
     public function dataProviderUriByParts(): array
     {

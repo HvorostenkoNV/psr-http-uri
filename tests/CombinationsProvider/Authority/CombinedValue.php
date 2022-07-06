@@ -81,8 +81,6 @@ class CombinedValue extends AbstractCombinationsProvider implements Combinations
 
     /**
      * Get user info combinations.
-     *
-     * @return array combinations data
      */
     private static function getUserInfoCombinations(): array
     {
@@ -165,8 +163,6 @@ class CombinedValue extends AbstractCombinationsProvider implements Combinations
 
     /**
      * Get host combinations.
-     *
-     * @return array combinations data
      */
     private static function getHostCombinations(): array
     {
@@ -249,8 +245,6 @@ class CombinedValue extends AbstractCombinationsProvider implements Combinations
 
     /**
      * Get port combinations.
-     *
-     * @return array combinations data
      */
     private static function getPortCombinations(): array
     {
@@ -333,8 +327,6 @@ class CombinedValue extends AbstractCombinationsProvider implements Combinations
 
     /**
      * Get scheme with port combinations.
-     *
-     * @return array combinations data
      */
     private static function getSchemeWithPortCombinations(): array
     {

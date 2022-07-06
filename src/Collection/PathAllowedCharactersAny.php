@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace HNV\Http\Uri\Collection;
 
+use HNV\Http\Helper\Collection\CasesValuesProviderTrait;
+
 /**
  * URI path allowed character`s collection.
  */
 enum PathAllowedCharactersAny: string
 {
+    use CasesValuesProviderTrait;
+
     case PLUS               = '+';
     case MINUS              = '-';
     case DOT                = '.';

@@ -76,11 +76,7 @@ class Query implements NormalizerInterface
     /**
      * Normalize query value.
      *
-     * @param string $value query value
-     *
      * @throws NormalizingException normalizing error
-     *
-     * @return string normalized query value
      */
     private static function normalizeValue(string $value): string
     {

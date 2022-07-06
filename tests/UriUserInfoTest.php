@@ -23,12 +23,8 @@ use function strlen;
 class UriUserInfoTest extends TestCase
 {
     /**
-     * Test "Uri::withUserInfo" provides new instance of URI.
-     *
      * @covers       Uri::withUserInfo
      * @dataProvider dataProviderNormalizedValues
-     *
-     * @param string $login login
      */
     public function testProvidesNewInstance(string $login): void
     {
@@ -53,14 +49,8 @@ class UriUserInfoTest extends TestCase
     }
 
     /**
-     * Test "Uri::getUserInfo" provides valid normalized value.
-     *
      * @covers       Uri::getUserInfo
      * @dataProvider dataProviderNormalizedValues
-     *
-     * @param string $login           login
-     * @param string $password        password
-     * @param string $valueNormalized normalized value
      */
     public function testGetValue(
         string $login,
@@ -80,8 +70,6 @@ class UriUserInfoTest extends TestCase
     }
 
     /**
-     * Test "Uri::getUserInfo" provides expects value from empty object.
-     *
      * @covers Uri::getUserInfo
      */
     public function testGetValueOnEmptyObject(): void
@@ -98,12 +86,8 @@ class UriUserInfoTest extends TestCase
     }
 
     /**
-     * Test "Uri::withUserInfo" clears value on setting empty string.
-     *
      * @covers       Uri::withUserInfo
      * @dataProvider dataProviderNormalizedValues
-     *
-     * @param string $login login
      */
     public function testClearValue(string $login): void
     {
@@ -123,14 +107,8 @@ class UriUserInfoTest extends TestCase
     }
 
     /**
-     * Test "Uri::withUserInfo" clears value on setting incorrect data.
-     *
      * @covers       Uri::withUserInfo
      * @dataProvider dataProviderValidWithInvalidValues
-     *
-     * @param string $validValue login valid value
-     * @param string $login      login (valid or invalid)
-     * @param string $password   password (valid or invalid)
      */
     public function testClearValueWithInvalidData(
         string $validValue,
@@ -155,8 +133,6 @@ class UriUserInfoTest extends TestCase
 
     /**
      * Data provider: values with their normalized pairs.
-     *
-     * @return array data
      */
     public function dataProviderNormalizedValues(): array
     {
@@ -175,8 +151,6 @@ class UriUserInfoTest extends TestCase
 
     /**
      * Data provider: valid values with invalid values.
-     *
-     * @return array data
      */
     public function dataProviderValidWithInvalidValues(): array
     {

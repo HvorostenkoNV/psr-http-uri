@@ -65,8 +65,6 @@ class FragmentCombinations extends AbstractCombinationsProvider implements Combi
 
     /**
      * Get full values data set.
-     *
-     * @return array data
      */
     private static function getFullValues(): array
     {
@@ -111,8 +109,6 @@ class FragmentCombinations extends AbstractCombinationsProvider implements Combi
 
     /**
      * Get values without scheme data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutScheme(): array
     {
@@ -307,8 +303,6 @@ class FragmentCombinations extends AbstractCombinationsProvider implements Combi
 
     /**
      * Get values without authority data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutAuthority(): array
     {
@@ -418,8 +412,6 @@ class FragmentCombinations extends AbstractCombinationsProvider implements Combi
 
     /**
      * Get values without path data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutPath(): array
     {
@@ -488,8 +480,6 @@ class FragmentCombinations extends AbstractCombinationsProvider implements Combi
 
     /**
      * Get values without query data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutQuery(): array
     {

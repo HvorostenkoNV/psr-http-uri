@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace HNV\Http\Uri\Collection;
 
+use HNV\Http\Helper\Collection\CasesValuesProviderTrait;
+
 /**
  * URI sub delimiters collection.
  */
 enum UriSubDelimiters: string
 {
+    use CasesValuesProviderTrait;
+
     case USER_INFO_SEPARATOR                = ':';
     case PATH_PARTS_SEPARATOR               = '/';
     case QUERY_FIELDS_SEPARATOR             = '&';

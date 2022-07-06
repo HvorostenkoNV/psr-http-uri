@@ -27,7 +27,8 @@ class Host implements ValuesProviderInterface
         $ipAddressesV6Values = [];
 
         foreach (IpAddressV6ValuesProvider::getValidValues() as $value => $valueNormalized) {
-            $ipAddressesV6Values[$leftBracer.$value.$rightBracer] = $leftBracer.$valueNormalized.$rightBracer;
+            $ipAddressesV6Values[$leftBracer.$value.$rightBracer] = $leftBracer
+                .$valueNormalized.$rightBracer;
         }
 
         return array_merge(

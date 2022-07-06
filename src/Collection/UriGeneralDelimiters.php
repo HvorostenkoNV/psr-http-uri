@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace HNV\Http\Uri\Collection;
 
+use HNV\Http\Helper\Collection\CasesValuesProviderTrait;
+
 /**
  * URI general delimiters collection.
  */
 enum UriGeneralDelimiters: string
 {
+    use CasesValuesProviderTrait;
+
     case SCHEME_OR_PORT_DELIMITER        = ':';
     case AUTHORITY_DELIMITER             = '//';
     case AUTHORITY_DELIMITER_SINGLE_CHAR = '/';

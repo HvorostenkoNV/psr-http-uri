@@ -59,8 +59,6 @@ class SchemeCombinations extends AbstractCombinationsProvider implements Combina
 
     /**
      * Get full values data set.
-     *
-     * @return array data
      */
     private static function getFullValues(): array
     {
@@ -115,8 +113,6 @@ class SchemeCombinations extends AbstractCombinationsProvider implements Combina
 
     /**
      * Get values without authority data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutAuthority(): array
     {
@@ -357,8 +353,6 @@ class SchemeCombinations extends AbstractCombinationsProvider implements Combina
 
     /**
      * Get values without path data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutPath(): array
     {
@@ -500,8 +494,6 @@ class SchemeCombinations extends AbstractCombinationsProvider implements Combina
 
     /**
      * Get values without query data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutQuery(): array
     {
@@ -584,8 +576,6 @@ class SchemeCombinations extends AbstractCombinationsProvider implements Combina
 
     /**
      * Get values without fragment data set.
-     *
-     * @return array data
      */
     private static function getValuesWithoutFragment(): array
     {

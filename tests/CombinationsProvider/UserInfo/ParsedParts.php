@@ -43,8 +43,6 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
 
     /**
      * Get combinations with login values.
-     *
-     * @return array combinations data
      */
     private static function getLoginCombinations(): array
     {
@@ -81,8 +79,6 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
 
     /**
      * Get combinations with login values.
-     *
-     * @return array combinations data
      */
     private static function getPasswordCombinations(): array
     {

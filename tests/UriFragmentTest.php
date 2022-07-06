@@ -22,12 +22,8 @@ use function spl_object_id;
 class UriFragmentTest extends TestCase
 {
     /**
-     * Test "Uri::withFragment" provides new instance of URI.
-     *
      * @covers       Uri::withFragment
      * @dataProvider dataProviderNormalizedValues
-     *
-     * @param string $value value
      */
     public function testProvidesNewInstance(string $value): void
     {
@@ -52,13 +48,8 @@ class UriFragmentTest extends TestCase
     }
 
     /**
-     * Test "Uri::getFragment" provides valid normalized value.
-     *
      * @covers       Uri::getFragment
      * @dataProvider dataProviderNormalizedValues
-     *
-     * @param string $value           value
-     * @param string $valueNormalized normalized value
      */
     public function testGetValue(string $value, string $valueNormalized): void
     {
@@ -75,8 +66,6 @@ class UriFragmentTest extends TestCase
     }
 
     /**
-     * Test "Uri::getFragment" provides expects value from empty object.
-     *
      * @covers Uri::getFragment
      */
     public function testGetValueOnEmptyObject(): void
@@ -93,12 +82,8 @@ class UriFragmentTest extends TestCase
     }
 
     /**
-     * Test "Uri::withFragment" clears value on setting empty string.
-     *
      * @covers       Uri::withFragment
      * @dataProvider dataProviderNormalizedValues
-     *
-     * @param string $value value
      */
     public function testClearValue(string $value): void
     {
@@ -118,16 +103,13 @@ class UriFragmentTest extends TestCase
     }
 
     /**
-     * Test "Uri::withFragment" clears value on setting incorrect data.
-     *
      * @covers       Uri::withFragment
      * @dataProvider dataProviderValidWithInvalidValues
-     *
-     * @param string $validValue   valid value
-     * @param string $invalidValue invalid value
      */
-    public function testClearValueWithInvalidData(string $validValue, string $invalidValue): void
-    {
+    public function testClearValueWithInvalidData(
+        string $validValue,
+        string $invalidValue
+    ): void {
         $valueCaught = (new Uri())
             ->withFragment($validValue)
             ->withFragment($invalidValue)
@@ -145,8 +127,6 @@ class UriFragmentTest extends TestCase
 
     /**
      * Data provider: values with their normalized pairs.
-     *
-     * @return array data
      */
     public function dataProviderNormalizedValues(): array
     {
@@ -161,8 +141,6 @@ class UriFragmentTest extends TestCase
 
     /**
      * Data provider: invalid values.
-     *
-     * @return array data
      */
     public function dataProviderInvalidValues(): array
     {
@@ -177,8 +155,6 @@ class UriFragmentTest extends TestCase
 
     /**
      * Data provider: valid values with invalid values.
-     *
-     * @return array data
      */
     public function dataProviderValidWithInvalidValues(): array
     {
