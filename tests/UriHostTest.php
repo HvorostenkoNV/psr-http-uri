@@ -7,26 +7,23 @@ namespace HNV\Http\UriTests;
 use HNV\Http\Uri\Uri;
 use HNV\Http\UriTests\ValuesProvider\Host as HostValuesProvider;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\{
+    Attributes,
+    TestCase,
+};
 
 use function spl_object_id;
 
 /**
- * PSR-7 UriInterface implementation test.
- *
- * Testing working with host values.
- *
  * @internal
- * @covers Uri
- * @medium
  */
+#[Attributes\CoversClass(Uri::class)]
+#[Attributes\Medium]
 class UriHostTest extends TestCase
 {
-    /**
-     * @covers       Uri::withHost
-     * @dataProvider dataProviderNormalizedValues
-     */
-    public function testProvidesNewInstance(string $value): void
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderNormalizedValues')]
+    public function withHostProvidesNewInstance(string $value): void
     {
         $uriFirst  = new Uri();
         $uriSecond = $uriFirst->withHost($value);
@@ -35,97 +32,58 @@ class UriHostTest extends TestCase
         static::assertNotSame(
             spl_object_id($uriFirst),
             spl_object_id($uriSecond),
-            "Action \"Uri->withHost\" returned unexpected result.\n".
-            "Expected result is \"NEW INSTANCE\".\n".
-            'Caught result is "SAME INSTANCE".'
+            'Expects instance not the same'
         );
         static::assertNotSame(
             spl_object_id($uriSecond),
             spl_object_id($uriThird),
-            "Action \"Uri->withHost\" returned unexpected result.\n".
-            "Expected result is \"NEW INSTANCE\".\n".
-            'Caught result is "SAME INSTANCE".'
+            'Expects instance not the same'
         );
     }
 
-    /**
-     * @covers       Uri::getHost
-     * @dataProvider dataProviderNormalizedValues
-     */
-    public function testGetValue(string $value, string $valueNormalized): void
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderNormalizedValues')]
+    public function withHost(string $value, string $valueNormalized): void
     {
         $valueCaught = (new Uri())->withHost($value)->getHost();
 
-        static::assertSame(
-            $valueNormalized,
-            $valueCaught,
-            "Action \"Uri->withHost->getHost\" returned unexpected result.\n".
-            "Action was called with parameters (value => {$value}).\n".
-            "Expected result is \"{$valueNormalized}\".\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame($valueNormalized, $valueCaught);
     }
 
-    /**
-     * @covers Uri::getHost
-     */
-    public function testGetValueOnEmptyObject(): void
+    #[Attributes\Test]
+    public function getHostOnEmptyObject(): void
     {
         $valueCaught = (new Uri())->getHost();
 
-        static::assertSame(
-            '',
-            $valueCaught,
-            "Action \"Uri->getHost\" returned unexpected result.\n".
-            "Expected result is \"empty string\" from empty object.\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame('', $valueCaught);
     }
 
-    /**
-     * @covers       Uri::withHost
-     * @dataProvider dataProviderNormalizedValues
-     */
-    public function testClearValue(string $value): void
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderNormalizedValues')]
+    public function getHostAfterClear(string $value): void
     {
         $valueCaught = (new Uri())
             ->withHost($value)
             ->withHost('')
             ->getHost();
 
-        static::assertSame(
-            '',
-            $valueCaught,
-            "Action \"Uri->withHost->withHost->getHost\" returned unexpected result.\n".
-            "Action was called with parameters (value => {$value}, value => \"empty string\").\n".
-            "Expected result is \"empty string\".\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame('', $valueCaught);
     }
 
-    /**
-     * @covers       Uri::withHost
-     * @dataProvider dataProviderInvalidValues
-     */
-    public function testThrowsException(string $value): void
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderInvalidValues')]
+    public function withHostThrowsException(string $value): void
     {
         $this->expectException(InvalidArgumentException::class);
 
         (new Uri())->withHost($value);
 
-        static::fail(
-            "Action \"Uri->withHost\" threw no expected exception.\n".
-            "Action was called with parameters (value => {$value}).\n".
-            "Expects \"InvalidArgumentException\" exception.\n".
-            'Caught no exception.'
-        );
+        static::fail("expects exception with host [{$value}]");
     }
 
-    /**
-     * @covers       Uri::withHost
-     * @dataProvider dataProviderValidWithInvalidValues
-     */
-    public function testSavesPreviousValueOnError(
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderValidWithInvalidValues')]
+    public function exceptionThrowingDoesntClearsPreviousValue(
         string $value,
         string $valueNormalized,
         string $invalidValue
@@ -139,20 +97,9 @@ class UriHostTest extends TestCase
 
         $valueCaught = $uri->getHost();
 
-        static::assertSame(
-            $valueNormalized,
-            $valueCaught,
-            "Action \"Uri->withHost->withHost->getHost\" returned unexpected result.\n".
-            "Action was called with parameters (value => {$value} (valid value),".
-            " value => {$invalidValue} (invalid value)).\n".
-            "Expected result is \"{$valueNormalized}\".\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame($valueNormalized, $valueCaught);
     }
 
-    /**
-     * Data provider: values with their normalized pairs.
-     */
     public function dataProviderNormalizedValues(): array
     {
         $result = [];
@@ -164,9 +111,6 @@ class UriHostTest extends TestCase
         return $result;
     }
 
-    /**
-     * Data provider: invalid values.
-     */
     public function dataProviderInvalidValues(): array
     {
         $result = [];
@@ -178,9 +122,6 @@ class UriHostTest extends TestCase
         return $result;
     }
 
-    /**
-     * Data provider: valid values (with their normalized pairs) with invalid values.
-     */
     public function dataProviderValidWithInvalidValues(): array
     {
         $validValues   = $this->dataProviderNormalizedValues();

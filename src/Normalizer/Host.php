@@ -8,16 +8,13 @@ use HNV\Http\Helper\Normalizer\{
     NormalizerInterface,
     NormalizingException,
 };
-use HNV\Http\Uri\Collection\UriGeneralDelimiters;
+use HNV\Http\Uri\Collection\IpAddressV6Rules;
 use HNV\Http\Uri\Normalizer\{
     DomainName\FullQualifiedDomainName  as DomainNameNormalizer,
     IpAddress\V4                        as IpAddressV4Normalizer,
     IpAddress\V6                        as IpAddressV6Normalizer,
 };
 
-/**
- * URI host normalizer.
- */
 class Host implements NormalizerInterface
 {
     /**
@@ -33,8 +30,8 @@ class Host implements NormalizerInterface
         }
 
         try {
-            $leftBracer      = UriGeneralDelimiters::IP_ADDRESS_V6_LEFT_FRAME->value;
-            $rightBracer     = UriGeneralDelimiters::IP_ADDRESS_V6_RIGHT_FRAME->value;
+            $leftBracer      = IpAddressV6Rules::LEFT_FRAME->value;
+            $rightBracer     = IpAddressV6Rules::RIGHT_FRAME->value;
             $valueTrim       = trim($valueString, $leftBracer.$rightBracer);
             $valueNormalized = IpAddressV6Normalizer::normalize($valueTrim);
 
@@ -47,6 +44,6 @@ class Host implements NormalizerInterface
         } catch (NormalizingException) {
         }
 
-        throw new NormalizingException("value \"{$valueString}\" is not a valid host");
+        throw new NormalizingException("value [{$valueString}] is not a valid host");
     }
 }

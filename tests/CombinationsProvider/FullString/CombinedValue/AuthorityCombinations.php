@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace HNV\Http\UriTests\CombinationsProvider\FullString\CombinedValue;
 
 use HNV\Http\Uri\Collection\{
-    UriGeneralDelimiters,
-    UriSubDelimiters,
+    AuthorityRules,
+    FragmentRules,
+    PathRules,
+    QueryRules,
+    SchemeRules,
 };
 use HNV\Http\UriTests\CombinationsProvider\Authority\CombinedValue as AuthorityCombinationsProvider;
 use HNV\Http\UriTests\CombinationsProvider\{
@@ -84,11 +87,11 @@ class AuthorityCombinations extends AbstractCombinationsProvider implements Comb
      */
     private static function getFullValues(): array
     {
-        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
-        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER->value;
-        $pathDelimiter      = UriSubDelimiters::PATH_PARTS_SEPARATOR->value;
-        $queryDelimiter     = UriGeneralDelimiters::QUERY_DELIMITER->value;
-        $fragmentDelimiter  = UriGeneralDelimiters::FRAGMENT_DELIMITER->value;
+        $schemeDelimiter    = SchemeRules::URI_DELIMITER->value;
+        $authorityDelimiter = AuthorityRules::URI_DELIMITER;
+        $pathDelimiter      = PathRules::PARTS_SEPARATOR->value;
+        $queryDelimiter     = QueryRules::URI_DELIMITER->value;
+        $fragmentDelimiter  = FragmentRules::URI_DELIMITER->value;
         $result             = [];
 
         foreach (self::$authorityWithSchemeValidCombinations as $combination) {
@@ -132,8 +135,8 @@ class AuthorityCombinations extends AbstractCombinationsProvider implements Comb
      */
     private static function getValuesWithoutScheme(): array
     {
-        $queryDelimiter    = UriGeneralDelimiters::QUERY_DELIMITER->value;
-        $fragmentDelimiter = UriGeneralDelimiters::FRAGMENT_DELIMITER->value;
+        $queryDelimiter    = QueryRules::URI_DELIMITER->value;
+        $fragmentDelimiter = FragmentRules::URI_DELIMITER->value;
         $result            = [];
 
         foreach (self::$authorityWithoutSchemeValidCombinations as $combination) {
@@ -327,10 +330,10 @@ class AuthorityCombinations extends AbstractCombinationsProvider implements Comb
      */
     private static function getValuesWithoutPath(): array
     {
-        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
-        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER->value;
-        $queryDelimiter     = UriGeneralDelimiters::QUERY_DELIMITER->value;
-        $fragmentDelimiter  = UriGeneralDelimiters::FRAGMENT_DELIMITER->value;
+        $schemeDelimiter    = SchemeRules::URI_DELIMITER->value;
+        $authorityDelimiter = AuthorityRules::URI_DELIMITER;
+        $queryDelimiter     = QueryRules::URI_DELIMITER->value;
+        $fragmentDelimiter  = FragmentRules::URI_DELIMITER->value;
         $result             = [];
 
         foreach (self::$authorityWithSchemeValidCombinations as $combination) {
@@ -442,10 +445,10 @@ class AuthorityCombinations extends AbstractCombinationsProvider implements Comb
      */
     private static function getValuesWithoutQuery(): array
     {
-        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
-        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER->value;
-        $pathDelimiter      = UriSubDelimiters::PATH_PARTS_SEPARATOR->value;
-        $fragmentDelimiter  = UriGeneralDelimiters::FRAGMENT_DELIMITER->value;
+        $schemeDelimiter    = SchemeRules::URI_DELIMITER->value;
+        $authorityDelimiter = AuthorityRules::URI_DELIMITER;
+        $pathDelimiter      = PathRules::PARTS_SEPARATOR->value;
+        $fragmentDelimiter  = FragmentRules::URI_DELIMITER->value;
         $result             = [];
 
         foreach (self::$authorityWithSchemeValidCombinations as $combination) {
@@ -512,10 +515,10 @@ class AuthorityCombinations extends AbstractCombinationsProvider implements Comb
      */
     private static function getValuesWithoutFragment(): array
     {
-        $schemeDelimiter    = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
-        $authorityDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER->value;
-        $pathDelimiter      = UriSubDelimiters::PATH_PARTS_SEPARATOR->value;
-        $queryDelimiter     = UriGeneralDelimiters::QUERY_DELIMITER->value;
+        $schemeDelimiter    = SchemeRules::URI_DELIMITER->value;
+        $authorityDelimiter = AuthorityRules::URI_DELIMITER;
+        $pathDelimiter      = PathRules::PARTS_SEPARATOR->value;
+        $queryDelimiter     = QueryRules::URI_DELIMITER->value;
         $result             = [];
 
         foreach (self::$authorityWithSchemeValidCombinations as $combination) {

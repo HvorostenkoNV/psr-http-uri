@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace HNV\Http\UriTests\ValuesProvider;
 
-use HNV\Http\Uri\Collection\UriGeneralDelimiters;
+use HNV\Http\Uri\Collection\IpAddressV6Rules;
 use HNV\Http\UriTests\ValuesProvider\IpAddress\{
     V4  as IpAddressV4ValuesProvider,
     V6  as IpAddressV6ValuesProvider,
@@ -22,8 +22,8 @@ class Host implements ValuesProviderInterface
      */
     public static function getValidValues(): array
     {
-        $leftBracer          = UriGeneralDelimiters::IP_ADDRESS_V6_LEFT_FRAME->value;
-        $rightBracer         = UriGeneralDelimiters::IP_ADDRESS_V6_RIGHT_FRAME->value;
+        $leftBracer          = IpAddressV6Rules::LEFT_FRAME->value;
+        $rightBracer         = IpAddressV6Rules::RIGHT_FRAME->value;
         $ipAddressesV6Values = [];
 
         foreach (IpAddressV6ValuesProvider::getValidValues() as $value => $valueNormalized) {
@@ -43,8 +43,8 @@ class Host implements ValuesProviderInterface
      */
     public static function getInvalidValues(): array
     {
-        $leftBracer          = UriGeneralDelimiters::IP_ADDRESS_V6_LEFT_FRAME->value;
-        $rightBracer         = UriGeneralDelimiters::IP_ADDRESS_V6_RIGHT_FRAME->value;
+        $leftBracer          = IpAddressV6Rules::LEFT_FRAME->value;
+        $rightBracer         = IpAddressV6Rules::RIGHT_FRAME->value;
         $ipAddressesV6Values = [];
 
         foreach (IpAddressV6ValuesProvider::getInvalidValues() as $invalidValue) {

@@ -8,22 +8,14 @@ use HNV\Http\Helper\Normalizer\{
     NormalizerInterface,
     NormalizingException,
 };
-use HNV\Http\Uri\Normalizer\RegularExpressionCheckerTrait;
+use HNV\Http\Uri\Collection\DomainNameRules;
 
+use function preg_match;
 use function strlen;
 use function strtolower;
 
-/**
- * Top level domain normalizer.
- */
 class TopLevelDomain implements NormalizerInterface
 {
-    use RegularExpressionCheckerTrait;
-
-    public const MIN_LENGTH = 2;
-    public const MAX_LENGTH = 6;
-    private const MASK      = '/^[a-z]{1,}$/';
-
     /**
      * {@inheritDoc}
      */
@@ -31,34 +23,28 @@ class TopLevelDomain implements NormalizerInterface
     {
         $valueString    = (string) $value;
         $valueLowercase = strtolower($valueString);
-        $minLength      = self::MIN_LENGTH;
-        $maxLength      = self::MAX_LENGTH;
+        $minLength      = DomainNameRules::TOP_LEVEL_MIN_LENGTH;
+        $maxLength      = DomainNameRules::TOP_LEVEL_MAX_LENGTH;
 
         if (strlen($valueLowercase) < $minLength) {
             throw new NormalizingException(
-                "top level domain \"{$valueString}\" is shorter than {$minLength}"
+                "top-level domain [{$valueString}] is shorter than {$minLength}"
             );
         }
         if (strlen($valueLowercase) > $maxLength) {
             throw new NormalizingException(
-                "top level domain \"{$valueString}\" is longer than {$maxLength}"
+                "top-level domain [{$valueString}] is longer than {$maxLength}"
             );
         }
 
-        if (!self::checkRegularExpressionMatch($valueLowercase)) {
-            throw new NormalizingException(
-                "top level domain \"{$valueString}\" is invalid"
-            );
+        $matches = [];
+        preg_match(DomainNameRules::topLevelMask(), $valueLowercase, $matches);
+        $isMatch = isset($matches[0]) && $matches[0] === $valueLowercase;
+
+        if (!$isMatch) {
+            throw new NormalizingException("top-level domain [{$valueString}] is invalid");
         }
 
         return $valueLowercase;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected static function buildRegularExpressionMask(): string
-    {
-        return self::MASK;
     }
 }

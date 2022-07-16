@@ -8,19 +8,10 @@ use RuntimeException;
 
 use function strlen;
 
-/**
- * URI validator class.
- */
 class UriValidator
 {
     /**
-     * Check authority is valid.
-     *
-     * @param string $userInfo user info
-     * @param string $host     host
-     * @param int    $port     port
-     *
-     * @throws RuntimeException validation failed
+     * @throws RuntimeException
      */
     public static function checkAuthorityIsValid(
         string $userInfo = '',
@@ -35,21 +26,15 @@ class UriValidator
         foreach ($invalidConditions as $condition) {
             if ($condition) {
                 throw new RuntimeException(
-                    "authority with user info \"{$userInfo}\", ".
-                    "host \"{$host}\" and port \"{$port}\" can not be build"
+                    "authority with user info [{$userInfo}], ".
+                    "host [{$host}] and port [{$port}] can not be build"
                 );
             }
         }
     }
 
     /**
-     * Check URI is valid.
-     *
-     * @param string $scheme    scheme
-     * @param string $authority authority
-     * @param string $path      path
-     *
-     * @throws RuntimeException validation failed
+     * @throws RuntimeException
      */
     public static function checkUriIsValid(
         string $scheme = '',
@@ -70,8 +55,8 @@ class UriValidator
         }
 
         throw new RuntimeException(
-            "URI with scheme \"{$scheme}\", ".
-            "authority \"{$authority}\" and path \"{$path}\" can not be build"
+            "URI with scheme [{$scheme}], ".
+            "authority [{$authority}] and path [{$path}] can not be build"
         );
     }
 }

@@ -7,24 +7,21 @@ namespace HNV\Http\UriTests;
 use HNV\Http\Uri\Uri;
 use HNV\Http\UriTests\CombinationsProvider\Authority\CombinedValue as AuthorityCombinationsProvider;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\{
+    Attributes,
+    TestCase,
+};
 
 /**
- * PSR-7 UriInterface implementation test.
- *
- * Testing working with authority values.
- *
  * @internal
- * @covers Uri
- * @medium
  */
+#[Attributes\CoversClass(Uri::class)]
+#[Attributes\Large]
 class UriAuthorityTest extends TestCase
 {
-    /**
-     * @covers       Uri::getAuthority
-     * @dataProvider dataProviderAuthorityByParts
-     */
-    public function testGetValue(
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderAuthorityByParts')]
+    public function getAuthority(
         string $scheme,
         string $login,
         string $password,
@@ -48,37 +45,17 @@ class UriAuthorityTest extends TestCase
 
         $valueCaught = $uri->getAuthority();
 
-        static::assertSame(
-            $valueNormalized,
-            $valueCaught,
-            'Action "Uri->withScheme->withUserInfo->withHost->withPort->getAuthority"'.
-            " returned unexpected result.\n".
-            "Action was called with parameters (scheme => {$scheme}, login => {$login},".
-            " password => {$password}, host => {$host}, port => {$port}).\n".
-            "Expected result is \"{$valueNormalized}\".\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame($valueNormalized, $valueCaught);
     }
 
-    /**
-     * @covers Uri::getAuthority
-     */
-    public function testGetValueOnEmptyObject(): void
+    #[Attributes\Test]
+    public function getAuthorityOnEmptyObject(): void
     {
         $valueCaught = (new Uri())->getAuthority();
 
-        static::assertSame(
-            '',
-            $valueCaught,
-            "Action \"Uri->getAuthority\" returned unexpected result.\n".
-            "Expected result is \"empty string\" from empty object.\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame('', $valueCaught);
     }
 
-    /**
-     * Data provider: authority by parts.
-     */
     public function dataProviderAuthorityByParts(): array
     {
         $result = [];

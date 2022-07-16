@@ -6,11 +6,12 @@ namespace HNV\Http\UriTests\ValuesProvider;
 
 use HNV\Http\Helper\Collection\SpecialCharacters;
 use HNV\Http\Uri\Collection\{
-    SchemeAllowedCharacters,
-    UriGeneralDelimiters,
+    SchemeRules,
+    UriDelimiters,
 };
 
 use function array_diff;
+use function array_map;
 use function strtolower;
 use function strtoupper;
 use function ucfirst;
@@ -45,7 +46,7 @@ class Scheme implements ValuesProviderInterface
             strtoupper($letter).$letter,
         ];
 
-        foreach (SchemeAllowedCharacters::cases() as $case) {
+        foreach (SchemeRules::ALLOWED_CHARACTERS as $case) {
             $data[] = "{$string}{$case->value}";
             $data[] = "{$string}{$case->value}{$string}";
         }
@@ -66,10 +67,17 @@ class Scheme implements ValuesProviderInterface
         $digit  = 1;
         $string = 'scheme';
 
-        $allowedChars = SchemeAllowedCharacters::casesValues();
-        $otherChars   = array_diff(
+        $allowedChars   = array_map(
+            fn (SpecialCharacters $character): string => $character->value,
+            SchemeRules::ALLOWED_CHARACTERS
+        );
+        $uriDelimiters  = array_map(
+            fn (SpecialCharacters $character): string => $character->value,
+            UriDelimiters::generalDelimiters()
+        );
+        $otherChars     = array_diff(
             SpecialCharacters::casesValues(),
-            UriGeneralDelimiters::casesValues(),
+            $uriDelimiters,
             $allowedChars
         );
 

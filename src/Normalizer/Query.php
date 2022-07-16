@@ -8,10 +8,7 @@ use HNV\Http\Helper\Normalizer\{
     NormalizerInterface,
     NormalizingException,
 };
-use HNV\Http\Uri\Collection\{
-    QueryAllowedCharacters,
-    UriSubDelimiters,
-};
+use HNV\Http\Uri\Collection\QueryRules;
 
 use function explode;
 use function implode;
@@ -20,9 +17,6 @@ use function rawurlencode;
 use function str_replace;
 use function strlen;
 
-/**
- * URI query string normalizer.
- */
 class Query implements NormalizerInterface
 {
     /**
@@ -31,8 +25,8 @@ class Query implements NormalizerInterface
     public static function normalize($value): string
     {
         $valueString         = (string) $value;
-        $fieldsSeparator     = UriSubDelimiters::QUERY_FIELDS_SEPARATOR->value;
-        $fieldValueSeparator = UriSubDelimiters::QUERY_FIELD_VALUE_SEPARATOR->value;
+        $fieldsSeparator     = QueryRules::FIELDS_SEPARATOR->value;
+        $fieldValueSeparator = QueryRules::FIELD_VALUE_SEPARATOR->value;
         $valueExploded       = explode($fieldsSeparator, $valueString);
         $result              = [];
 
@@ -48,18 +42,14 @@ class Query implements NormalizerInterface
             try {
                 $keyNormalized = self::normalizeValue($key);
             } catch (NormalizingException $exception) {
-                throw new NormalizingException(
-                    "query part \"{$key}\" is invalid",
-                    0,
-                    $exception
-                );
+                throw new NormalizingException("query part [{$key}] is invalid", 0, $exception);
             }
 
             try {
                 $keyValueNormalized = strlen($keyValue) > 0 ? self::normalizeValue($keyValue) : null;
             } catch (NormalizingException $exception) {
                 throw new NormalizingException(
-                    "query part \"{$keyValue}\" is invalid",
+                    "query part [{$keyValue}] is invalid",
                     0,
                     $exception
                 );
@@ -74,9 +64,7 @@ class Query implements NormalizerInterface
     }
 
     /**
-     * Normalize query value.
-     *
-     * @throws NormalizingException normalizing error
+     * @throws NormalizingException
      */
     private static function normalizeValue(string $value): string
     {
@@ -86,7 +74,7 @@ class Query implements NormalizerInterface
 
         $result = rawurlencode(rawurldecode($value));
 
-        foreach (QueryAllowedCharacters::cases() as $case) {
+        foreach (QueryRules::ALLOWED_CHARACTERS as $case) {
             $charEncoded = rawurlencode($case->value);
             $result      = str_replace($charEncoded, $case->value, $result);
         }

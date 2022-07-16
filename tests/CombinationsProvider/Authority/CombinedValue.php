@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace HNV\Http\UriTests\CombinationsProvider\Authority;
 
 use HNV\Http\Uri\Collection\{
-    SchemeStandardPorts,
-    UriGeneralDelimiters,
+    PortRules,
+    SchemeRules,
+    UserInfoRules,
 };
 use HNV\Http\UriTests\CombinationsProvider\UserInfo\CombinedValue as UserInfoCombinationsProvider;
 use HNV\Http\UriTests\CombinationsProvider\{
@@ -84,8 +85,8 @@ class CombinedValue extends AbstractCombinationsProvider implements Combinations
      */
     private static function getUserInfoCombinations(): array
     {
-        $userInfoDelimiter = UriGeneralDelimiters::USER_INFO_DELIMITER->value;
-        $portDelimiter     = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
+        $userInfoDelimiter = UserInfoRules::URI_DELIMITER->value;
+        $portDelimiter     = PortRules::URI_DELIMITER->value;
         $result            = [];
 
         foreach (self::$userInfoValidCombinations as $combination) {
@@ -166,8 +167,8 @@ class CombinedValue extends AbstractCombinationsProvider implements Combinations
      */
     private static function getHostCombinations(): array
     {
-        $userInfoDelimiter = UriGeneralDelimiters::USER_INFO_DELIMITER->value;
-        $portDelimiter     = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
+        $userInfoDelimiter = UserInfoRules::URI_DELIMITER->value;
+        $portDelimiter     = PortRules::URI_DELIMITER->value;
         $result            = [];
 
         foreach (HostValuesProvider::getValidValues() as $host => $hostNormalized) {
@@ -248,8 +249,8 @@ class CombinedValue extends AbstractCombinationsProvider implements Combinations
      */
     private static function getPortCombinations(): array
     {
-        $userInfoDelimiter = UriGeneralDelimiters::USER_INFO_DELIMITER->value;
-        $portDelimiter     = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
+        $userInfoDelimiter = UserInfoRules::URI_DELIMITER->value;
+        $portDelimiter     = PortRules::URI_DELIMITER->value;
         $result            = [];
 
         foreach (PortValuesProvider::getValidValues() as $port => $portNormalized) {
@@ -330,13 +331,13 @@ class CombinedValue extends AbstractCombinationsProvider implements Combinations
      */
     private static function getSchemeWithPortCombinations(): array
     {
-        $userInfoDelimiter = UriGeneralDelimiters::USER_INFO_DELIMITER->value;
+        $userInfoDelimiter = UserInfoRules::URI_DELIMITER->value;
         $result            = [];
 
-        foreach (SchemeStandardPorts::cases() as $case) {
-            foreach ($case->ports() as $port) {
+        foreach (SchemeRules::STANDARD_PORTS as $scheme => $ports) {
+            foreach ($ports as $port) {
                 $result[] = [
-                    'scheme'   => $case->value,
+                    'scheme'   => $scheme,
                     'login'    => self::$login,
                     'password' => self::$password,
                     'host'     => self::$host,
@@ -344,7 +345,7 @@ class CombinedValue extends AbstractCombinationsProvider implements Combinations
                     'value'    => self::$userInfoNormalized.$userInfoDelimiter.self::$hostNormalized,
                 ];
                 $result[] = [
-                    'scheme'   => $case->value,
+                    'scheme'   => $scheme,
                     'login'    => '',
                     'password' => '',
                     'host'     => self::$host,
@@ -352,7 +353,7 @@ class CombinedValue extends AbstractCombinationsProvider implements Combinations
                     'value'    => self::$hostNormalized,
                 ];
                 $result[] = [
-                    'scheme'   => $case->value,
+                    'scheme'   => $scheme,
                     'login'    => self::$login,
                     'password' => self::$password,
                     'host'     => '',
@@ -360,7 +361,7 @@ class CombinedValue extends AbstractCombinationsProvider implements Combinations
                     'value'    => '',
                 ];
                 $result[] = [
-                    'scheme'   => $case->value,
+                    'scheme'   => $scheme,
                     'login'    => '',
                     'password' => '',
                     'host'     => '',

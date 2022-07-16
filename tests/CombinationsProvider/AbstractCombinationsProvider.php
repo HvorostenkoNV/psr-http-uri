@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace HNV\Http\UriTests\CombinationsProvider;
 
 use HNV\Http\Uri\Collection\{
-    UriGeneralDelimiters,
-    UriSubDelimiters,
+    PathRules,
+    PortRules,
+    UserInfoRules,
 };
 use HNV\Http\UriTests\ValuesProvider\{
     Fragment            as FragmentValuesProvider,
@@ -98,7 +99,7 @@ abstract class AbstractCombinationsProvider
         foreach (PathValuesProvider::getValidValues() as $path => $pathNormalized) {
             if (
                 strlen($pathNormalized) > 0
-                && !str_starts_with($path, UriSubDelimiters::PATH_PARTS_SEPARATOR->value)
+                && !str_starts_with($path, PathRules::PARTS_SEPARATOR->value)
             ) {
                 self::$path           = $path;
                 self::$pathNormalized = $pathNormalized;
@@ -122,24 +123,24 @@ abstract class AbstractCombinationsProvider
 
         self::$userInfo =
             self::$login.
-            UriSubDelimiters::USER_INFO_SEPARATOR->value.
+            UserInfoRules::VALUES_SEPARATOR->value.
             self::$password;
         self::$userInfoNormalized =
             self::$loginNormalized.
-            UriSubDelimiters::USER_INFO_SEPARATOR->value.
+            UserInfoRules::VALUES_SEPARATOR->value.
             self::$passwordNormalized;
 
         self::$authority =
             self::$userInfo.
-            UriGeneralDelimiters::USER_INFO_DELIMITER->value.
+            UserInfoRules::URI_DELIMITER->value.
             self::$host.
-            UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value.
+            PortRules::URI_DELIMITER->value.
             self::$port;
         self::$authorityNormalized =
             self::$userInfoNormalized.
-            UriGeneralDelimiters::USER_INFO_DELIMITER->value.
+            UserInfoRules::URI_DELIMITER->value.
             self::$hostNormalized.
-            UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value.
+            PortRules::URI_DELIMITER->value.
             self::$portNormalized;
     }
 }

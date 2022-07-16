@@ -8,29 +8,25 @@ use HNV\Http\Helper\Normalizer\{
     NormalizerInterface,
     NormalizingException,
 };
+use HNV\Http\Uri\Collection\DomainNameRules;
 
 use function array_pop;
 use function count;
 use function explode;
 use function implode;
 
-/**
- * Full qualified domain name normalizer.
- */
 class FullQualifiedDomainName implements NormalizerInterface
 {
-    public const PARTS_DELIMITER = '.';
-
     /**
      * {@inheritDoc}
      */
     public static function normalize($value): string
     {
         $valueString   = (string) $value;
-        $valueExploded = explode(self::PARTS_DELIMITER, $valueString);
+        $valueExploded = explode(DomainNameRules::LEVELS_DELIMITER->value, $valueString);
 
         if (count($valueExploded) < 2) {
-            throw new NormalizingException("domain \"{$valueString}\" has not enough parts");
+            throw new NormalizingException("domain [{$valueString}] has not enough parts");
         }
 
         $topLevelDomain  = array_pop($valueExploded);
@@ -41,7 +37,7 @@ class FullQualifiedDomainName implements NormalizerInterface
                 $normalizedParts[] = SubLevelDomain::normalize($subDomain);
             } catch (NormalizingException $exception) {
                 throw new NormalizingException(
-                    "sub domain \"{$subDomain}\" is invalid",
+                    "sub domain [{$subDomain}] is invalid",
                     0,
                     $exception
                 );
@@ -52,12 +48,12 @@ class FullQualifiedDomainName implements NormalizerInterface
             $normalizedParts[] = TopLevelDomain::normalize($topLevelDomain);
         } catch (NormalizingException $exception) {
             throw new NormalizingException(
-                "top level domain \"{$topLevelDomain}\" is invalid",
+                "top level domain [{$topLevelDomain}] is invalid",
                 0,
                 $exception
             );
         }
 
-        return implode(self::PARTS_DELIMITER, $normalizedParts);
+        return implode(DomainNameRules::LEVELS_DELIMITER->value, $normalizedParts);
     }
 }

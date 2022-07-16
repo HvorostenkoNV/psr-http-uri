@@ -5,31 +5,28 @@ declare(strict_types=1);
 namespace HNV\Http\UriTests;
 
 use HNV\Http\Uri\{
-    Collection\SchemeStandardPorts,
+    Collection\SchemeRules,
     Uri,
 };
 use HNV\Http\UriTests\ValuesProvider\Port as PortValuesProvider;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\{
+    Attributes,
+    TestCase,
+};
 
 use function spl_object_id;
 
 /**
- * PSR-7 UriInterface implementation test.
- *
- * Testing working with port values.
- *
  * @internal
- * @covers Uri
- * @small
  */
+#[Attributes\CoversClass(Uri::class)]
+#[Attributes\Medium]
 class UriPortTest extends TestCase
 {
-    /**
-     * @covers       Uri::withPort
-     * @dataProvider dataProviderNormalizedValues
-     */
-    public function testProvidesNewInstance(int $value): void
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderNormalizedValues')]
+    public function withPortProvidesNewInstance(int $value): void
     {
         $uriFirst  = new Uri();
         $uriSecond = $uriFirst->withPort($value);
@@ -38,115 +35,70 @@ class UriPortTest extends TestCase
         static::assertNotSame(
             spl_object_id($uriFirst),
             spl_object_id($uriSecond),
-            "Action \"Uri->withPort\" returned unexpected result.\n".
-            "Expected result is \"NEW INSTANCE\".\n".
-            'Caught result is "SAME INSTANCE".'
+            'Expects instance not the same'
         );
         static::assertNotSame(
             spl_object_id($uriSecond),
             spl_object_id($uriThird),
-            "Action \"Uri->withPort\" returned unexpected result.\n".
-            "Expected result is \"NEW INSTANCE\".\n".
-            'Caught result is "SAME INSTANCE".'
+            'Expects instance not the same'
         );
     }
 
-    /**
-     * @covers       Uri::getPort
-     * @dataProvider dataProviderNormalizedValues
-     */
-    public function testGetValue(int $value, int $valueNormalized): void
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderNormalizedValues')]
+    public function withPort(int $value, int $valueNormalized): void
     {
         $valueCaught = (new Uri())->withPort($value)->getPort();
 
-        static::assertSame(
-            $valueNormalized,
-            $valueCaught,
-            "Action \"Uri->withPort->getPort\" returned unexpected result.\n".
-            "Action was called with parameters (value => {$value}).\n".
-            "Expected result is \"{$valueNormalized}\".\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame($valueNormalized, $valueCaught);
     }
 
-    /**
-     * @covers Uri::getPort
-     */
-    public function testGetValueOnEmptyObject(): void
+    #[Attributes\Test]
+    public function getPortOnEmptyObject(): void
     {
         $valueCaught = (new Uri())->getPort();
 
-        static::assertNull(
-            $valueCaught,
-            "Action \"Uri->getPort\" returned unexpected result.\n".
-            "Expected result is \"empty string\" from empty object.\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertNull($valueCaught);
     }
 
-    /**
-     * @covers       Uri::getPort
-     * @dataProvider dataProviderSchemeWithStandardPorts
-     */
-    public function testGetValueWithStandardPort(string $scheme, int $port): void
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderSchemeWithStandardPorts')]
+    public function getPortWithStandardPort(string $scheme, int $port): void
     {
         $valueCaught = (new Uri())
             ->withScheme($scheme)
             ->withPort($port)
             ->getPort();
 
-        static::assertNull(
-            $valueCaught,
-            "Action \"Uri->withScheme->withPort->getPort\" returned unexpected result.\n".
-            "Action was called with parameters (scheme => {$scheme}, port => {$port}).\n".
-            "Expected result is \"null\".\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertNull($valueCaught);
     }
 
-    /**
-     * @covers       Uri::withPort
-     * @dataProvider dataProviderNormalizedValues
-     */
-    public function testClearValue(int $value): void
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderNormalizedValues')]
+    public function getPortAfterClear(int $value): void
     {
         $valueCaught = (new Uri())
             ->withPort($value)
             ->withPort()
             ->getPort();
 
-        static::assertNull(
-            $valueCaught,
-            "Action \"Uri->withPort->withPort->getPort\" returned unexpected result.\n".
-            "Action was called with parameters (value => {$value}, value => \"0\").\n".
-            "Expected result is \"null\".\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertNull($valueCaught);
     }
 
-    /**
-     * @covers       Uri::withPort
-     * @dataProvider dataProviderInvalidValues
-     */
-    public function testThrowsException(int $value): void
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderInvalidValues')]
+    public function withPortThrowsException(int $value): void
     {
         $this->expectException(InvalidArgumentException::class);
 
         (new Uri())->withPort($value);
 
-        static::fail(
-            "Action \"Uri->withPort\" threw no expected exception.\n".
-            "Action was called with parameters (value => {$value}).\n".
-            "Expects \"InvalidArgumentException\" exception.\n".
-            'Caught no exception.'
-        );
+        static::fail("expects exception with port [{$value}]");
     }
 
-    /**
-     * @covers       Uri::withPort
-     * @dataProvider dataProviderValidWithInvalidValues
-     */
-    public function testSavesPreviousValueOnError(
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderValidWithInvalidValues')]
+    public function exceptionThrowingDoesntClearsPreviousValue(
         int $value,
         int $valueNormalized,
         int $invalidValue
@@ -160,20 +112,9 @@ class UriPortTest extends TestCase
 
         $valueCaught = $uri->getPort();
 
-        static::assertSame(
-            $valueNormalized,
-            $valueCaught,
-            "Action \"Uri->withPort->withPort->getPort\" returned unexpected result.\n".
-            "Action was called with parameters (value => {$value} (valid value),".
-            " value => {$invalidValue} (invalid value)).\n".
-            "Expected result is \"{$valueNormalized}\".\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame($valueNormalized, $valueCaught);
     }
 
-    /**
-     * Data provider: values with their normalized pairs.
-     */
     public function dataProviderNormalizedValues(): array
     {
         $result = [];
@@ -185,9 +126,6 @@ class UriPortTest extends TestCase
         return $result;
     }
 
-    /**
-     * Data provider: invalid values.
-     */
     public function dataProviderInvalidValues(): array
     {
         $result = [];
@@ -199,25 +137,19 @@ class UriPortTest extends TestCase
         return $result;
     }
 
-    /**
-     * Data provider: schemes with standard ports.
-     */
     public function dataProviderSchemeWithStandardPorts(): array
     {
         $result = [];
 
-        foreach (SchemeStandardPorts::cases() as $case) {
-            foreach ($case->ports() as $port) {
-                $result[] = [$case->value, $port];
+        foreach (SchemeRules::STANDARD_PORTS as $scheme => $ports) {
+            foreach ($ports as $port) {
+                $result[] = [$scheme, $port];
             }
         }
 
         return $result;
     }
 
-    /**
-     * Data provider: valid values (with their normalized pairs) with invalid values.
-     */
     public function dataProviderValidWithInvalidValues(): array
     {
         $validValues   = $this->dataProviderNormalizedValues();

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace HNV\Http\UriTests\ValuesProvider\IpAddress;
 
-use HNV\Http\Uri\Normalizer\IpAddress\V4 as IpAddressV4Normalizer;
+use HNV\Http\Uri\Collection\IpAddressV4Rules;
 use HNV\Http\UriTests\ValuesProvider\ValuesProviderInterface;
 
 use function array_fill;
@@ -26,7 +26,7 @@ class V4 implements ValuesProviderInterface
      */
     public static function getValidValues(): array
     {
-        $delimiter = IpAddressV4Normalizer::PARTS_DELIMITER;
+        $delimiter = IpAddressV4Rules::PARTS_DELIMITER->value;
         $result    = [];
 
         foreach (self::getValidSimpleValues() as $value) {
@@ -50,7 +50,7 @@ class V4 implements ValuesProviderInterface
      */
     public static function getInvalidValues(): array
     {
-        $delimiter = IpAddressV4Normalizer::PARTS_DELIMITER;
+        $delimiter = IpAddressV4Rules::PARTS_DELIMITER->value;
         $result    = [];
 
         foreach (self::getInvalidSimpleValues() as $value) {
@@ -72,17 +72,17 @@ class V4 implements ValuesProviderInterface
     {
         $minValuesSet = array_fill(
             0,
-            IpAddressV4Normalizer::PARTS_COUNT,
-            IpAddressV4Normalizer::PART_MIN_VALUE
+            IpAddressV4Rules::PARTS_COUNT,
+            IpAddressV4Rules::PART_MIN_VALUE
         );
         $maxValuesSet = array_fill(
             0,
-            IpAddressV4Normalizer::PARTS_COUNT,
-            IpAddressV4Normalizer::PART_MAX_VALUE
+            IpAddressV4Rules::PARTS_COUNT,
+            IpAddressV4Rules::PART_MAX_VALUE
         );
         $differentValuesSet = array_fill(
             0,
-            IpAddressV4Normalizer::PARTS_COUNT,
+            IpAddressV4Rules::PARTS_COUNT,
             self::getValidRandomValuePart()
         );
 
@@ -105,7 +105,7 @@ class V4 implements ValuesProviderInterface
         $valueParts           = [];
         $valuePartsNormalized = [];
 
-        while (count($valueParts) < IpAddressV4Normalizer::PARTS_COUNT) {
+        while (count($valueParts) < IpAddressV4Rules::PARTS_COUNT) {
             $value                  = self::getValidRandomValuePart();
             $valueParts[]           = str_repeat('0', rand(1, 5)).$value;
             $valuePartsNormalized[] = $value;
@@ -115,7 +115,7 @@ class V4 implements ValuesProviderInterface
         $valueFullNormalized = self::buildValueFromParts($valuePartsNormalized);
         $result[$valueFull]  = $valueFullNormalized;
 
-        for ($partsCount = 2; $partsCount < IpAddressV4Normalizer::PARTS_COUNT; $partsCount++) {
+        for ($partsCount = 2; $partsCount < IpAddressV4Rules::PARTS_COUNT; $partsCount++) {
             $valueParts = array_fill(
                 0,
                 $partsCount,
@@ -124,8 +124,8 @@ class V4 implements ValuesProviderInterface
             $valuePartsWithoutLast = array_slice($valueParts, 0, -1);
             $middleParts           = array_fill(
                 0,
-                IpAddressV4Normalizer::PARTS_COUNT - count($valueParts),
-                IpAddressV4Normalizer::PART_MIN_VALUE
+                IpAddressV4Rules::PARTS_COUNT - count($valueParts),
+                IpAddressV4Rules::PART_MIN_VALUE
             );
             $lastPart = array_slice($valueParts, -1, 1);
 
@@ -150,12 +150,12 @@ class V4 implements ValuesProviderInterface
     {
         $validPartsWithoutOne = array_fill(
             0,
-            IpAddressV4Normalizer::PARTS_COUNT - 1,
+            IpAddressV4Rules::PARTS_COUNT - 1,
             self::getValidRandomValuePart()
         );
         $invalidParts = [
-            IpAddressV4Normalizer::PART_MIN_VALUE - 1,
-            IpAddressV4Normalizer::PART_MAX_VALUE + 1,
+            IpAddressV4Rules::PART_MIN_VALUE - 1,
+            IpAddressV4Rules::PART_MAX_VALUE + 1,
             self::getInvalidRandomSmallValuePart(),
             self::getInvalidRandomBigValuePart(),
         ];
@@ -168,7 +168,7 @@ class V4 implements ValuesProviderInterface
 
         $tooManyValidParts = array_fill(
             0,
-            IpAddressV4Normalizer::PARTS_COUNT + 1,
+            IpAddressV4Rules::PARTS_COUNT + 1,
             self::getValidRandomValuePart()
         );
 
@@ -181,8 +181,8 @@ class V4 implements ValuesProviderInterface
     private static function getValidRandomValuePart(): int
     {
         return rand(
-            IpAddressV4Normalizer::PART_MIN_VALUE + 1,
-            IpAddressV4Normalizer::PART_MAX_VALUE - 1
+            IpAddressV4Rules::PART_MIN_VALUE + 1,
+            IpAddressV4Rules::PART_MAX_VALUE - 1
         );
     }
 
@@ -192,8 +192,8 @@ class V4 implements ValuesProviderInterface
     private static function getInvalidRandomSmallValuePart(): int
     {
         return rand(
-            IpAddressV4Normalizer::PART_MIN_VALUE - 100,
-            IpAddressV4Normalizer::PART_MIN_VALUE - 2
+            IpAddressV4Rules::PART_MIN_VALUE - 100,
+            IpAddressV4Rules::PART_MIN_VALUE - 2
         );
     }
 
@@ -203,8 +203,8 @@ class V4 implements ValuesProviderInterface
     private static function getInvalidRandomBigValuePart(): int
     {
         return rand(
-            IpAddressV4Normalizer::PART_MAX_VALUE + 2,
-            IpAddressV4Normalizer::PART_MAX_VALUE + 100
+            IpAddressV4Rules::PART_MAX_VALUE + 2,
+            IpAddressV4Rules::PART_MAX_VALUE + 100
         );
     }
 
@@ -215,7 +215,7 @@ class V4 implements ValuesProviderInterface
      */
     private static function buildValueFromParts(array $parts): string
     {
-        return implode(IpAddressV4Normalizer::PARTS_DELIMITER, $parts);
+        return implode(IpAddressV4Rules::PARTS_DELIMITER->value, $parts);
     }
 
     /**

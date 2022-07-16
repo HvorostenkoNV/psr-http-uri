@@ -6,9 +6,13 @@ namespace HNV\Http\Uri;
 
 use HNV\Http\Helper\Normalizer\NormalizingException;
 use HNV\Http\Uri\Collection\{
-    SchemeStandardPorts,
-    UriGeneralDelimiters,
-    UriSubDelimiters,
+    AuthorityRules,
+    FragmentRules,
+    PathRules,
+    PortRules,
+    QueryRules,
+    SchemeRules,
+    UserInfoRules,
 };
 use HNV\Http\Uri\Normalizer\{
     Fragment            as FragmentNormalizer,
@@ -24,14 +28,12 @@ use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
 
+use function in_array;
 use function is_null;
 use function ltrim;
 use function str_starts_with;
 use function strlen;
 
-/**
- * PSR-7 UriInterface implementation.
- */
 class Uri implements UriInterface
 {
     private string  $scheme   = '';
@@ -62,13 +64,13 @@ class Uri implements UriInterface
         }
 
         if (strlen($scheme) > 0) {
-            $result .= $scheme.UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
+            $result .= $scheme.SchemeRules::URI_DELIMITER->value;
         }
         if (strlen($authority) > 0) {
-            $result .= UriGeneralDelimiters::AUTHORITY_DELIMITER->value.$authority;
+            $result .= AuthorityRules::URI_DELIMITER.$authority;
         }
         if (strlen($path) > 0) {
-            $pathPrefix              = UriSubDelimiters::PATH_PARTS_SEPARATOR->value;
+            $pathPrefix              = PathRules::PARTS_SEPARATOR->value;
             $pathHasPrefix           = str_starts_with($path, $pathPrefix);
             $pathHasMultiplePrefixes = str_starts_with($path, $pathPrefix.$pathPrefix);
 
@@ -81,10 +83,10 @@ class Uri implements UriInterface
             }
         }
         if (strlen($query) > 0) {
-            $result .= UriGeneralDelimiters::QUERY_DELIMITER->value.$query;
+            $result .= QueryRules::URI_DELIMITER->value.$query;
         }
         if (strlen($fragment) > 0) {
-            $result .= UriGeneralDelimiters::FRAGMENT_DELIMITER->value.$fragment;
+            $result .= FragmentRules::URI_DELIMITER->value.$fragment;
         }
 
         return $result;
@@ -103,11 +105,7 @@ class Uri implements UriInterface
 
             return $newInstance;
         } catch (NormalizingException $exception) {
-            throw new InvalidArgumentException(
-                "scheme \"{$scheme}\" is invalid",
-                0,
-                $exception
-            );
+            throw new InvalidArgumentException("scheme [{$scheme}] is invalid", 0, $exception);
         }
     }
 
@@ -147,7 +145,7 @@ class Uri implements UriInterface
     public function getUserInfo(): string
     {
         return strlen($this->user) > 0 && strlen($this->password) > 0
-            ? $this->user.UriSubDelimiters::USER_INFO_SEPARATOR->value.$this->password
+            ? $this->user.UserInfoRules::VALUES_SEPARATOR->value.$this->password
             : $this->user;
     }
 
@@ -162,7 +160,7 @@ class Uri implements UriInterface
 
             return $newInstance;
         } catch (NormalizingException $exception) {
-            throw new InvalidArgumentException("host \"{$host}\" is invalid", 0, $exception);
+            throw new InvalidArgumentException("host [{$host}] is invalid", 0, $exception);
         }
     }
 
@@ -182,11 +180,18 @@ class Uri implements UriInterface
         try {
             $portNormalized = $port !== 0 ? PortNormalizer::normalize($port) : 0;
         } catch (NormalizingException $exception) {
-            throw new InvalidArgumentException("port \"{$port}\" is invalid", 0, $exception);
+            throw new InvalidArgumentException("port [{$port}] is invalid", 0, $exception);
         }
 
         $newInstance    = clone $this;
-        $portIsStandard = SchemeStandardPorts::findByPort($portNormalized);
+        $portIsStandard = false;
+
+        foreach (SchemeRules::STANDARD_PORTS as $ports) {
+            if (in_array($portNormalized, $ports, true)) {
+                $portIsStandard = true;
+                break;
+            }
+        }
 
         $newInstance->port = $portNormalized === 0 || $portIsStandard ? null : $portNormalized;
 
@@ -218,11 +223,11 @@ class Uri implements UriInterface
         }
 
         if (strlen($userInfo) > 0) {
-            $result .= $userInfo.UriGeneralDelimiters::USER_INFO_DELIMITER->value;
+            $result .= $userInfo.UserInfoRules::URI_DELIMITER->value;
         }
         $result .= $host;
         if (!is_null($port)) {
-            $result .= UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value.$port;
+            $result .= PortRules::URI_DELIMITER->value.$port;
         }
 
         return $result;
@@ -239,7 +244,7 @@ class Uri implements UriInterface
 
             return $newInstance;
         } catch (NormalizingException $exception) {
-            throw new InvalidArgumentException("path \"{$path}\" is invalid", 0, $exception);
+            throw new InvalidArgumentException("path [{$path}] is invalid", 0, $exception);
         }
     }
 
@@ -262,7 +267,7 @@ class Uri implements UriInterface
 
             return $newInstance;
         } catch (NormalizingException $exception) {
-            throw new InvalidArgumentException("query \"{$query}\" is invalid", 0, $exception);
+            throw new InvalidArgumentException("query [{$query}] is invalid", 0, $exception);
         }
     }
 

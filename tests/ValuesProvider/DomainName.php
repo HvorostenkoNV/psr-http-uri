@@ -6,16 +6,12 @@ namespace HNV\Http\UriTests\ValuesProvider;
 
 use HNV\Http\Helper\Collection\SpecialCharacters;
 use HNV\Http\Uri\Collection\{
-    DomainNameAllowedCharacters,
-    UriGeneralDelimiters,
-};
-use HNV\Http\Uri\Normalizer\DomainName\{
-    FullQualifiedDomainName as FullQualifiedDomainNameNormalizer,
-    SubLevelDomain          as SubLevelDomainNormalizer,
-    TopLevelDomain          as TopLevelDomainNormalizer,
+    DomainNameRules,
+    UriDelimiters,
 };
 
 use function array_diff;
+use function array_map;
 use function array_shift;
 use function count;
 use function implode;
@@ -50,7 +46,7 @@ class DomainName implements ValuesProviderInterface
     {
         $subDomainPartValid = self::getValidSubLevelDomainParts()[0];
         $topDomainPartValid = self::getValidTopLevelDomainParts()[0];
-        $partsDelimiter     = FullQualifiedDomainNameNormalizer::PARTS_DELIMITER;
+        $partsDelimiter     = DomainNameRules::LEVELS_DELIMITER->value;
         $result             = [];
 
         foreach (self::getInvalidSubLevelDomainParts() as $subPart) {
@@ -86,7 +82,7 @@ class DomainName implements ValuesProviderInterface
             return array_shift($subDomainParts);
         };
         $topDomainParts = self::getValidTopLevelDomainParts();
-        $partsDelimiter = FullQualifiedDomainNameNormalizer::PARTS_DELIMITER;
+        $partsDelimiter = DomainNameRules::LEVELS_DELIMITER->value;
         $result         = [];
 
         for ($partsCount = 1; $partsCount <= 4; $partsCount++) {
@@ -132,7 +128,7 @@ class DomainName implements ValuesProviderInterface
             "{$digit}",
         ];
 
-        foreach (DomainNameAllowedCharacters::cases() as $case) {
+        foreach (DomainNameRules::SUB_LEVEL_ALLOWED_CHARACTERS as $case) {
             $result[] = "{$string}{$case->value}{$string}";
             $result[] = "{$digit}{$case->value}{$digit}";
             $result[] = "{$string}{$case->value}{$digit}";
@@ -152,12 +148,19 @@ class DomainName implements ValuesProviderInterface
         $letter = 'd';
         $string = 'domain';
 
-        $allowedChars = DomainNameAllowedCharacters::casesValues();
-        $otherChars   = array_diff(
+        $allowedChars   = array_map(
+            fn (SpecialCharacters $char): string => $char->value,
+            DomainNameRules::SUB_LEVEL_ALLOWED_CHARACTERS
+        );
+        $uriDelimiters  = array_map(
+            fn (SpecialCharacters $character): string => $character->value,
+            UriDelimiters::generalDelimiters()
+        );
+        $otherChars     = array_diff(
             SpecialCharacters::casesValues(),
-            UriGeneralDelimiters::casesValues(),
+            $uriDelimiters,
             $allowedChars,
-            [FullQualifiedDomainNameNormalizer::PARTS_DELIMITER]
+            [DomainNameRules::LEVELS_DELIMITER->value]
         );
 
         $result = [
@@ -176,7 +179,7 @@ class DomainName implements ValuesProviderInterface
             $result[] = "{$string}{$char}{$string}";
         }
 
-        $result[] = str_repeat($letter, SubLevelDomainNormalizer::MAX_LENGTH + 1);
+        $result[] = str_repeat($letter, DomainNameRules::SUB_LEVEL_MAX_LENGTH + 1);
 
         return $result;
     }
@@ -189,8 +192,8 @@ class DomainName implements ValuesProviderInterface
     private static function getValidTopLevelDomainParts(): array
     {
         $letter    = 'd';
-        $minLength = TopLevelDomainNormalizer::MIN_LENGTH;
-        $maxLength = TopLevelDomainNormalizer::MAX_LENGTH;
+        $minLength = DomainNameRules::TOP_LEVEL_MIN_LENGTH;
+        $maxLength = DomainNameRules::TOP_LEVEL_MAX_LENGTH;
         $result    = [];
 
         for ($length = $minLength; $length <= $maxLength; $length++) {
@@ -214,10 +217,14 @@ class DomainName implements ValuesProviderInterface
         $digit  = 1;
         $string = 'domain';
 
-        $chars = array_diff(
+        $uriDelimiters  = array_map(
+            fn (SpecialCharacters $character): string => $character->value,
+            UriDelimiters::generalDelimiters()
+        );
+        $chars          = array_diff(
             SpecialCharacters::casesValues(),
-            UriGeneralDelimiters::casesValues(),
-            [FullQualifiedDomainNameNormalizer::PARTS_DELIMITER]
+            $uriDelimiters,
+            [DomainNameRules::LEVELS_DELIMITER->value]
         );
 
         $result = [
@@ -226,12 +233,12 @@ class DomainName implements ValuesProviderInterface
             "{$string} {$string}",
         ];
 
-        for ($length = 1; $length < TopLevelDomainNormalizer::MIN_LENGTH; $length++) {
+        for ($length = 1; $length < DomainNameRules::TOP_LEVEL_MIN_LENGTH; $length++) {
             $result[] = str_repeat($letter, $length);
         }
 
-        $result[] = str_repeat($letter, TopLevelDomainNormalizer::MAX_LENGTH + 1);
-        $result[] = str_repeat("{$digit}", TopLevelDomainNormalizer::MIN_LENGTH);
+        $result[] = str_repeat($letter, DomainNameRules::TOP_LEVEL_MAX_LENGTH + 1);
+        $result[] = str_repeat("{$digit}", DomainNameRules::TOP_LEVEL_MIN_LENGTH);
 
         foreach ($chars as $char) {
             $result[] = $char;

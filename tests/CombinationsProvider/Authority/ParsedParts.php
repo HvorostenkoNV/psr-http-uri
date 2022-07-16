@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace HNV\Http\UriTests\CombinationsProvider\Authority;
 
 use HNV\Http\Uri\Collection\{
-    SchemeStandardPorts,
-    UriGeneralDelimiters,
+    AuthorityRules,
+    PortRules,
+    SchemeRules,
+    UriDelimiters,
+    UserInfoRules,
 };
 use HNV\Http\UriTests\CombinationsProvider\UserInfo\ParsedParts as UserInfoCombinationsProvider;
 use HNV\Http\UriTests\CombinationsProvider\{
@@ -73,7 +76,7 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
                 $value           = $combination['value'];
                 $valueNormalized = $combination['valueNormalized'];
 
-                foreach (UriGeneralDelimiters::cases() as $case) {
+                foreach (UriDelimiters::generalDelimiters() as $case) {
                     if (str_contains($value, $case->value)) {
                         $value = $valueNormalized;
                         break;
@@ -92,8 +95,8 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
      */
     private static function getUserInfoCombinations(): array
     {
-        $userInfoDelimiter = UriGeneralDelimiters::USER_INFO_DELIMITER->value;
-        $portDelimiter     = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
+        $userInfoDelimiter = UserInfoRules::URI_DELIMITER->value;
+        $portDelimiter     = PortRules::URI_DELIMITER->value;
         $result            = [];
 
         foreach (self::$userInfoValidValues as $userInfo => $userInfoNormalized) {
@@ -186,8 +189,8 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
      */
     private static function getHostCombinations(): array
     {
-        $userInfoDelimiter = UriGeneralDelimiters::USER_INFO_DELIMITER->value;
-        $portDelimiter     = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
+        $userInfoDelimiter = UserInfoRules::URI_DELIMITER->value;
+        $portDelimiter     = PortRules::URI_DELIMITER->value;
         $result            = [];
 
         foreach (HostValuesProvider::getValidValues() as $host => $hostNormalized) {
@@ -279,8 +282,8 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
      */
     private static function getPortCombinations(): array
     {
-        $userInfoDelimiter = UriGeneralDelimiters::USER_INFO_DELIMITER->value;
-        $portDelimiter     = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
+        $userInfoDelimiter = UserInfoRules::URI_DELIMITER->value;
+        $portDelimiter     = PortRules::URI_DELIMITER->value;
         $result            = [];
 
         foreach (PortValuesProvider::getValidValues() as $port => $portNormalized) {
@@ -371,19 +374,19 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
      */
     private static function getSchemeWithPortCombinations(): array
     {
-        $schemeInfoDelimiter    = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
-        $authorityInfoDelimiter = UriGeneralDelimiters::AUTHORITY_DELIMITER->value;
-        $userInfoDelimiter      = UriGeneralDelimiters::USER_INFO_DELIMITER->value;
-        $portDelimiter          = UriGeneralDelimiters::SCHEME_OR_PORT_DELIMITER->value;
+        $schemeInfoDelimiter    = SchemeRules::URI_DELIMITER->value;
+        $authorityInfoDelimiter = AuthorityRules::URI_DELIMITER;
+        $userInfoDelimiter      = UserInfoRules::URI_DELIMITER->value;
+        $portDelimiter          = PortRules::URI_DELIMITER->value;
         $result                 = [];
 
-        foreach (SchemeStandardPorts::cases() as $case) {
-            foreach ($case->ports() as $port) {
+        foreach (SchemeRules::STANDARD_PORTS as $scheme => $ports) {
+            foreach ($ports as $port) {
                 $result[] = [
-                    'value' => $case->value.$schemeInfoDelimiter.$authorityInfoDelimiter.
+                    'value' => $scheme.$schemeInfoDelimiter.$authorityInfoDelimiter.
                         self::$userInfo.$userInfoDelimiter.self::$host.$portDelimiter.$port,
                     'isValid'         => true,
-                    'scheme'          => $case->value,
+                    'scheme'          => $scheme,
                     'userInfo'        => self::$userInfoNormalized,
                     'host'            => self::$hostNormalized,
                     'port'            => 0,
@@ -391,17 +394,17 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
                         self::$hostNormalized,
                 ];
                 $result[] = [
-                    'value' => $case->value.$schemeInfoDelimiter.$authorityInfoDelimiter.
+                    'value' => $scheme.$schemeInfoDelimiter.$authorityInfoDelimiter.
                         self::$host.$portDelimiter.$port,
                     'isValid'         => true,
-                    'scheme'          => $case->value,
+                    'scheme'          => $scheme,
                     'userInfo'        => '',
                     'host'            => self::$hostNormalized,
                     'port'            => 0,
                     'valueNormalized' => self::$hostNormalized,
                 ];
                 $result[] = [
-                    'value' => $case->value.$schemeInfoDelimiter.$authorityInfoDelimiter.
+                    'value' => $scheme.$schemeInfoDelimiter.$authorityInfoDelimiter.
                         self::$userInfo.$userInfoDelimiter.$portDelimiter.$port,
                     'isValid'         => false,
                     'scheme'          => '',
@@ -411,7 +414,7 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
                     'valueNormalized' => '',
                 ];
                 $result[] = [
-                    'value' => $case->value.$schemeInfoDelimiter.
+                    'value' => $scheme.$schemeInfoDelimiter.
                         $authorityInfoDelimiter.$portDelimiter.$port,
                     'isValid'         => false,
                     'scheme'          => '',

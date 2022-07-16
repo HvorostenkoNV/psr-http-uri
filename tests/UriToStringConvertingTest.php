@@ -9,24 +9,21 @@ use HNV\Http\UriTests\CombinationsProvider\FullString\CombinedValue\{
     FullStringCombinations as FullStringCombinationsProvider,
 };
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\{
+    Attributes,
+    TestCase,
+};
 
 /**
- * PSR-7 UriInterface implementation test.
- *
- * Testing working with URI converting to string behavior.
- *
  * @internal
- * @covers Uri
- * @large
  */
+#[Attributes\CoversClass(Uri::class)]
+#[Attributes\Large]
 class UriToStringConvertingTest extends TestCase
 {
-    /**
-     * @covers       Uri::__toString
-     * @dataProvider dataProviderUriByParts
-     */
-    public function testToStringConverting(
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderUriByParts')]
+    public function toStringCast(
         string $scheme,
         string $login,
         string $password,
@@ -69,22 +66,9 @@ class UriToStringConvertingTest extends TestCase
         $uri       = $uri->withFragment($fragment);
         $uriCaught = (string) $uri;
 
-        static::assertSame(
-            $uriExpected,
-            $uriCaught,
-            'Action "Uri->withScheme->withUserInfo->withHost->withPort'.
-            "->withPath->withQuery->withFragment->toString\" returned unexpected result.\n".
-            "Action was called with parameters (scheme => {$scheme}, login => {$login},".
-            " password => {$password}, host => {$host}, port => {$port}, path => {$path},".
-            " query => {$query}, fragment => {$fragment}).\n".
-            "Expected result is \"{$uriExpected}\".\n".
-            "Caught result is \"{$uriCaught}\"."
-        );
+        static::assertSame($uriExpected, $uriCaught);
     }
 
-    /**
-     * Data provider: URI by parts.
-     */
     public function dataProviderUriByParts(): array
     {
         $result = [];

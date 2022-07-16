@@ -7,26 +7,23 @@ namespace HNV\Http\UriTests;
 use HNV\Http\Uri\Uri;
 use HNV\Http\UriTests\ValuesProvider\Query as QueryValuesProvider;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\{
+    Attributes,
+    TestCase,
+};
 
 use function spl_object_id;
 
 /**
- * PSR-7 UriInterface implementation test.
- *
- * Testing working with query values.
- *
  * @internal
- * @covers Uri
- * @small
  */
+#[Attributes\CoversClass(Uri::class)]
+#[Attributes\Medium]
 class UriQueryTest extends TestCase
 {
-    /**
-     * @covers       Uri::withQuery
-     * @dataProvider dataProviderNormalizedValues
-     */
-    public function testProvidesNewInstance(string $value): void
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderNormalizedValues')]
+    public function withQueryProvidesNewInstance(string $value): void
     {
         $uriFirst  = new Uri();
         $uriSecond = $uriFirst->withQuery($value);
@@ -35,97 +32,58 @@ class UriQueryTest extends TestCase
         static::assertNotSame(
             spl_object_id($uriFirst),
             spl_object_id($uriSecond),
-            "Action \"Uri->withQuery\" returned unexpected result.\n".
-            "Expected result is \"NEW INSTANCE\".\n".
-            'Caught result is "SAME INSTANCE".'
+            'Expects instance not the same'
         );
         static::assertNotSame(
             spl_object_id($uriSecond),
             spl_object_id($uriThird),
-            "Action \"Uri->withQuery\" returned unexpected result.\n".
-            "Expected result is \"NEW INSTANCE\".\n".
-            'Caught result is "SAME INSTANCE".'
+            'Expects instance not the same'
         );
     }
 
-    /**
-     * @covers       Uri::getQuery
-     * @dataProvider dataProviderNormalizedValues
-     */
-    public function testGetValue(string $value, string $valueNormalized): void
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderNormalizedValues')]
+    public function getQuery(string $value, string $valueNormalized): void
     {
         $valueCaught = (new Uri())->withQuery($value)->getQuery();
 
-        static::assertSame(
-            $valueNormalized,
-            $valueCaught,
-            "Action \"Uri->withQuery->getQuery\" returned unexpected result.\n".
-            "Action was called with parameters (value => {$value}).\n".
-            "Expected result is \"{$valueNormalized}\".\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame($valueNormalized, $valueCaught);
     }
 
-    /**
-     * @covers Uri::getQuery
-     */
-    public function testGetValueOnEmptyObject(): void
+    #[Attributes\Test]
+    public function getQueryOnEmptyObject(): void
     {
         $valueCaught = (new Uri())->getQuery();
 
-        static::assertSame(
-            '',
-            $valueCaught,
-            "Action \"Uri->getQuery\" returned unexpected result.\n".
-            "Expected result is \"empty string\" from empty object.\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame('', $valueCaught);
     }
 
-    /**
-     * @covers       Uri::withQuery
-     * @dataProvider dataProviderNormalizedValues
-     */
-    public function testClearValue(string $value): void
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderNormalizedValues')]
+    public function getQueryAfterClear(string $value): void
     {
         $valueCaught = (new Uri())
             ->withQuery($value)
             ->withQuery('')
             ->getQuery();
 
-        static::assertSame(
-            '',
-            $valueCaught,
-            "Action \"Uri->withQuery->withQuery->getQuery\" returned unexpected result.\n".
-            "Action was called with parameters (value => {$value}, value => \"empty string\").\n".
-            "Expected result is \"empty string\".\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame('', $valueCaught);
     }
 
-    /**
-     * @covers       Uri::withQuery
-     * @dataProvider dataProviderInvalidValues
-     */
-    public function testThrowsException(string $value): void
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderInvalidValues')]
+    public function withQueryThrowsException(string $value): void
     {
         $this->expectException(InvalidArgumentException::class);
 
         (new Uri())->withQuery($value);
 
-        static::fail(
-            "Action \"Uri->withQuery\" threw no expected exception.\n".
-            "Action was called with parameters (value => {$value}).\n".
-            "Expects \"InvalidArgumentException\" exception.\n".
-            'Caught no exception.'
-        );
+        static::fail("expects exception with query [{$value}]");
     }
 
-    /**
-     * @covers       Uri::withQuery
-     * @dataProvider dataProviderValidWithInvalidValues
-     */
-    public function testSavesPreviousValueOnError(
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderValidWithInvalidValues')]
+    public function exceptionThrowingDoesntClearsPreviousValue(
         string $value,
         string $valueNormalized,
         string $invalidValue
@@ -139,20 +97,9 @@ class UriQueryTest extends TestCase
 
         $valueCaught = $uri->getQuery();
 
-        static::assertSame(
-            $valueNormalized,
-            $valueCaught,
-            "Action \"Uri->withQuery->withQuery->getQuery\" returned unexpected result.\n".
-            "Action was called with parameters (value => {$value} (valid value),".
-            " value => {$invalidValue} (invalid value)).\n".
-            "Expected result is \"{$valueNormalized}\".\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame($valueNormalized, $valueCaught);
     }
 
-    /**
-     * Data provider: values with their normalized pairs.
-     */
     public function dataProviderNormalizedValues(): array
     {
         $result = [];
@@ -164,9 +111,6 @@ class UriQueryTest extends TestCase
         return $result;
     }
 
-    /**
-     * Data provider: invalid values.
-     */
     public function dataProviderInvalidValues(): array
     {
         $result = [];
@@ -178,9 +122,6 @@ class UriQueryTest extends TestCase
         return $result;
     }
 
-    /**
-     * Data provider: valid values (with their normalized pairs) with invalid values.
-     */
     public function dataProviderValidWithInvalidValues(): array
     {
         $validValues   = $this->dataProviderNormalizedValues();

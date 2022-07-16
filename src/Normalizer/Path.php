@@ -8,14 +8,8 @@ use HNV\Http\Helper\Normalizer\{
     NormalizerInterface,
     NormalizingException,
 };
-use HNV\Http\Uri\Collection\{
-    PathAllowedCharactersAny,
-    PathAllowedCharactersNonFirst,
-    UriSubDelimiters,
-};
+use HNV\Http\Uri\Collection\PathRules;
 
-use function array_map;
-use function array_merge;
 use function explode;
 use function implode;
 use function rawurldecode;
@@ -23,9 +17,6 @@ use function rawurlencode;
 use function str_replace;
 use function strlen;
 
-/**
- * URI path normalizer.
- */
 class Path implements NormalizerInterface
 {
     /**
@@ -34,14 +25,13 @@ class Path implements NormalizerInterface
     public static function normalize($value): string
     {
         $valueString       = (string) $value;
-        $valueExploded     = explode(UriSubDelimiters::PATH_PARTS_SEPARATOR->value, $valueString);
-        $invalidFirstChars = PathAllowedCharactersNonFirst::casesValues();
+        $valueExploded     = explode(PathRules::PARTS_SEPARATOR->value, $valueString);
         $result            = [];
 
-        foreach ($invalidFirstChars as $char) {
-            if ($valueString[0] === $char) {
+        foreach (PathRules::ALLOWED_CHARACTERS_NON_FIRST as $char) {
+            if ($valueString[0] === $char->value) {
                 throw new NormalizingException(
-                    "path \"{$valueString}\" can not begin with character \"{$char}\""
+                    "path [{$valueString}] can not begin with character [{$char->value}]"
                 );
             }
         }
@@ -51,20 +41,18 @@ class Path implements NormalizerInterface
                 $result[] = strlen($part) > 0 ? self::normalizePart($part) : '';
             } catch (NormalizingException $exception) {
                 throw new NormalizingException(
-                    "path part \"{$part}\" validation failed",
+                    "path part [{$part}] validation failed",
                     0,
                     $exception
                 );
             }
         }
 
-        return implode(UriSubDelimiters::PATH_PARTS_SEPARATOR->value, $result);
+        return implode(PathRules::PARTS_SEPARATOR->value, $result);
     }
 
     /**
-     * Normalize path part value.
-     *
-     * @throws NormalizingException normalizing error
+     * @throws NormalizingException
      */
     private static function normalizePart(string $value): string
     {
@@ -73,11 +61,13 @@ class Path implements NormalizerInterface
         }
 
         $result              = rawurlencode(rawurldecode($value));
-        $allowedChars        = array_merge(
-            PathAllowedCharactersNonFirst::casesValues(),
-            PathAllowedCharactersAny::casesValues(),
-        );
-        $allowedCharsEncoded = array_map(fn (string $value): string => rawurlencode($value), $allowedChars);
+        $allowedChars        = [];
+        $allowedCharsEncoded = [];
+
+        foreach (PathRules::allowedCharacters() as $character) {
+            $allowedChars[]        = $character->value;
+            $allowedCharsEncoded[] = rawurlencode($character->value);
+        }
 
         return str_replace($allowedCharsEncoded, $allowedChars, $result);
     }

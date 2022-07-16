@@ -9,9 +9,6 @@ use HNV\Http\Helper\Normalizer\NormalizerInterface;
 use function rawurldecode;
 use function rawurlencode;
 
-/**
- * URI user info value normalizer.
- */
 abstract class Value implements NormalizerInterface
 {
     /**

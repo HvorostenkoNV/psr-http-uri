@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace HNV\Http\UriTests\CombinationsProvider\UserInfo;
 
-use HNV\Http\Uri\Collection\UriSubDelimiters;
+use HNV\Http\Uri\Collection\UserInfoRules;
 use HNV\Http\UriTests\CombinationsProvider\{
     AbstractCombinationsProvider,
     CombinationsProviderInterface,
@@ -46,7 +46,7 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
      */
     private static function getLoginCombinations(): array
     {
-        $delimiter = UriSubDelimiters::USER_INFO_SEPARATOR->value;
+        $delimiter = UserInfoRules::VALUES_SEPARATOR->value;
         $result    = [];
 
         foreach (UserLoginValuesProvider::getValidValues() as $login => $loginNormalized) {
@@ -82,7 +82,7 @@ class ParsedParts extends AbstractCombinationsProvider implements CombinationsPr
      */
     private static function getPasswordCombinations(): array
     {
-        $delimiter = UriSubDelimiters::USER_INFO_SEPARATOR->value;
+        $delimiter = UserInfoRules::VALUES_SEPARATOR->value;
         $result    = [];
 
         foreach (UserPasswordValuesProvider::getValidValues() as $password => $passwordNormalized) {

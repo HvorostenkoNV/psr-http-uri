@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace HNV\Http\UriTests\ValuesProvider;
 
 use HNV\Http\Helper\Collection\SpecialCharacters;
-use HNV\Http\Uri\Collection\{
-    PathAllowedCharactersAny,
-    PathAllowedCharactersNonFirst,
-    UriSubDelimiters,
-};
+use HNV\Http\Uri\Collection\PathRules;
 
 use function array_diff;
+use function array_map;
 use function array_merge;
 use function array_shift;
 use function count;
@@ -51,7 +48,7 @@ class Path implements ValuesProviderInterface
         $validValues = self::getValidValues();
         $result      = [];
 
-        foreach (PathAllowedCharactersNonFirst::cases() as $case) {
+        foreach (PathRules::ALLOWED_CHARACTERS_NON_FIRST as $case) {
             foreach ($validValues as $value) {
                 $result[] = "{$case->value}{$value}";
             }
@@ -84,7 +81,7 @@ class Path implements ValuesProviderInterface
                 $parts[] = $getValidPart();
             }
 
-            $result[] = implode(UriSubDelimiters::PATH_PARTS_SEPARATOR->value, $parts);
+            $result[] = implode(PathRules::PARTS_SEPARATOR->value, $parts);
         }
 
         return $result;
@@ -97,7 +94,7 @@ class Path implements ValuesProviderInterface
      */
     private static function getValidNormalizedValues(): array
     {
-        $separator       = UriSubDelimiters::PATH_PARTS_SEPARATOR->value;
+        $separator       = PathRules::PARTS_SEPARATOR->value;
         $normalizedParts = self::getValidNormalizedParts();
         $simplePart      = self::getValidSimpleParts()[0];
         $result          = [];
@@ -164,13 +161,19 @@ class Path implements ValuesProviderInterface
     private static function getValidNormalizedParts(): array
     {
         $string             = 'path';
-        $invalidFirstChars  = PathAllowedCharactersNonFirst::casesValues();
-        $allowedChars       = PathAllowedCharactersAny::casesValues();
+        $invalidFirstChars  = array_map(
+            fn (SpecialCharacters $character): string => $character->value,
+            PathRules::ALLOWED_CHARACTERS_NON_FIRST
+        );
+        $allowedChars       = array_map(
+            fn (SpecialCharacters $character): string => $character->value,
+            PathRules::ALLOWED_CHARACTERS_OTHERS
+        );
         $otherChars         = array_diff(
             SpecialCharacters::casesValues(),
             $allowedChars,
             $invalidFirstChars,
-            [UriSubDelimiters::PATH_PARTS_SEPARATOR->value]
+            [PathRules::PARTS_SEPARATOR->value]
         );
         $result = [];
 

@@ -8,17 +8,12 @@ use HNV\Http\Helper\Normalizer\{
     NormalizerInterface,
     NormalizingException,
 };
+use HNV\Http\Uri\Collection\PortRules;
 
 use function is_numeric;
 
-/**
- * URI port normalizer.
- */
 class Port implements NormalizerInterface
 {
-    public const MIN_VALUE = 0;
-    public const MAX_VALUE = 65535;
-
     /**
      * {@inheritDoc}
      */
@@ -27,18 +22,18 @@ class Port implements NormalizerInterface
         if (!is_numeric($value)) {
             $valueString = (string) $value;
 
-            throw new NormalizingException("value \"{$valueString}\" is not numeric");
+            throw new NormalizingException("value [{$valueString}] is not numeric");
         }
 
         $valueInt = (int) $value;
-        $minValue = self::MIN_VALUE;
-        $maxValue = self::MAX_VALUE;
+        $minValue = PortRules::MIN_VALUE;
+        $maxValue = PortRules::MAX_VALUE;
 
         if ($valueInt < $minValue) {
-            throw new NormalizingException("port \"{$valueInt}\" is less then {$minValue}");
+            throw new NormalizingException("port [{$valueInt}] is less then {$minValue}");
         }
         if ($valueInt > $maxValue) {
-            throw new NormalizingException("port \"{$valueInt}\" is grater then {$minValue}");
+            throw new NormalizingException("port [{$valueInt}] is grater then {$minValue}");
         }
 
         return $valueInt;

@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace HNV\Http\UriTests\ValuesProvider;
 
 use HNV\Http\Helper\Collection\SpecialCharacters;
-use HNV\Http\Uri\Collection\{
-    QueryAllowedCharacters,
-    UriSubDelimiters,
-};
+use HNV\Http\Uri\Collection\QueryRules;
 
 use function array_diff;
+use function array_map;
 use function array_merge;
 use function array_shift;
 use function count;
@@ -46,8 +44,8 @@ class Query implements ValuesProviderInterface
      */
     public static function getInvalidValues(): array
     {
-        $fieldsDelimiter = UriSubDelimiters::QUERY_FIELDS_SEPARATOR->value;
-        $pairDelimiter   = UriSubDelimiters::QUERY_FIELD_VALUE_SEPARATOR->value;
+        $fieldsDelimiter = QueryRules::FIELDS_SEPARATOR->value;
+        $pairDelimiter   = QueryRules::FIELD_VALUE_SEPARATOR->value;
         $validPart       = self::getValidSimpleParts()[0];
         $invalidParts    = self::getInvalidParts();
         $result          = [];
@@ -86,7 +84,7 @@ class Query implements ValuesProviderInterface
                 $pairs[] = $getValidPart();
             }
 
-            $result[] = implode(UriSubDelimiters::QUERY_FIELDS_SEPARATOR->value, $pairs);
+            $result[] = implode(QueryRules::FIELDS_SEPARATOR->value, $pairs);
         }
         for ($pairsCount = 1; $pairsCount <= 5; $pairsCount++) {
             $pairs = [];
@@ -94,10 +92,10 @@ class Query implements ValuesProviderInterface
             while (count($pairs) < $pairsCount) {
                 $key     = $getValidPart();
                 $value   = $getValidPart();
-                $pairs[] = $key.UriSubDelimiters::QUERY_FIELD_VALUE_SEPARATOR->value.$value;
+                $pairs[] = $key.QueryRules::FIELD_VALUE_SEPARATOR->value.$value;
             }
 
-            $result[] = implode(UriSubDelimiters::QUERY_FIELDS_SEPARATOR->value, $pairs);
+            $result[] = implode(QueryRules::FIELDS_SEPARATOR->value, $pairs);
         }
 
         return $result;
@@ -110,8 +108,8 @@ class Query implements ValuesProviderInterface
      */
     private static function getValidNormalizedValues(): array
     {
-        $fieldsDelimiter      = UriSubDelimiters::QUERY_FIELDS_SEPARATOR->value;
-        $pairDelimiter        = UriSubDelimiters::QUERY_FIELD_VALUE_SEPARATOR->value;
+        $fieldsDelimiter      = QueryRules::FIELDS_SEPARATOR->value;
+        $pairDelimiter        = QueryRules::FIELD_VALUE_SEPARATOR->value;
         $validNormalizedParts = self::getValidNormalizedParts();
         $validSimplePart      = self::getValidSimpleParts()[0];
         $result               = [];
@@ -166,16 +164,19 @@ class Query implements ValuesProviderInterface
      */
     private static function getValidNormalizedParts(): array
     {
-        $allowedChars = QueryAllowedCharacters::casesValues();
+        $allowedChars = array_map(
+            fn (SpecialCharacters $character): string => $character->value,
+            QueryRules::ALLOWED_CHARACTERS
+        );
         $otherChars   = array_diff(
             SpecialCharacters::casesValues(),
             $allowedChars,
             [
-                UriSubDelimiters::QUERY_FIELDS_SEPARATOR->value,
-                UriSubDelimiters::QUERY_FIELD_VALUE_SEPARATOR->value,
+                QueryRules::FIELDS_SEPARATOR->value,
+                QueryRules::FIELD_VALUE_SEPARATOR->value,
             ]
         );
-        $result = [];
+        $result       = [];
 
         foreach ($allowedChars as $char) {
             $charEncoded          = rawurlencode($char);

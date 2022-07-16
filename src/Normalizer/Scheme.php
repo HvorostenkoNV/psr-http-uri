@@ -8,20 +8,13 @@ use HNV\Http\Helper\Normalizer\{
     NormalizerInterface,
     NormalizingException,
 };
-use HNV\Http\Uri\Collection\SchemeAllowedCharacters;
+use HNV\Http\Uri\Collection\SchemeRules;
 
-use function str_replace;
+use function preg_match;
 use function strtolower;
 
-/**
- * URI scheme normalizer.
- */
 class Scheme implements NormalizerInterface
 {
-    use RegularExpressionCheckerTrait;
-
-    private const MASK_PATTERN = '/^[a-z]{1}[a-z0-9#SPECIAL_CHARS#]{1,}$/';
-
     /**
      * {@inheritDoc}
      */
@@ -30,24 +23,14 @@ class Scheme implements NormalizerInterface
         $valueString    = (string) $value;
         $valueLowercase = strtolower($valueString);
 
-        if (!self::checkRegularExpressionMatch($valueLowercase)) {
-            throw new NormalizingException("scheme \"{$valueLowercase}\" is invalid");
+        $matches = [];
+        preg_match(SchemeRules::mask(), $valueLowercase, $matches);
+        $isMatch = isset($matches[0]) && $matches[0] === $valueLowercase;
+
+        if (!$isMatch) {
+            throw new NormalizingException("scheme [{$valueLowercase}] is invalid");
         }
 
         return $valueLowercase;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected static function buildRegularExpressionMask(): string
-    {
-        $specialCharsMask = '';
-
-        foreach (SchemeAllowedCharacters::cases() as $case) {
-            $specialCharsMask .= "\\{$case->value}";
-        }
-
-        return str_replace('#SPECIAL_CHARS#', $specialCharsMask, self::MASK_PATTERN);
     }
 }

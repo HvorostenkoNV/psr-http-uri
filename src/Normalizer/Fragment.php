@@ -8,9 +8,6 @@ use HNV\Http\Helper\Normalizer\NormalizerInterface;
 
 use function rawurldecode;
 
-/**
- * URI fragment normalizer.
- */
 class Fragment implements NormalizerInterface
 {
     /**

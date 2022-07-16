@@ -6,27 +6,24 @@ namespace HNV\Http\UriTests;
 
 use HNV\Http\Uri\Uri;
 use HNV\Http\UriTests\CombinationsProvider\UserInfo\CombinedValue as UserInfoCombinationsProvider;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\{
+    Attributes,
+    TestCase,
+};
 
 use function spl_object_id;
 use function strlen;
 
 /**
- * PSR-7 UriInterface implementation test.
- *
- * Testing working with user info values.
- *
  * @internal
- * @covers Uri
- * @small
  */
+#[Attributes\CoversClass(Uri::class)]
+#[Attributes\Medium]
 class UriUserInfoTest extends TestCase
 {
-    /**
-     * @covers       Uri::withUserInfo
-     * @dataProvider dataProviderNormalizedValues
-     */
-    public function testProvidesNewInstance(string $login): void
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderNormalizedValues')]
+    public function withUserInfoProvidesNewInstance(string $login): void
     {
         $uriFirst  = new Uri();
         $uriSecond = $uriFirst->withUserInfo($login);
@@ -35,82 +32,50 @@ class UriUserInfoTest extends TestCase
         static::assertNotSame(
             spl_object_id($uriFirst),
             spl_object_id($uriSecond),
-            "Action \"Uri->withUserInfo\" returned unexpected result.\n".
-            "Expected result is \"NEW INSTANCE\".\n".
-            'Caught result is "SAME INSTANCE".'
+            'Expects instance not the same'
         );
         static::assertNotSame(
             spl_object_id($uriSecond),
             spl_object_id($uriThird),
-            "Action \"Uri->withUserInfo\" returned unexpected result.\n".
-            "Expected result is \"NEW INSTANCE\".\n".
-            'Caught result is "SAME INSTANCE".'
+            'Expects instance not the same'
         );
     }
 
-    /**
-     * @covers       Uri::getUserInfo
-     * @dataProvider dataProviderNormalizedValues
-     */
-    public function testGetValue(
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderNormalizedValues')]
+    public function getUserInfo(
         string $login,
         string $password,
         string $valueNormalized
     ): void {
         $valueCaught = (new Uri())->withUserInfo($login, $password)->getUserInfo();
 
-        static::assertSame(
-            $valueNormalized,
-            $valueCaught,
-            "Action \"Uri->withUserInfo->getUserInfo\" returned unexpected result.\n".
-            "Action was called with parameters (login => {$login}, password => {$password}).\n".
-            "Expected result is \"{$valueNormalized}\".\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame($valueNormalized, $valueCaught);
     }
 
-    /**
-     * @covers Uri::getUserInfo
-     */
-    public function testGetValueOnEmptyObject(): void
+    #[Attributes\Test]
+    public function getUserInfoOnEmptyObject(): void
     {
         $valueCaught = (new Uri())->getUserInfo();
 
-        static::assertSame(
-            '',
-            $valueCaught,
-            "Action \"Uri->getUserInfo\" returned unexpected result.\n".
-            "Expected result is \"empty string\" from empty object.\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame('', $valueCaught);
     }
 
-    /**
-     * @covers       Uri::withUserInfo
-     * @dataProvider dataProviderNormalizedValues
-     */
-    public function testClearValue(string $login): void
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderNormalizedValues')]
+    public function getUserInfoAfterClear(string $login): void
     {
         $valueCaught = (new Uri())
             ->withUserInfo($login)
             ->withUserInfo('')
             ->getUserInfo();
 
-        static::assertSame(
-            '',
-            $valueCaught,
-            "Action \"Uri->withUserInfo->withUserInfo->getUserInfo\" returned unexpected result.\n".
-            "Action was called with parameters (login => {$login}, login => \"empty string\").\n".
-            "Expected result is \"empty string\".\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame('', $valueCaught);
     }
 
-    /**
-     * @covers       Uri::withUserInfo
-     * @dataProvider dataProviderValidWithInvalidValues
-     */
-    public function testClearValueWithInvalidData(
+    #[Attributes\Test]
+    #[Attributes\DataProvider('dataProviderValidWithInvalidValues')]
+    public function withUserInfoWithInvalidValueClearsPreviousValue(
         string $validValue,
         string $login,
         string $password
@@ -120,20 +85,9 @@ class UriUserInfoTest extends TestCase
             ->withUserInfo($login, $password)
             ->getUserInfo();
 
-        static::assertSame(
-            '',
-            $valueCaught,
-            "Action \"Uri->withUserInfo->getUserInfo->getUserInfo\" returned unexpected result.\n".
-            "Action was called with parameters (login => {$validValue},".
-            " login => {$login} password => {$password}).\n".
-            "Expected result is \"empty string\".\n".
-            "Caught result is \"{$valueCaught}\"."
-        );
+        static::assertSame('', $valueCaught);
     }
 
-    /**
-     * Data provider: values with their normalized pairs.
-     */
     public function dataProviderNormalizedValues(): array
     {
         $result = [];
@@ -149,9 +103,6 @@ class UriUserInfoTest extends TestCase
         return $result;
     }
 
-    /**
-     * Data provider: valid values with invalid values.
-     */
     public function dataProviderValidWithInvalidValues(): array
     {
         $normalizedValues = $this->dataProviderNormalizedValues();
