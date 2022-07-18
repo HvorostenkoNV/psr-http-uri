@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace HNV\Http\UriTests;
 
 use HNV\Http\Uri\Uri;
-use HNV\Http\UriTests\ValuesProvider\Fragment as FragmentValuesProvider;
-use PHPUnit\Framework\{
-    Attributes,
-    TestCase,
+use HNV\Http\UriTests\Generator\{
+    Fragment\InvalidValuesGenerator,
+    Fragment\NormalizedValuesGenerator,
+    InvalidValuesGeneratorInterface,
+    NormalizedValuesGeneratorInterface,
 };
+use PHPUnit\Framework\Attributes;
 
 use function spl_object_id;
 
@@ -17,8 +19,8 @@ use function spl_object_id;
  * @internal
  */
 #[Attributes\CoversClass(Uri::class)]
-#[Attributes\Medium]
-class UriFragmentTest extends TestCase
+#[Attributes\Small]
+class UriFragmentTest extends AbstractUriTestCase
 {
     #[Attributes\Test]
     #[Attributes\DataProvider('dataProviderNormalizedValues')]
@@ -69,56 +71,13 @@ class UriFragmentTest extends TestCase
         static::assertSame('', $valueCaught);
     }
 
-    #[Attributes\Test]
-    #[Attributes\DataProvider('dataProviderValidWithInvalidValues')]
-    public function withFragmentWithInvalidValueClearsPreviousValue(
-        string $validValue,
-        string $invalidValue
-    ): void {
-        $valueCaught = (new Uri())
-            ->withFragment($validValue)
-            ->withFragment($invalidValue)
-            ->getFragment();
-
-        static::assertSame('', $valueCaught);
+    protected function getNormalizedValuesGenerator(): NormalizedValuesGeneratorInterface
+    {
+        return new NormalizedValuesGenerator();
     }
 
-    public function dataProviderNormalizedValues(): array
+    protected function getInvalidValuesGenerator(): InvalidValuesGeneratorInterface
     {
-        $result = [];
-
-        foreach (FragmentValuesProvider::getValidValues() as $value => $valueNormalized) {
-            $result[] = [(string) $value, $valueNormalized];
-        }
-
-        return $result;
-    }
-
-    public function dataProviderInvalidValues(): array
-    {
-        $result = [];
-
-        foreach (FragmentValuesProvider::getInvalidValues() as $value) {
-            $result[] = [$value];
-        }
-
-        return $result;
-    }
-
-    public function dataProviderValidWithInvalidValues(): array
-    {
-        $validValues   = $this->dataProviderNormalizedValues();
-        $invalidValues = $this->dataProviderInvalidValues();
-        $result        = [];
-
-        foreach ($invalidValues as $data) {
-            $result[] = [
-                $validValues[0][0],
-                $validValues[0][1],
-                $data[0],
-            ];
-        }
-
-        return $result;
+        return new InvalidValuesGenerator();
     }
 }

@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace HNV\Http\UriTests;
 
 use HNV\Http\Uri\Uri;
-use HNV\Http\UriTests\ValuesProvider\Path as PathValuesProvider;
-use InvalidArgumentException;
-use PHPUnit\Framework\{
-    Attributes,
-    TestCase,
+use HNV\Http\UriTests\Generator\{
+    InvalidValuesGeneratorInterface,
+    NormalizedValuesGeneratorInterface,
+    Path\InvalidValuesGenerator,
+    Path\NormalizedValuesGenerator,
 };
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes;
 
 use function spl_object_id;
 
@@ -18,8 +20,8 @@ use function spl_object_id;
  * @internal
  */
 #[Attributes\CoversClass(Uri::class)]
-#[Attributes\Medium]
-class UriPathTest extends TestCase
+#[Attributes\Small]
+class UriPathTest extends AbstractUriTestCase
 {
     #[Attributes\Test]
     #[Attributes\DataProvider('dataProviderNormalizedValues')]
@@ -100,42 +102,13 @@ class UriPathTest extends TestCase
         static::assertSame($valueNormalized, $valueCaught);
     }
 
-    public function dataProviderNormalizedValues(): array
+    protected function getNormalizedValuesGenerator(): NormalizedValuesGeneratorInterface
     {
-        $result = [];
-
-        foreach (PathValuesProvider::getValidValues() as $value => $valueNormalized) {
-            $result[] = [$value, $valueNormalized];
-        }
-
-        return $result;
+        return new NormalizedValuesGenerator();
     }
 
-    public function dataProviderInvalidValues(): array
+    protected function getInvalidValuesGenerator(): InvalidValuesGeneratorInterface
     {
-        $result = [];
-
-        foreach (PathValuesProvider::getInvalidValues() as $value) {
-            $result[] = [$value];
-        }
-
-        return $result;
-    }
-
-    public function dataProviderValidWithInvalidValues(): array
-    {
-        $validValues   = $this->dataProviderNormalizedValues();
-        $invalidValues = $this->dataProviderInvalidValues();
-        $result        = [];
-
-        foreach ($invalidValues as $data) {
-            $result[] = [
-                $validValues[0][0],
-                $validValues[0][1],
-                $data[0],
-            ];
-        }
-
-        return $result;
+        return new InvalidValuesGenerator();
     }
 }

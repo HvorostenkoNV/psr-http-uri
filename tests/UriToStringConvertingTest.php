@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace HNV\Http\UriTests;
 
 use HNV\Http\Uri\Uri;
-use HNV\Http\UriTests\CombinationsProvider\FullString\CombinedValue\{
-    FullStringCombinations as FullStringCombinationsProvider,
-};
+use HNV\Http\UriTests\Generator\FullString\CombinedDataGenerator;
+use HNV\Http\UriTests\ValueObject\FullString\CombinedData as FullStringCombinedData;
 use InvalidArgumentException;
 use PHPUnit\Framework\{
     Attributes,
@@ -23,70 +22,46 @@ class UriToStringConvertingTest extends TestCase
 {
     #[Attributes\Test]
     #[Attributes\DataProvider('dataProviderUriByParts')]
-    public function toStringCast(
-        string $scheme,
-        string $login,
-        string $password,
-        string $host,
-        int $port,
-        string $path,
-        string $query,
-        string $fragment,
-        string $uriExpected
-    ): void {
+    public function toStringCast(FullStringCombinedData $data): void
+    {
         $uri = new Uri();
 
         try {
-            $uri = $uri->withScheme($scheme);
+            $uri = $uri->withScheme($data->scheme);
         } catch (InvalidArgumentException) {
         }
 
-        $uri = $uri->withUserInfo($login, $password);
+        $uri = $uri->withUserInfo($data->userLogin, $data->userPassword);
 
         try {
-            $uri = $uri->withHost($host);
-        } catch (InvalidArgumentException) {
-        }
-
-        try {
-            $uri = $uri->withPort($port);
+            $uri = $uri->withHost($data->host);
         } catch (InvalidArgumentException) {
         }
 
         try {
-            $uri = $uri->withPath($path);
+            $uri = $uri->withPort($data->port);
         } catch (InvalidArgumentException) {
         }
 
         try {
-            $uri = $uri->withQuery($query);
+            $uri = $uri->withPath($data->path);
         } catch (InvalidArgumentException) {
         }
 
-        $uri       = $uri->withFragment($fragment);
-        $uriCaught = (string) $uri;
+        try {
+            $uri = $uri->withQuery($data->query);
+        } catch (InvalidArgumentException) {
+        }
 
-        static::assertSame($uriExpected, $uriCaught);
+        $uri = $uri->withFragment($data->fragment);
+
+        static::assertSame($data->fullValue, (string) $uri);
     }
 
-    public function dataProviderUriByParts(): array
+    public function dataProviderUriByParts(): iterable
     {
-        $result = [];
-
-        foreach (FullStringCombinationsProvider::get() as $combination) {
-            $result[] = [
-                $combination['scheme'],
-                $combination['login'],
-                $combination['password'],
-                $combination['host'],
-                $combination['port'],
-                $combination['path'],
-                $combination['query'],
-                $combination['fragment'],
-                $combination['value'],
-            ];
+        foreach ((new CombinedDataGenerator())->generate() as $combination) {
+            yield [$combination];
         }
-
-        return $result;
     }
 }

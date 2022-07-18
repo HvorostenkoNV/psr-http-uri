@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace HNV\Http\UriTests;
 
 use HNV\Http\Uri\UriFactory;
-use HNV\Http\UriTests\CombinationsProvider\FullString\ParsedParts\{
-    FullStringWithParsedParts as FullStringWithParsedPartsProvider,
-};
+use HNV\Http\UriTests\Generator\FullString\ParsedDataGenerator;
+use HNV\Http\UriTests\ValueObject\FullString\ParsedData as FullStringParsedData;
 use InvalidArgumentException;
 use PHPUnit\Framework\{
     Attributes,
@@ -23,39 +22,20 @@ class UriFactoryTest extends TestCase
 {
     #[Attributes\Test]
     #[Attributes\DataProvider('dataProviderUriParsedToParts')]
-    public function createUri(
-        string $uriString,
-        string $scheme,
-        string $userInfo,
-        string $host,
-        int $port,
-        string $authority,
-        string $path,
-        string $query,
-        string $fragment,
-        string $uriStringNormalized
-    ): void {
-        $uri                  = (new UriFactory())->createUri($uriString);
-        $schemeCaught         = $uri->getScheme();
-        $userInfoCaught       = $uri->getUserInfo();
-        $hostCaught           = $uri->getHost();
-        $portExpected         = $port !== 0 ? $port : null;
-        $portCaught           = $uri->getPort();
-        $authorityCaught      = $uri->getAuthority();
-        $pathCaught           = $uri->getPath();
-        $queryCaught          = $uri->getQuery();
-        $fragmentCaught       = $uri->getFragment();
-        $uriToStringConverted = (string) $uri;
+    public function createUri(FullStringParsedData $data): void
+    {
+        $uri            = (new UriFactory())->createUri($data->valueToParse);
+        $portExpected   = $data->port !== 0 ? $data->port : null;
 
-        static::assertSame($scheme, $schemeCaught);
-        static::assertSame($userInfo, $userInfoCaught);
-        static::assertSame($host, $hostCaught);
-        static::assertSame($portExpected, $portCaught);
-        static::assertSame($authority, $authorityCaught);
-        static::assertSame($path, $pathCaught);
-        static::assertSame($query, $queryCaught);
-        static::assertSame($fragment, $fragmentCaught);
-        static::assertSame($uriStringNormalized, $uriToStringConverted);
+        static::assertSame($data->scheme, $uri->getScheme());
+        static::assertSame($data->userInfo, $uri->getUserInfo());
+        static::assertSame($data->host, $uri->getHost());
+        static::assertSame($portExpected, $uri->getPort());
+        static::assertSame($data->authority, $uri->getAuthority());
+        static::assertSame($data->path, $uri->getPath());
+        static::assertSame($data->query, $uri->getQuery());
+        static::assertSame($data->fragment, $uri->getFragment());
+        static::assertSame($data->valueNormalized, (string) $uri);
     }
 
     #[Attributes\Test]
@@ -69,40 +49,21 @@ class UriFactoryTest extends TestCase
         static::fail("expects exception with URI [{$uriString}]");
     }
 
-    public function dataProviderUriParsedToParts(): array
+    public function dataProviderUriParsedToParts(): iterable
     {
-        $result = [];
-
-        foreach (FullStringWithParsedPartsProvider::get() as $data) {
-            if ($data['isValid']) {
-                $result[] = [
-                    $data['value'],
-                    $data['scheme'],
-                    $data['userInfo'],
-                    $data['host'],
-                    $data['port'],
-                    $data['authority'],
-                    $data['path'],
-                    $data['query'],
-                    $data['fragment'],
-                    $data['valueNormalized'],
-                ];
+        foreach ((new ParsedDataGenerator())->generate() as $combination) {
+            if ($combination->isValid) {
+                yield [$combination];
             }
         }
-
-        return $result;
     }
 
-    public function dataProviderInvalidUri(): array
+    public function dataProviderInvalidUri(): iterable
     {
-        $result = [];
-
-        foreach (FullStringWithParsedPartsProvider::get() as $data) {
-            if (!$data['isValid']) {
-                $result[] = [$data['value']];
+        foreach ((new ParsedDataGenerator())->generate() as $combination) {
+            if (!$combination->isValid) {
+                yield [$combination->valueToParse];
             }
         }
-
-        return $result;
     }
 }

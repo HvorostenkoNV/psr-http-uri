@@ -15,7 +15,7 @@ RUN apk add openssh && \
     echo "${USER}:${PASSWORD}" | chpasswd && \
     ssh-keygen -A
 # PHP memory limit increasing
-RUN echo 'memory_limit = 1024M' >> /usr/local/etc/php/conf.d/docker-php-ram-limit.ini
+RUN echo 'memory_limit = 4096M' >> /usr/local/etc/php/conf.d/docker-php-ram-limit.ini
 # RUN php and SSH
 RUN printf "php-fpm -D\n/usr/sbin/sshd -D" >> /start.sh
 RUN chmod +x /start.sh

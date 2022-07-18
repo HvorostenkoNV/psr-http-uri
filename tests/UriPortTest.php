@@ -8,12 +8,14 @@ use HNV\Http\Uri\{
     Collection\SchemeRules,
     Uri,
 };
-use HNV\Http\UriTests\ValuesProvider\Port as PortValuesProvider;
-use InvalidArgumentException;
-use PHPUnit\Framework\{
-    Attributes,
-    TestCase,
+use HNV\Http\UriTests\Generator\{
+    InvalidValuesGeneratorInterface,
+    NormalizedValuesGeneratorInterface,
+    Port\InvalidValuesGenerator,
+    Port\NormalizedValuesGenerator,
 };
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes;
 
 use function spl_object_id;
 
@@ -21,8 +23,8 @@ use function spl_object_id;
  * @internal
  */
 #[Attributes\CoversClass(Uri::class)]
-#[Attributes\Medium]
-class UriPortTest extends TestCase
+#[Attributes\Small]
+class UriPortTest extends AbstractUriTestCase
 {
     #[Attributes\Test]
     #[Attributes\DataProvider('dataProviderNormalizedValues')]
@@ -115,28 +117,6 @@ class UriPortTest extends TestCase
         static::assertSame($valueNormalized, $valueCaught);
     }
 
-    public function dataProviderNormalizedValues(): array
-    {
-        $result = [];
-
-        foreach (PortValuesProvider::getValidValues() as $value => $valueNormalized) {
-            $result[] = [$value, $valueNormalized];
-        }
-
-        return $result;
-    }
-
-    public function dataProviderInvalidValues(): array
-    {
-        $result = [];
-
-        foreach (PortValuesProvider::getInvalidValues() as $value) {
-            $result[] = [$value];
-        }
-
-        return $result;
-    }
-
     public function dataProviderSchemeWithStandardPorts(): array
     {
         $result = [];
@@ -150,20 +130,13 @@ class UriPortTest extends TestCase
         return $result;
     }
 
-    public function dataProviderValidWithInvalidValues(): array
+    protected function getNormalizedValuesGenerator(): NormalizedValuesGeneratorInterface
     {
-        $validValues   = $this->dataProviderNormalizedValues();
-        $invalidValues = $this->dataProviderInvalidValues();
-        $result        = [];
+        return new NormalizedValuesGenerator();
+    }
 
-        foreach ($invalidValues as $data) {
-            $result[] = [
-                $validValues[0][0],
-                $validValues[0][1],
-                $data[0],
-            ];
-        }
-
-        return $result;
+    protected function getInvalidValuesGenerator(): InvalidValuesGeneratorInterface
+    {
+        return new InvalidValuesGenerator();
     }
 }

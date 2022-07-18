@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace HNV\Http\UriTests;
 
 use HNV\Http\Uri\Uri;
-use HNV\Http\UriTests\CombinationsProvider\UserInfo\CombinedValue as UserInfoCombinationsProvider;
+use HNV\Http\UriTests\Generator\UserInfo\CombinedDataGenerator;
+use HNV\Http\UriTests\ValueObject\UserInfo\CombinedData as UserInfoCombinedData;
 use PHPUnit\Framework\{
     Attributes,
     TestCase,
@@ -23,11 +24,11 @@ class UriUserInfoTest extends TestCase
 {
     #[Attributes\Test]
     #[Attributes\DataProvider('dataProviderNormalizedValues')]
-    public function withUserInfoProvidesNewInstance(string $login): void
+    public function withUserInfoProvidesNewInstance(UserInfoCombinedData $data): void
     {
         $uriFirst  = new Uri();
-        $uriSecond = $uriFirst->withUserInfo($login);
-        $uriThird  = $uriSecond->withUserInfo($login);
+        $uriSecond = $uriFirst->withUserInfo($data->login);
+        $uriThird  = $uriSecond->withUserInfo($data->login);
 
         static::assertNotSame(
             spl_object_id($uriFirst),
@@ -43,14 +44,13 @@ class UriUserInfoTest extends TestCase
 
     #[Attributes\Test]
     #[Attributes\DataProvider('dataProviderNormalizedValues')]
-    public function getUserInfo(
-        string $login,
-        string $password,
-        string $valueNormalized
-    ): void {
-        $valueCaught = (new Uri())->withUserInfo($login, $password)->getUserInfo();
+    public function getUserInfo(UserInfoCombinedData $data): void
+    {
+        $valueCaught = (new Uri())
+            ->withUserInfo($data->login, $data->password)
+            ->getUserInfo();
 
-        static::assertSame($valueNormalized, $valueCaught);
+        static::assertSame($data->fullValue, $valueCaught);
     }
 
     #[Attributes\Test]
@@ -63,10 +63,10 @@ class UriUserInfoTest extends TestCase
 
     #[Attributes\Test]
     #[Attributes\DataProvider('dataProviderNormalizedValues')]
-    public function getUserInfoAfterClear(string $login): void
+    public function getUserInfoAfterClear(UserInfoCombinedData $data): void
     {
         $valueCaught = (new Uri())
-            ->withUserInfo($login)
+            ->withUserInfo($data->login)
             ->withUserInfo('')
             ->getUserInfo();
 
@@ -88,46 +88,35 @@ class UriUserInfoTest extends TestCase
         static::assertSame('', $valueCaught);
     }
 
-    public function dataProviderNormalizedValues(): array
+    public function dataProviderNormalizedValues(): iterable
     {
-        $result = [];
-
-        foreach (UserInfoCombinationsProvider::get() as $combination) {
-            $result[] = [
-                $combination['login'],
-                $combination['password'],
-                $combination['value'],
-            ];
+        foreach ((new CombinedDataGenerator())->generate() as $combination) {
+            yield [$combination];
         }
-
-        return $result;
     }
 
-    public function dataProviderValidWithInvalidValues(): array
+    public function dataProviderValidWithInvalidValues(): iterable
     {
         $normalizedValues = $this->dataProviderNormalizedValues();
-        $validLogin       = '';
-        $result           = [];
+        $validLogin       = null;
 
         foreach ($normalizedValues as $dataSet) {
-            $login = $dataSet[0];
+            /** @var UserInfoCombinedData $userData */
+            $userData = $dataSet[0];
 
-            if (strlen($login) > 0) {
-                $validLogin = $login;
+            if (strlen($userData->login) > 0) {
+                $validLogin = $userData->login;
                 break;
             }
         }
 
         foreach ($normalizedValues as $dataSet) {
-            $login    = $dataSet[0];
-            $password = $dataSet[1];
-            $userInfo = $dataSet[2];
+            /** @var UserInfoCombinedData $userData */
+            $userData = $dataSet[0];
 
-            if (strlen($userInfo) === 0) {
-                $result[] = [$validLogin, $login, $password];
+            if (strlen($userData->fullValue) === 0) {
+                yield [$validLogin, $userData->login, $userData->password];
             }
         }
-
-        return $result;
     }
 }

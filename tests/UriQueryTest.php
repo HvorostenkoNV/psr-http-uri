@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace HNV\Http\UriTests;
 
 use HNV\Http\Uri\Uri;
-use HNV\Http\UriTests\ValuesProvider\Query as QueryValuesProvider;
-use InvalidArgumentException;
-use PHPUnit\Framework\{
-    Attributes,
-    TestCase,
+use HNV\Http\UriTests\Generator\{
+    InvalidValuesGeneratorInterface,
+    NormalizedValuesGeneratorInterface,
+    Query\InvalidValuesGenerator,
+    Query\NormalizedValuesGenerator,
 };
+use PHPUnit\Framework\Attributes;
 
 use function spl_object_id;
 
@@ -18,8 +19,8 @@ use function spl_object_id;
  * @internal
  */
 #[Attributes\CoversClass(Uri::class)]
-#[Attributes\Medium]
-class UriQueryTest extends TestCase
+#[Attributes\Small]
+class UriQueryTest extends AbstractUriTestCase
 {
     #[Attributes\Test]
     #[Attributes\DataProvider('dataProviderNormalizedValues')]
@@ -70,72 +71,13 @@ class UriQueryTest extends TestCase
         static::assertSame('', $valueCaught);
     }
 
-    #[Attributes\Test]
-    #[Attributes\DataProvider('dataProviderInvalidValues')]
-    public function withQueryThrowsException(string $value): void
+    protected function getNormalizedValuesGenerator(): NormalizedValuesGeneratorInterface
     {
-        $this->expectException(InvalidArgumentException::class);
-
-        (new Uri())->withQuery($value);
-
-        static::fail("expects exception with query [{$value}]");
+        return new NormalizedValuesGenerator();
     }
 
-    #[Attributes\Test]
-    #[Attributes\DataProvider('dataProviderValidWithInvalidValues')]
-    public function exceptionThrowingDoesntClearsPreviousValue(
-        string $value,
-        string $valueNormalized,
-        string $invalidValue
-    ): void {
-        $uri = (new Uri())->withQuery($value);
-
-        try {
-            $uri->withQuery($invalidValue);
-        } catch (InvalidArgumentException) {
-        }
-
-        $valueCaught = $uri->getQuery();
-
-        static::assertSame($valueNormalized, $valueCaught);
-    }
-
-    public function dataProviderNormalizedValues(): array
+    protected function getInvalidValuesGenerator(): InvalidValuesGeneratorInterface
     {
-        $result = [];
-
-        foreach (QueryValuesProvider::getValidValues() as $value => $valueNormalized) {
-            $result[] = [$value, $valueNormalized];
-        }
-
-        return $result;
-    }
-
-    public function dataProviderInvalidValues(): array
-    {
-        $result = [];
-
-        foreach (QueryValuesProvider::getInvalidValues() as $value) {
-            $result[] = [$value];
-        }
-
-        return $result;
-    }
-
-    public function dataProviderValidWithInvalidValues(): array
-    {
-        $validValues   = $this->dataProviderNormalizedValues();
-        $invalidValues = $this->dataProviderInvalidValues();
-        $result        = [];
-
-        foreach ($invalidValues as $data) {
-            $result[] = [
-                $validValues[0][0],
-                $validValues[0][1],
-                $data[0],
-            ];
-        }
-
-        return $result;
+        return new InvalidValuesGenerator();
     }
 }
