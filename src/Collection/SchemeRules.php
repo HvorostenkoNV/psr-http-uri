@@ -6,6 +6,7 @@ namespace HNV\Http\Uri\Collection;
 
 use HNV\Http\Helper\Collection\SpecialCharacters;
 
+use function in_array;
 use function str_replace;
 
 class SchemeRules
@@ -57,5 +58,16 @@ class SchemeRules
         }
 
         return self::$maskReady;
+    }
+
+    public static function isStandardPort(int $port): bool
+    {
+        foreach (static::STANDARD_PORTS as $ports) {
+            if (in_array($port, $ports, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

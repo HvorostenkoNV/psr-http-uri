@@ -28,7 +28,6 @@ use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
 
-use function in_array;
 use function is_null;
 use function ltrim;
 use function str_starts_with;
@@ -183,17 +182,11 @@ class Uri implements UriInterface
             throw new InvalidArgumentException("port [{$port}] is invalid", 0, $exception);
         }
 
-        $newInstance    = clone $this;
-        $portIsStandard = false;
-
-        foreach (SchemeRules::STANDARD_PORTS as $ports) {
-            if (in_array($portNormalized, $ports, true)) {
-                $portIsStandard = true;
-                break;
-            }
-        }
-
-        $newInstance->port = $portNormalized === 0 || $portIsStandard ? null : $portNormalized;
+        $portIsStandard     = SchemeRules::isStandardPort($portNormalized);
+        $newInstance        = clone $this;
+        $newInstance->port  = $portNormalized === 0 || $portIsStandard
+            ? null
+            : $portNormalized;
 
         return $newInstance;
     }
@@ -225,7 +218,9 @@ class Uri implements UriInterface
         if (strlen($userInfo) > 0) {
             $result .= $userInfo.UserInfoRules::URI_DELIMITER->value;
         }
+
         $result .= $host;
+
         if (!is_null($port)) {
             $result .= PortRules::URI_DELIMITER->value.$port;
         }
