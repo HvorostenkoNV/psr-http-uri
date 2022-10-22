@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace HNV\Http\Uri\Normalizer;
 
-use HNV\Http\Helper\Normalizer\{
-    NormalizerInterface,
-    NormalizingException,
-};
+use HNV\Http\Helper\Normalizer\NormalizerInterface;
 use HNV\Http\Uri\Collection\QueryRules;
 
 use function explode;
@@ -39,23 +36,9 @@ class Query implements NormalizerInterface
                 continue;
             }
 
-            try {
-                $keyNormalized = self::normalizeValue($key);
-            } catch (NormalizingException $exception) {
-                throw new NormalizingException("query part [{$key}] is invalid", 0, $exception);
-            }
-
-            try {
-                $keyValueNormalized = strlen($keyValue) > 0 ? self::normalizeValue($keyValue) : null;
-            } catch (NormalizingException $exception) {
-                throw new NormalizingException(
-                    "query part [{$keyValue}] is invalid",
-                    0,
-                    $exception
-                );
-            }
-
-            $result[] = $keyValueNormalized
+            $keyNormalized      = self::normalizeValue($key);
+            $keyValueNormalized = strlen($keyValue) > 0 ? self::normalizeValue($keyValue) : null;
+            $result[]           = $keyValueNormalized
                 ? $keyNormalized.$fieldValueSeparator.$keyValueNormalized
                 : $keyNormalized;
         }
@@ -63,22 +46,17 @@ class Query implements NormalizerInterface
         return implode($fieldsSeparator, $result);
     }
 
-    /**
-     * @throws NormalizingException
-     */
     private static function normalizeValue(string $value): string
     {
-        if (strlen($value) === 0) {
-            throw new NormalizingException('value is empty string');
-        }
-
-        $result = rawurlencode(rawurldecode($value));
+        $result                 = rawurlencode(rawurldecode($value));
+        $allowedChars           = [];
+        $allowedCharsEncoded    = [];
 
         foreach (QueryRules::ALLOWED_CHARACTERS as $case) {
-            $charEncoded = rawurlencode($case->value);
-            $result      = str_replace($charEncoded, $case->value, $result);
+            $allowedChars[]        = $case->value;
+            $allowedCharsEncoded[] = rawurlencode($case->value);
         }
 
-        return $result;
+        return str_replace($allowedCharsEncoded, $allowedChars, $result);
     }
 }

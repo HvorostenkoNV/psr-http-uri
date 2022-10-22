@@ -7,7 +7,6 @@ namespace HNV\Http\Uri\Collection;
 use HNV\Http\Helper\Collection\SpecialCharacters;
 
 use function in_array;
-use function str_replace;
 
 class SchemeRules
 {
@@ -37,37 +36,24 @@ class SchemeRules
         'irc'       => [194],
         'https'     => [443],
     ];
-    private const MASK              = '/^[a-z]{1}[a-z0-9#SPECIAL_CHARS#]{1,}$/';
-
-    private static ?string $maskReady = null;
 
     public static function mask(): string
     {
-        if (!self::$maskReady) {
-            $specialCharacters = '';
+        $letter             = 'a-z';
+        $digit              = '0-9';
+        $specialCharacters  = '';
 
-            foreach (static::ALLOWED_CHARACTERS as $case) {
-                $specialCharacters .= "\\{$case->value}";
-            }
-
-            self::$maskReady = str_replace(
-                '#SPECIAL_CHARS#',
-                $specialCharacters,
-                static::MASK
-            );
+        foreach (static::ALLOWED_CHARACTERS as $case) {
+            $specialCharacters .= "\\{$case->value}";
         }
 
-        return self::$maskReady;
+        return "/^[{$letter}]{1}[{$letter}{$digit}{$specialCharacters}]{1,}$/";
     }
 
-    public static function isStandardPort(int $port): bool
+    public static function isStandardPort(string $scheme, int $port): bool
     {
-        foreach (static::STANDARD_PORTS as $ports) {
-            if (in_array($port, $ports, true)) {
-                return true;
-            }
-        }
-
-        return false;
+        return
+            isset(static::STANDARD_PORTS[$scheme])
+            && in_array($port, static::STANDARD_PORTS[$scheme]);
     }
 }

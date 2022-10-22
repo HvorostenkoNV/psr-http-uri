@@ -11,7 +11,6 @@ use HNV\Http\Helper\Normalizer\{
 use HNV\Http\Uri\Collection\DomainNameRules;
 
 use function preg_match;
-use function strlen;
 use function strtolower;
 
 class TopLevelDomain implements NormalizerInterface
@@ -23,26 +22,15 @@ class TopLevelDomain implements NormalizerInterface
     {
         $valueString    = (string) $value;
         $valueLowercase = strtolower($valueString);
-        $minLength      = DomainNameRules::TOP_LEVEL_MIN_LENGTH;
-        $maxLength      = DomainNameRules::TOP_LEVEL_MAX_LENGTH;
-
-        if (strlen($valueLowercase) < $minLength) {
-            throw new NormalizingException(
-                "top-level domain [{$valueString}] is shorter than {$minLength}"
-            );
-        }
-        if (strlen($valueLowercase) > $maxLength) {
-            throw new NormalizingException(
-                "top-level domain [{$valueString}] is longer than {$maxLength}"
-            );
-        }
+        $mask           = DomainNameRules::topLevelMask();
 
         $matches = [];
-        preg_match(DomainNameRules::topLevelMask(), $valueLowercase, $matches);
+        preg_match($mask, $valueLowercase, $matches);
         $isMatch = isset($matches[0]) && $matches[0] === $valueLowercase;
 
         if (!$isMatch) {
-            throw new NormalizingException("top-level domain [{$valueString}] is invalid");
+            throw new NormalizingException("top-level domain [{$valueString}] "
+                ."does not match pattern $mask");
         }
 
         return $valueLowercase;

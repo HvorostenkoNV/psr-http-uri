@@ -50,25 +50,14 @@ class V6 implements NormalizerInterface
             $isDual               = false;
         }
 
-        try {
-            $valueV6PartNormalized = self::normalizeV6WithoutV4Part($valueV6Part, $isDual);
-            $hasShortenInTheEnd    = str_ends_with($valueV6PartNormalized, IpAddressV6Rules::SHORTEN);
+        $valueV6PartNormalized = self::normalizeV6WithoutV4Part($valueV6Part, $isDual);
+        $hasShortenInTheEnd    = str_ends_with($valueV6PartNormalized, IpAddressV6Rules::SHORTEN);
 
-            if ($isDual && $hasShortenInTheEnd) {
-                return $valueV6PartNormalized.$valueV4Part;
-            }
-            if ($isDual) {
-                return $valueV6PartNormalized.$delimiter.$valueV4Part;
-            }
-
-            return $valueV6PartNormalized;
-        } catch (NormalizingException $exception) {
-            throw new NormalizingException(
-                "ip address V6 [{$valueString}] normalization failed",
-                0,
-                $exception
-            );
-        }
+        return match (true) {
+            $isDual && $hasShortenInTheEnd  => $valueV6PartNormalized.$valueV4Part,
+            $isDual                         => $valueV6PartNormalized.$delimiter.$valueV4Part,
+            default                         => $valueV6PartNormalized,
+        };
     }
 
     /**
@@ -80,18 +69,8 @@ class V6 implements NormalizerInterface
         $valueParts  = self::splitV6IntoParts($value, $hasV4Part, $isShortened);
 
         foreach ($valueParts as $index => $part) {
-            if ($isShortened && strlen($part) === 0) {
-                continue;
-            }
-
-            try {
+            if (!$isShortened || strlen($part) > 0) {
                 $valueParts[$index] = self::normalizeV6Segment($part);
-            } catch (NormalizingException $exception) {
-                throw new NormalizingException(
-                    "ip address V6 segment [{$part}] is invalid",
-                    0,
-                    $exception
-                );
             }
         }
 
@@ -103,7 +82,7 @@ class V6 implements NormalizerInterface
     }
 
     /**
-     * @throws NormalizingException something wrong with shortens
+     * @throws NormalizingException
      */
     private static function checkV6IsShortened(string $value): bool
     {
@@ -112,9 +91,8 @@ class V6 implements NormalizerInterface
         $incorrectShortsCount = (int) preg_match_all("/[{$delimiter}]{3,}/", $value);
 
         if ($shortsCount > 1 || $incorrectShortsCount > 0) {
-            throw new NormalizingException(
-                "ip address V6 part [{$value}] contains incorrect shortens"
-            );
+            throw new NormalizingException("ip address V6 part [{$value}] "
+                .'contains incorrect shortens');
         }
 
         return $shortsCount === 1;
@@ -143,18 +121,15 @@ class V6 implements NormalizerInterface
             && $value[strlen($value) - 2] !== $delimiter;
 
         if (strlen($value) <= 1 || $hasInvalidStart || $hasInvalidEnd) {
-            throw new NormalizingException(
-                "ip address V6 part [{$value}] has incorrect format"
-            );
+            throw new NormalizingException("ip address V6 part [{$value}] has incorrect format");
         }
 
         if (
             !$isShortened && $currentPartsCount !== $needPartsCount
             || $isShortened && $currentPartsCount > $needPartsCount - 2
         ) {
-            throw new NormalizingException(
-                "ip address V6 part [{$value}] contains incorrect segments count"
-            );
+            throw new NormalizingException("ip address V6 part [{$value}] "
+                .'contains incorrect segments count');
         }
 
         return $valueParts;
@@ -186,14 +161,16 @@ class V6 implements NormalizerInterface
      */
     private static function normalizeV6Segment(string $value): string
     {
-        $mask         = IpAddressV6Rules::segmentMask();
-        $minimalValue = (string) IpAddressV6Rules::SEGMENT_MINIMAL_VALUE;
-        $matches      = [];
+        $mask         = IpAddressV6Rules::mask();
+        $minimalValue = '0';
 
+        $matches = [];
         preg_match($mask, $value, $matches);
+        $isMatch = isset($matches[0]) && $matches[0] === $value;
 
-        if (!isset($matches[0]) || $matches[0] !== $value) {
-            throw new NormalizingException("value [{$value}] does not matched the pattern {$mask}");
+        if (!$isMatch) {
+            throw new NormalizingException("ip address V6 segment [{$value}] "
+                ."does not matched the pattern {$mask}");
         }
 
         $valueTrim = ltrim($value, $minimalValue);

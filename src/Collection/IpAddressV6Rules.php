@@ -12,13 +12,17 @@ class IpAddressV6Rules
     public const PARTS_COUNT_WITHOUT_V4 = 6;
     public const DELIMITER              = SpecialCharacters::COLON;
     public const SHORTEN                = '::';
-    public const SEGMENT_MINIMAL_VALUE  = 0;
     public const LEFT_FRAME             = SpecialCharacters::OPEN_BRACKET;
     public const RIGHT_FRAME            = SpecialCharacters::CLOSE_BRACKET;
-    private const SEGMENT_MASK          = '/^[0-9a-fA-F]{1,4}$/';
+    public const SEGMENT_MAX_LENGTH     = 4;
 
-    public static function segmentMask(): string
+    public static function mask(): string
     {
-        return static::SEGMENT_MASK;
+        $lettersLowercase   = 'a-f';
+        $lettersUppercase   = 'A-F';
+        $digits             = '0-9';
+        $maxLength          = self::SEGMENT_MAX_LENGTH;
+
+        return "/^[{$digits}{$lettersLowercase}{$lettersUppercase}]{1,{$maxLength}}$/";
     }
 }

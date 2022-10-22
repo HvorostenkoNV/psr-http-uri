@@ -26,8 +26,8 @@ class UriValidator
         foreach ($invalidConditions as $condition) {
             if ($condition) {
                 throw new RuntimeException(
-                    "authority with user info [{$userInfo}], ".
-                    "host [{$host}] and port [{$port}] can not be build"
+                    "authority with user info [{$userInfo}], "
+                    ."host [{$host}] and port [{$port}] can not be build"
                 );
             }
         }
@@ -54,9 +54,7 @@ class UriValidator
             }
         }
 
-        throw new RuntimeException(
-            "URI with scheme [{$scheme}], ".
-            "authority [{$authority}] and path [{$path}] can not be build"
-        );
+        throw new RuntimeException("URI with scheme [{$scheme}], "
+            ."authority [{$authority}] and path [{$path}] can not be build");
     }
 }

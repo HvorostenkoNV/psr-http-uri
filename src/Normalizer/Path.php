@@ -24,40 +24,28 @@ class Path implements NormalizerInterface
      */
     public static function normalize($value): string
     {
-        $valueString       = (string) $value;
-        $valueExploded     = explode(PathRules::PARTS_SEPARATOR->value, $valueString);
-        $result            = [];
+        $valueString    = (string) $value;
+        $valueExploded  = explode(PathRules::PARTS_SEPARATOR->value, $valueString);
+        $result         = [];
 
         foreach (PathRules::ALLOWED_CHARACTERS_NON_FIRST as $char) {
             if ($valueString[0] === $char->value) {
-                throw new NormalizingException(
-                    "path [{$valueString}] can not begin with character [{$char->value}]"
-                );
+                throw new NormalizingException("path [{$valueString}] "
+                    ."can not begin with character [{$char->value}]");
             }
         }
 
         foreach ($valueExploded as $part) {
-            try {
-                $result[] = strlen($part) > 0 ? self::normalizePart($part) : '';
-            } catch (NormalizingException $exception) {
-                throw new NormalizingException(
-                    "path part [{$part}] validation failed",
-                    0,
-                    $exception
-                );
-            }
+            $result[] = self::normalizePart($part);
         }
 
         return implode(PathRules::PARTS_SEPARATOR->value, $result);
     }
 
-    /**
-     * @throws NormalizingException
-     */
     private static function normalizePart(string $value): string
     {
         if (strlen($value) === 0) {
-            throw new NormalizingException('value is empty string');
+            return '';
         }
 
         $result              = rawurlencode(rawurldecode($value));

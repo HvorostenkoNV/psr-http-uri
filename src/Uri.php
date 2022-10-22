@@ -182,7 +182,8 @@ class Uri implements UriInterface
             throw new InvalidArgumentException("port [{$port}] is invalid", 0, $exception);
         }
 
-        $portIsStandard     = SchemeRules::isStandardPort($portNormalized);
+        $scheme             = $this->getScheme();
+        $portIsStandard     = $scheme && SchemeRules::isStandardPort($scheme, $portNormalized);
         $newInstance        = clone $this;
         $newInstance->port  = $portNormalized === 0 || $portIsStandard
             ? null

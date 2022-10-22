@@ -10,7 +10,6 @@ use HNV\Http\Helper\Normalizer\{
 };
 use HNV\Http\Uri\Collection\DomainNameRules;
 
-use function array_pop;
 use function count;
 use function explode;
 use function implode;
@@ -22,36 +21,19 @@ class FullQualifiedDomainName implements NormalizerInterface
      */
     public static function normalize($value): string
     {
-        $valueString   = (string) $value;
-        $valueExploded = explode(DomainNameRules::LEVELS_DELIMITER->value, $valueString);
+        $valueString        = (string) $value;
+        $valueExploded      = explode(DomainNameRules::LEVELS_DELIMITER->value, $valueString);
+        $normalizedParts    = [];
 
         if (count($valueExploded) < 2) {
             throw new NormalizingException("domain [{$valueString}] has not enough parts");
         }
 
-        $topLevelDomain  = array_pop($valueExploded);
-        $normalizedParts = [];
-
-        foreach ($valueExploded as $subDomain) {
-            try {
-                $normalizedParts[] = SubLevelDomain::normalize($subDomain);
-            } catch (NormalizingException $exception) {
-                throw new NormalizingException(
-                    "sub domain [{$subDomain}] is invalid",
-                    0,
-                    $exception
-                );
-            }
-        }
-
-        try {
-            $normalizedParts[] = TopLevelDomain::normalize($topLevelDomain);
-        } catch (NormalizingException $exception) {
-            throw new NormalizingException(
-                "top level domain [{$topLevelDomain}] is invalid",
-                0,
-                $exception
-            );
+        foreach ($valueExploded as $index => $subDomain) {
+            $isLastPart         = $index + 1 === count($valueExploded);
+            $normalizedParts[]  = $isLastPart
+                ? TopLevelDomain::normalize($subDomain)
+                : SubLevelDomain::normalize($subDomain);
         }
 
         return implode(DomainNameRules::LEVELS_DELIMITER->value, $normalizedParts);

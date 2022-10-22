@@ -22,13 +22,15 @@ class Scheme implements NormalizerInterface
     {
         $valueString    = (string) $value;
         $valueLowercase = strtolower($valueString);
+        $mask           = SchemeRules::mask();
 
         $matches = [];
-        preg_match(SchemeRules::mask(), $valueLowercase, $matches);
+        preg_match($mask, $valueLowercase, $matches);
         $isMatch = isset($matches[0]) && $matches[0] === $valueLowercase;
 
         if (!$isMatch) {
-            throw new NormalizingException("scheme [{$valueLowercase}] is invalid");
+            throw new NormalizingException("scheme [{$valueLowercase}] "
+                ."does not match pattern $mask");
         }
 
         return $valueLowercase;

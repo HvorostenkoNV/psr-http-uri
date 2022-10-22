@@ -19,9 +19,9 @@ use function ucfirst;
 
 trait GeneratorTrait
 {
-    private string $letter = 'd';
-    private int    $digit  = 1;
-    private string $string = 'domain';
+    private string $letter  = 'd';
+    private int    $digit   = 1;
+    private string $string  = 'domain';
 
     protected function getValidSubLevelDomainParts(): Generator
     {
@@ -37,7 +37,7 @@ trait GeneratorTrait
         yield strtoupper($this->letter);
         yield "{$this->digit}";
 
-        foreach (DomainNameRules::SUB_LEVEL_ALLOWED_CHARACTERS as $case) {
+        foreach (DomainNameRules::SUB_LEVEL_ALLOWED_SPECIAL_CHARACTERS as $case) {
             yield "{$this->string}{$case->value}{$this->string}";
             yield "{$this->digit}{$case->value}{$this->digit}";
             yield "{$this->string}{$case->value}{$this->digit}";
@@ -49,7 +49,7 @@ trait GeneratorTrait
     {
         $allowedChars   = array_map(
             fn (SpecialCharacters $character): string => $character->value,
-            DomainNameRules::SUB_LEVEL_ALLOWED_CHARACTERS
+            DomainNameRules::SUB_LEVEL_ALLOWED_SPECIAL_CHARACTERS
         );
         $uriDelimiters  = array_map(
             fn (SpecialCharacters $character): string => $character->value,

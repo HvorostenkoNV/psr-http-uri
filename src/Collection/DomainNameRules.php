@@ -6,44 +6,44 @@ namespace HNV\Http\Uri\Collection;
 
 use HNV\Http\Helper\Collection\SpecialCharacters;
 
-use function str_replace;
-
 class DomainNameRules
 {
-    public const LEVELS_DELIMITER               = SpecialCharacters::DOT;
-    public const TOP_LEVEL_MIN_LENGTH           = 2;
-    public const TOP_LEVEL_MAX_LENGTH           = 6;
-    public const SUB_LEVEL_MAX_LENGTH           = 63;
-    public const SUB_LEVEL_ALLOWED_CHARACTERS   = [
+    public const LEVELS_DELIMITER                       = SpecialCharacters::DOT;
+    public const TOP_LEVEL_MIN_LENGTH                   = 2;
+    public const TOP_LEVEL_MAX_LENGTH                   = 6;
+    public const SUB_LEVEL_MAX_LENGTH                   = 63;
+    public const SUB_LEVEL_ALLOWED_SPECIAL_CHARACTERS   = [
         SpecialCharacters::MINUS,
     ];
-    private const TOP_LEVEL_MASK                = '/^[a-z]{1,}$/';
-    private const SUB_LEVEL_MASK                =
-        '/^([a-z0-9]{1}[a-z0-9#SPECIAL_CHARS#]{0,}[a-z0-9]{1})|([a-z0-9]{1})$/';
-
-    private static ?string $subLevelMaskReady = null;
 
     public static function topLevelMask(): string
     {
-        return static::TOP_LEVEL_MASK;
+        $letter     = 'a-z';
+        $minLength  = self::TOP_LEVEL_MIN_LENGTH;
+        $maxLength  = self::TOP_LEVEL_MAX_LENGTH;
+
+        return "/^[{$letter}]{{$minLength},{$maxLength}}$/";
     }
 
-    public static function subLevelMask(): string
+    /**
+     * @return string[]
+     */
+    public static function subLevelMasks(): array
     {
-        if (!self::$subLevelMaskReady) {
-            $specialCharacters = '';
+        $maxLength          = self::SUB_LEVEL_MAX_LENGTH;
+        $specialCharacters  = '';
 
-            foreach (static::SUB_LEVEL_ALLOWED_CHARACTERS as $case) {
-                $specialCharacters .= "\\{$case->value}";
-            }
-
-            self::$subLevelMaskReady = str_replace(
-                '#SPECIAL_CHARS#',
-                $specialCharacters,
-                static::SUB_LEVEL_MASK
-            );
+        foreach (static::SUB_LEVEL_ALLOWED_SPECIAL_CHARACTERS as $case) {
+            $specialCharacters .= "\\{$case->value}";
         }
 
-        return self::$subLevelMaskReady;
+        $letterOrDigit      = 'a-z0-9';
+        $oneLetterOrDigit   = "[{$letterOrDigit}]{1}";
+        $anyAllowedChar     = "[{$letterOrDigit}{$specialCharacters}]{0,}";
+
+        return [
+            "/^({$oneLetterOrDigit}{$anyAllowedChar}{$oneLetterOrDigit})|({$oneLetterOrDigit})$/",
+            "/^.{1,{$maxLength}}$/",
+        ];
     }
 }
